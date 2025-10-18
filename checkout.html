@@ -8,10 +8,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-50">
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="index.html" class="font-display text-2xl font-bold text-gray-800">Classic Carry ✨</a>
-            <div class="text-gray-600">Secure Checkout</div>
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="assets/images/logo.png" alt="Classic Carry Logo" class="w-12 h-12 object-contain">
+                    <span class="font-display text-2xl font-bold bg-gradient-to-r from-[#1B3C53] to-[#456882] bg-clip-text text-transparent">Classic Carry</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
+                        Home
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="index.html#caps" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
+                        Caps
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="index.html#wallets" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
+                        Wallets
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <div class="text-[#456882] font-medium ml-4">Secure Checkout</div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <div class="text-[#456882] mr-6">Secure Checkout</div>
+                    <button id="mobile-menu-button" class="text-gray-500 hover:text-gray-800 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -33,7 +63,7 @@
                     <span class="text-gray-600">Shipping</span>
                     <span class="text-gray-600">Calculated on WhatsApp</span>
                 </div>
-                <button id="whatsapp-order" class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition">
+                <button id="whatsapp-order" class="w-full bg-[#234C6A] text-white px-4 py-3 rounded-lg hover:bg-[#1B3C53] transition">
                     <i class="fab fa-whatsapp mr-2"></i>Place Order on WhatsApp
                 </button>
                 <p class="text-xs text-gray-500 mt-3">We will send your cart details to WhatsApp to complete the order.</p>
@@ -41,9 +71,71 @@
         </div>
     </main>
 
-    <footer class="bg-gray-900 text-white py-10 mt-16">
-        <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
-            <p>&copy; 2025 Classic Carry. All rights reserved.</p>
+    <footer class="bg-[#1B3C53] text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand -->
+                <div class="fade-in appear">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <img src="assets/images/logo.png" alt="Classic Carry Logo" class="w-12 h-12 object-contain">
+                        <span class="font-display text-2xl font-bold bg-gradient-to-r from-[#456882] to-[#D2C1B6] bg-clip-text text-transparent">Classic Carry</span>
+                    </div>
+                    <p class="text-gray-400">Elevating your everyday style with premium accessories crafted for the modern individual.</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="fade-in appear">
+                    <h4 class="font-semibold text-lg mb-6 text-white">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="index.html" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Home</a></li>
+                        <li><a href="index.html#caps" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Caps</a></li>
+                        <li><a href="index.html#wallets" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Wallets</a></li>
+                        <li><a href="index.html#about" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">About</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Customer Service -->
+                <div class="fade-in appear">
+                    <h4 class="font-semibold text-lg mb-6 text-white">Customer Service</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">FAQs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Shipping</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Returns</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="fade-in appear">
+                    <h4 class="font-semibold text-lg mb-6 text-white">Stay Updated</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest products and offers.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg w-full focus:outline-none focus:ring-2 focus:ring-[#234C6A]">
+                        <button class="bg-[#234C6A] hover:bg-[#1B3C53] text-white px-4 py-2 rounded-r-lg transition duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Media & Copyright -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 Classic Carry. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
+                        <i class="fab fa-pinterest text-xl"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 
