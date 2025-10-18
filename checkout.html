@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Classic Carry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="index.html" class="font-display text-2xl font-bold text-gray-800">Classic Carry ✨</a>
+            <div class="text-gray-600">Secure Checkout</div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <h2 class="font-display text-2xl font-bold text-gray-800 mb-4">Your Cart</h2>
+                <div id="cart-items" class="space-y-4">
+                    <!-- JS renders cart items here -->
+                </div>
+            </div>
+            <aside class="bg-white rounded-xl shadow p-6 h-fit">
+                <h3 class="font-semibold text-lg mb-4">Order Summary</h3>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span id="subtotal" class="font-semibold">$0.00</span>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-gray-600">Shipping</span>
+                    <span class="text-gray-600">Calculated on WhatsApp</span>
+                </div>
+                <button id="whatsapp-order" class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition">
+                    <i class="fab fa-whatsapp mr-2"></i>Place Order on WhatsApp
+                </button>
+                <p class="text-xs text-gray-500 mt-3">We will send your cart details to WhatsApp to complete the order.</p>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-10 mt-16">
+        <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
+            <p>&copy; 2025 Classic Carry. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
