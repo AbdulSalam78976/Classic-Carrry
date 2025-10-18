@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Classic Carry - Premium Caps & Wallets</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,133 +11,173 @@
         
         body {
             font-family: 'Inter', sans-serif;
+          scroll-behavior: smooth;
+          background-color: #0f172a;
         }
         
         .font-display {
             font-family: 'Playfair Display', serif;
         }
         
+        /* --- HERO --- */
         .hero-carousel {
-            
             position: relative;
-            min-height: 90vh;
+          min-height: 90vh;
         }
-        
-        .hero-slides {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
         .hero-slide {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+          inset: 0;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             opacity: 0;
             transition: opacity 1s ease-in-out;
         }
-        
         .hero-slide.active {
             opacity: 1;
         }
-        
         .hero-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(27, 60, 83, 0.4) 0%, rgba(35, 76, 106, 0.4) 100%);
+          inset: 0;
+          background: linear-gradient(135deg, rgba(27, 60, 83, 0.6) 0%, rgba(35, 76, 106, 0.6) 100%);
             z-index: 1;
         }
         
-        .hero-nav {
-            display: flex;
-            gap: 12px;
+        /* Mobile hero adjustments */
+        @media (max-width: 768px) {
+          .hero-carousel {
+            min-height: 50vh;
+          }
+          .hero-slide {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+          }
         }
         
         .hero-nav-btn {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+          border: 2px solid rgba(255, 255, 255, 0.6);
             background: transparent;
-            cursor: pointer;
             transition: all 0.3s ease;
         }
-        
         .hero-nav-btn.active,
         .hero-nav-btn:hover {
-            background: white;
-            border-color: white;
+          background: #fff;
+          border-color: #fff;
         }
         
+        /* --- FLOATING WHATSAPP --- */
         .floating-whatsapp {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+          bottom: 28px;
+          right: 28px;
             z-index: 1000;
             animation: float 3s ease-in-out infinite;
         }
-        
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
         }
-        
-        .product-card {
-            transition: all 0.3s ease;
-            will-change: transform;
+      
+        /* --- PRODUCT CARD --- */
+        .card {
+          background: transparent;
+          border: none;
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
         }
-        
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+
+        .card:hover {
+          transform: translateY(-20px) scale(1.05);
         }
-        
+
+        .card .foto {
+          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
+          border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .card:hover .foto {
+          box-shadow: 0 35px 70px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.3);
+        }
+      
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      
+        /* --- CATEGORY PILLS --- */
         .category-pill {
-            transition: all 0.3s ease;
+          background: #f8fafc;
+          color: #374151;
+          transition: all 0.3s ease;
+          border: 1px solid #e2e8f0;
         }
-        
-        .category-pill:hover {
-            transform: scale(1.05);
-            background-color: #1B3C53;
-            color: white;
+        .category-pill:hover,
+        .category-pill.active {
+          background-color: #1B3C53;
+          color: #fff;
+          transform: scale(1.05);
+          box-shadow: 0 6px 20px rgba(27, 60, 83, 0.3);
         }
-        
-        .mobile-menu {
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .mobile-menu.active {
-            transform: translateX(0);
-        }
-        
+      
+        /* --- ANIMATIONS --- */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        
         .fade-in.appear {
             opacity: 1;
             transform: translateY(0);
         }
+      
+        /* --- ABOUT CARDS --- */
+        .about-card {
+          background: #1e293b;
+          border-radius: 1rem;
+          padding: 2rem;
+          transition: all 0.4s ease;
+        }
+        .about-card:hover {
+          transform: translateY(-8px);
+          background: #334155;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
     </style>
+      
 </head>
+
 <body class="bg-gray-900 text-gray-200">
+  
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50">
+    <div class="text-center">
+      <!-- Loading Spinner -->
+      <div class="relative w-16 h-16 mx-auto mb-6">
+        <div class="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-transparent border-t-[#D2C1B6] rounded-full animate-spin"></div>
+      </div>
+      
+      <!-- Loading Text -->
+      <div class="space-y-2">
+        <h2 class="font-display text-2xl font-bold text-white">Classic Carry</h2>
+        <p class="text-gray-300">Loading your premium experience...</p>
+      </div>
+      
+      <!-- Loading Progress Bar -->
+      <div class="w-48 h-1 bg-gray-700 rounded-full mx-auto mt-6 overflow-hidden">
+        <div id="loading-progress" class="h-full bg-gradient-to-r from-[#456882] to-[#D2C1B6] rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+  
     <!-- Header Component -->
-    <div id="header-component"></div>
-    
-    <!-- Load Header Component -->
+  <div id="header-component">
     <script>
         fetch('components/header.html')
             .then(response => response.text())
@@ -146,289 +186,130 @@
             })
             .catch(error => console.error('Error loading header:', error));
     </script>
+  </div>
 
-    <!-- Hero Section -->
+  <!-- HERO SECTION -->
     <section id="home" class="hero-carousel text-white py-20 md:py-32 relative overflow-hidden">
-        <div class="hero-slides">
             <div class="hero-slide active" style="background-image: url('assets/images/hero/1.png');"></div>
             <div class="hero-slide" style="background-image: url('assets/images/hero/2.png');"></div>
             <div class="hero-slide" style="background-image: url('assets/images/hero/3.png');"></div>
-        </div>
         <div class="hero-overlay"></div>
+
         <div class="container mx-auto px-4 relative z-10">
             <div class="max-w-4xl mx-auto text-center fade-in appear">
-                <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight">Elevate Your Style</h1>
-                <p class="text-xl md:text-2xl mb-10 opacity-90 max-w-2xl mx-auto">Premium caps and wallets crafted for the modern individual who values quality, style, and functionality.</p>
+        <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
+          Elevate Your Style
+        </h1>
+        <p class="text-lg md:text-xl mb-10 text-gray-100 opacity-90 max-w-2xl mx-auto leading-relaxed">
+          Premium caps and wallets crafted for the modern individual who values quality, style, and functionality.
+        </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#caps" class="bg-[#D2C1B6] text-gray-800 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">Shop Caps</a>
-                    <a href="#wallets" class="border-2 border-[#D2C1B6] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300 transform hover:scale-105">Shop Wallets</a>
+          <a href="#caps" class="bg-[#D2C1B6] text-gray-800 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
+            Shop Caps
+          </a>
+          <a href="#wallets" class="border-2 border-[#D2C1B6] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300 transform hover:scale-105">
+            Shop Wallets
+          </a>
                 </div>
             </div>
         </div>
-        <!-- Carousel Navigation -->
-        <div class="hero-nav absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+
+    <div class="hero-nav absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex gap-3">
             <button class="hero-nav-btn active" data-slide="0"></button>
             <button class="hero-nav-btn" data-slide="1"></button>
             <button class="hero-nav-btn" data-slide="2"></button>
         </div>
     </section>
 
-    <!-- Hot Selling Products -->
+  <!-- HOT PRODUCTS -->
     <section class="py-20 bg-gray-800">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16 fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-200 mb-4">🔥 Hot Selling Products</h2>
+    <div class="container mx-auto px-4 text-center">
+      <div class="mb-16 fade-in appear">
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">🔥 Hot Selling Products</h2>
                 <p class="text-gray-300 text-lg">Our most popular items loved by customers worldwide</p>
             </div>
-            
-            <div id="hot-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Product 1 -->
-                <div class="product-card bg-gray-700 rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-blue-800 to-blue-900 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-hat-cowboy text-6xl text-blue-400 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2 text-gray-200">Classic Baseball Cap</h3>
-                        <p class="text-gray-400 text-sm mb-4">Premium cotton blend with embroidered logo</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">$29.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product 2 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-wallet text-6xl text-amber-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Leather Bi-Fold Wallet</h3>
-                        <p class="text-gray-600 text-sm mb-4">Genuine full-grain leather with RFID protection</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$49.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product 3 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-hat-cowboy text-6xl text-gray-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Snapback Cap</h3>
-                        <p class="text-gray-600 text-sm mb-4">Adjustable fit with premium embroidery</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$34.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Product 4 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-money-bill-wave text-6xl text-rose-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Minimalist Card Holder</h3>
-                        <p class="text-gray-600 text-sm mb-4">Slim design with premium metal finish</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$24.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div id="hot-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
         </div>
     </section>
 
-    <!-- Caps Section -->
-    <section id="caps" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16 fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-800 mb-4">Premium Caps Collection</h2>
-                <p class="text-gray-600 text-lg">Find the perfect cap for every occasion</p>
+  <!-- CAPS SECTION -->
+    <section id="caps" class="py-20 bg-gray-900">
+    <div class="container mx-auto px-4 text-center">
+      <div class="mb-16 fade-in appear">
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Premium Caps Collection</h2>
+                <p class="text-gray-300 text-lg">Find the perfect cap for every occasion</p>
             </div>
-            
-            <!-- Categories -->
-            <div class="flex flex-wrap justify-center gap-4 mb-16 fade-in appear">
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">All</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Summer</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Winter</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Male</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Female</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Sports</button>
+      <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-14 fade-in appear">
+        <button class="category-pill active px-6 py-3 rounded-full shadow-md font-medium">All</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Summer</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Winter</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Male</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Female</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Sports</button>
             </div>
-
-            <!-- Products Grid -->
-            <div id="caps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Cap Product 1 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-hat-cowboy text-6xl text-blue-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Summer Straw Cap</h3>
-                        <p class="text-gray-600 text-sm mb-4">Breathable straw material</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$32.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Cap Product 2 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-baseball-ball text-6xl text-green-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Sports Baseball Cap</h3>
-                        <p class="text-gray-600 text-sm mb-4">Moisture-wicking fabric</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$27.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Cap Product 3 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-hat-wizard text-6xl text-purple-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Winter Beanie</h3>
-                        <p class="text-gray-600 text-sm mb-4">Warm wool blend</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$36.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div id="caps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
     </section>
 
-    <!-- Wallets Section -->
-    <section id="wallets" class="py-20 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16 fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-800 mb-4">Premium Wallets Collection</h2>
-                <p class="text-gray-600 text-lg">Crafted with precision for everyday elegance</p>
+  <!-- WALLETS SECTION -->
+    <section id="wallets" class="py-20 bg-gray-900">
+    <div class="container mx-auto px-4 text-center">
+      <div class="mb-16 fade-in appear">
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Premium Wallets Collection</h2>
+                <p class="text-gray-300 text-lg">Crafted with precision for everyday elegance</p>
             </div>
-            
-            <!-- Categories -->
-            <div class="flex flex-wrap justify-center gap-4 mb-16 fade-in appear">
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">All</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Male</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Female</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Long</button>
-                <button class="category-pill bg-white px-6 py-3 rounded-full shadow-lg font-medium text-gray-700 hover:bg-purple-600 hover:text-white transition duration-300">Card Holders</button>
+      <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-14 fade-in appear">
+        <button class="category-pill active px-6 py-3 rounded-full shadow-md font-medium">All</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Male</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Female</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Long</button>
+        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Card Holders</button>
             </div>
-
-            <!-- Products Grid -->
-            <div id="wallets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Wallet Product 1 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-brown-100 to-brown-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-wallet text-6xl text-brown-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Classic Leather Wallet</h3>
-                        <p class="text-gray-600 text-sm mb-4">Full-grain leather with 8 card slots</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$54.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Wallet Product 2 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-money-check-alt text-6xl text-rose-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Women's Clutch Wallet</h3>
-                        <p class="text-gray-600 text-sm mb-4">Elegant design with chain strap</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$42.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Wallet Product 3 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-id-card text-6xl text-gray-600 transform group-hover:scale-110 transition-transform duration-300"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">RFID Card Holder</h3>
-                        <p class="text-gray-600 text-sm mb-4">Slim design with security protection</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$29.99</span>
-                            <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div id="wallets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
     </section>
 
-    <!-- About Section -->
+  <!-- ABOUT SECTION -->
     <section id="about" class="py-20 bg-gray-800">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center fade-in appear">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+      <div class="fade-in appear">
                 <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-200 mb-8">About Classic Carry</h2>
                 <p class="text-lg text-gray-300 mb-12 leading-relaxed">
-                    At Classic Carry, we believe that accessories are more than just functional items—they're expressions of personal style and character. Since our founding, we've been dedicated to crafting premium caps and wallets that blend timeless design with modern functionality.
+          At Classic Carry, we believe that accessories are more than just functional items—they're expressions of personal style and character. 
+          Since our founding, we've been dedicated to crafting premium caps and wallets that blend timeless design with modern functionality.
                 </p>
+      </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+        <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
                         <div class="w-16 h-16 bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-gem text-purple-300 text-2xl"></i>
                         </div>
                         <h3 class="font-semibold text-xl mb-3 text-gray-200">Premium Quality</h3>
                         <p class="text-gray-300">Crafted with the finest materials and attention to detail.</p>
                     </div>
-                    <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+
+        <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
                         <div class="w-16 h-16 bg-indigo-800 rounded-full flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-paint-brush text-indigo-300 text-2xl"></i>
                         </div>
                         <h3 class="font-semibold text-xl mb-3 text-gray-200">Timeless Design</h3>
                         <p class="text-gray-300">Classic styles that never go out of fashion.</p>
                     </div>
-                    <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+
+        <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
                         <div class="w-16 h-16 bg-pink-800 rounded-full flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-heart text-pink-300 text-2xl"></i>
                         </div>
                         <h3 class="font-semibold text-xl mb-3 text-gray-200">Customer Love</h3>
                         <p class="text-gray-300">Satisfaction guaranteed with every purchase.</p>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer Component -->
-    <div id="footer-component"></div>
-    
-    <!-- Load Footer Component -->
+  <div id="footer-component">
     <script>
         fetch('components/footer.html')
             .then(response => response.text())
@@ -437,20 +318,110 @@
             })
             .catch(error => console.error('Error loading footer:', error));
     </script>
+  </div>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/923160928206" target="_blank" class="floating-whatsapp">
-        <div class="bg-[#1B3C53] hover:bg-[#234C6A] text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl transition duration-300 transform hover:scale-110">
+   <!-- FLOATING WHATSAPP -->
+   <a href="https://wa.me/923160928206" target="_blank" class="floating-whatsapp group">
+     <div class="bg-green-500 hover:bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl transition transform hover:scale-110 relative">
             <i class="fab fa-whatsapp text-3xl"></i>
+       <span class="absolute -top-8 right-0 bg-gray-800 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition">Chat with us</span>
         </div>
     </a>
 
-    <!-- Scripts -->
+  <!-- JS FILES -->
     <script src="assets/js/cart.js"></script>
     <script src="assets/js/products.js"></script>
     <script src="assets/js/ui.js"></script>
     <script src="assets/js/hero-carousel.js"></script>
     <script src="assets/js/main.js"></script>
+  
+  <!-- Loading Screen Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loadingScreen = document.getElementById('loading-screen');
+      const progressBar = document.getElementById('loading-progress');
+      
+      let componentsLoaded = 0;
+      const totalComponents = 2; // header and footer
+      let pageFullyLoaded = false;
+      
+      // Simulate loading progress
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress > 80) progress = 80; // Don't go to 100% until everything is loaded
+        progressBar.style.width = progress + '%';
+      }, 100);
+      
+      // Function to check if everything is loaded
+      function checkIfReadyToHide() {
+        if (componentsLoaded >= totalComponents && pageFullyLoaded) {
+          hideLoadingScreen();
+        }
+      }
+      
+      // Function to hide loading screen
+      function hideLoadingScreen() {
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        
+        setTimeout(() => {
+          loadingScreen.style.opacity = '0';
+          loadingScreen.style.transition = 'opacity 0.5s ease-out';
+          
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }, 300);
+      }
+      
+      // Track header loading
+      const headerComponent = document.getElementById('header-component');
+      const headerObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList' && headerComponent.innerHTML.trim() !== '') {
+            componentsLoaded++;
+            console.log('Header loaded, components:', componentsLoaded);
+            checkIfReadyToHide();
+          }
+        });
+      });
+      
+      if (headerComponent) {
+        headerObserver.observe(headerComponent, { childList: true, subtree: true });
+      }
+      
+      // Track footer loading
+      const footerComponent = document.getElementById('footer-component');
+      const footerObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList' && footerComponent.innerHTML.trim() !== '') {
+            componentsLoaded++;
+            console.log('Footer loaded, components:', componentsLoaded);
+            checkIfReadyToHide();
+          }
+        });
+      });
+      
+      if (footerComponent) {
+        footerObserver.observe(footerComponent, { childList: true, subtree: true });
+      }
+      
+      // Hide loading screen when page is fully loaded
+      window.addEventListener('load', function() {
+        pageFullyLoaded = true;
+        console.log('Page fully loaded');
+        checkIfReadyToHide();
+      });
+      
+      // Fallback: hide loading screen after 8 seconds max
+      setTimeout(() => {
+        if (loadingScreen.style.display !== 'none') {
+          console.log('Fallback: hiding loading screen after timeout');
+          hideLoadingScreen();
+        }
+      }, 8000);
+    });
+  </script>
 </body>
 </html>
-

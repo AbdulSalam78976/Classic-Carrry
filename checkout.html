@@ -1,98 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classic Carry</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Raleway', 'sans-serif'],
-                        'display': ['Playfair Display', 'serif'],
-                    },
-                }
-            }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classic Carry</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Raleway', 'sans-serif'],
+            'display': ['Playfair Display', 'serif'],
+          },
+          colors: {
+            primary: '#456882',
+            accent: '#D2C1B6',
+            dark: '#1B3C53',
+          },
         }
-    </script>
-    <style>
-        /* Custom styles */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in.appear {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    /* Fade-in animation for smooth appearance */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.appear {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body class="font-sans bg-gray-900 text-gray-200">
-    <!-- Header Component -->
-    <div id="header-component"></div>
-    
-    <!-- Load Header Component -->
-    <script>
-        fetch('components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-component').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading header:', error));
-    </script>
+  
+  <!-- Header Component -->
+  <div id="header-component"></div>
+  <script>
+    fetch('components/header.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('header-component').innerHTML = data)
+      .catch(err => console.error('Error loading header:', err));
+  </script>
 
-    <main class="container mx-auto px-4 py-10">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2">
-                <h2 class="font-display text-2xl font-bold text-gray-800 mb-4">Your Cart</h2>
-                <div id="cart-items" class="space-y-4">
-                    <!-- JS renders cart items here -->
-                </div>
+  <!-- Main Section -->
+  <main class="container mx-auto px-4 py-12 fade-in">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <!-- LEFT: Delivery + Cart -->
+      <div class="lg:col-span-2 space-y-10">
+        
+        <!-- Delivery Information -->
+        <section class="bg-gray-800 rounded-2xl shadow-lg p-8">
+          <h2 class="font-display text-2xl md:text-3xl font-bold text-white mb-6 border-b border-gray-700 pb-3">
+            Delivery Information
+          </h2>
+          
+          <form id="delivery-form" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label for="first-name" class="block text-sm font-semibold text-gray-300 mb-2">First Name</label>
+                <input type="text" id="first-name" name="firstName" required
+                  class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label for="last-name" class="block text-sm font-semibold text-gray-300 mb-2">Last Name</label>
+                <input type="text" id="last-name" name="lastName" required
+                  class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
             </div>
-            <aside class="bg-white rounded-xl shadow p-6 h-fit">
-                <h3 class="font-semibold text-lg mb-4">Order Summary</h3>
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-gray-600">Subtotal</span>
-                    <span id="subtotal" class="font-semibold">$0.00</span>
-                </div>
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-gray-600">Shipping</span>
-                    <span class="text-gray-600">Calculated on WhatsApp</span>
-                </div>
-                <button id="whatsapp-order" class="w-full bg-[#234C6A] text-white px-4 py-3 rounded-lg hover:bg-[#1B3C53] transition">
-                    <i class="fab fa-whatsapp mr-2"></i>Place Order on WhatsApp
-                </button>
-                <p class="text-xs text-gray-500 mt-3">We will send your cart details to WhatsApp to complete the order.</p>
-            </aside>
+
+            <div>
+              <label for="phone" class="block text-sm font-semibold text-gray-300 mb-2">Phone Number</label>
+              <input type="tel" id="phone" name="phone" required placeholder="+92 316 092 8206"
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+
+            <div>
+              <label for="address" class="block text-sm font-semibold text-gray-300 mb-2">Full Address</label>
+              <textarea id="address" name="address" rows="3" required placeholder="House/Street, Area, City, Province"
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label for="city" class="block text-sm font-semibold text-gray-300 mb-2">City</label>
+                <input type="text" id="city" name="city" required
+                  class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label for="province" class="block text-sm font-semibold text-gray-300 mb-2">Province</label>
+                <select id="province" name="province" required
+                  class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option value="">Select Province</option>
+                  <option value="punjab">Punjab</option>
+                  <option value="sindh">Sindh</option>
+                  <option value="khyber-pakhtunkhwa">Khyber Pakhtunkhwa</option>
+                  <option value="balochistan">Balochistan</option>
+                  <option value="islamabad">Islamabad Capital Territory</option>
+                  <option value="gilgit-baltistan">Gilgit-Baltistan</option>
+                  <option value="azad-kashmir">Azad Kashmir</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="postal-code" class="block text-sm font-semibold text-gray-300 mb-2">Postal Code</label>
+              <input type="text" id="postal-code" name="postalCode" placeholder="Optional"
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+
+            <div>
+              <label for="delivery-notes" class="block text-sm font-semibold text-gray-300 mb-2">Delivery Instructions (Optional)</label>
+              <textarea id="delivery-notes" name="deliveryNotes" rows="2" placeholder="Any special instructions for delivery..."
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+            </div>
+          </form>
+        </section>
+
+        <!-- Cart Section -->
+        <section class="bg-gray-800 rounded-2xl shadow-lg p-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="font-display text-2xl md:text-3xl font-bold text-white border-b border-gray-700 pb-3">
+              Your Cart
+            </h2>
+            <div id="cart-count" class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+              <span id="total-items">0</span> items
+            </div>
+          </div>
+          
+          <div id="cart-items" class="space-y-4">
+            <div id="empty-cart-message" class="text-center py-16 hidden">
+              <div class="bg-gray-700 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-shopping-cart text-4xl text-gray-400"></i>
+              </div>
+              <h3 class="text-2xl font-semibold text-gray-300 mb-3">Your cart is empty</h3>
+              <p class="text-gray-400 mb-8 max-w-md mx-auto">Looks like you haven't added any products yet. Browse our collection and add some amazing items to your cart!</p>
+              <a href="index.html"
+                 class="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-white px-8 py-4 rounded-xl font-semibold hover:from-accent hover:to-primary transition-all duration-300 transform hover:scale-105 shadow-lg">
+                 <i class="fas fa-arrow-left"></i>
+                 Continue Shopping
+              </a>
+            </div>
+          </div>
+          
+          <!-- Cart Actions -->
+          <div id="cart-actions" class="mt-6 pt-6 border-t border-gray-700 hidden">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button id="clear-cart" class="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300">
+                <i class="fas fa-trash"></i>
+                Clear Cart
+              </button>
+              <a href="index.html" class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition duration-300">
+                <i class="fas fa-plus"></i>
+                Add More Items
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: Order Summary -->
+      <aside class="bg-gray-800 rounded-2xl shadow-lg p-8 h-fit sticky top-20">
+        <h3 class="font-display text-2xl font-semibold mb-5 text-white border-b border-gray-700 pb-3">Order Summary</h3>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex justify-between text-gray-300">
+            <span>Subtotal</span>
+            <span id="subtotal" class="font-semibold text-white">$0.00</span>
+          </div>
+          <div class="flex justify-between text-gray-400">
+            <span>Shipping</span>
+            <span>Calculated on WhatsApp</span>
+          </div>
         </div>
-    </main>
 
-    <!-- Footer Component -->
-    <div id="footer-component"></div>
-    
-    <!-- Load Footer Component -->
-    <script>
-        fetch('components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-component').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading footer:', error));
-    </script>
+        <button id="whatsapp-order"
+          class="w-full bg-primary text-white px-5 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-dark transition">
+          <i class="fab fa-whatsapp text-xl"></i> Place Order on WhatsApp
+        </button>
+        
+        <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+          We will send your cart details and delivery information to WhatsApp to complete the order.
+        </p>
+      </aside>
+    </div>
+  </main>
 
-    <!-- Scripts -->
-    <script src="assets/js/cart.js"></script>
-    <script src="assets/js/products.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/main.js"></script>
+  <!-- Footer Component -->
+  <div id="footer-component"></div>
+  <script>
+    fetch('components/footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('footer-component').innerHTML = data)
+      .catch(err => console.error('Error loading footer:', err));
+  </script>
+
+  <!-- JS Files -->
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
-
-

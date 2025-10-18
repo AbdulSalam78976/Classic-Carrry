@@ -77,74 +77,53 @@ class UIManager {
     // Create product card element
     createProductCard(product) {
         const card = document.createElement('div');
-        card.className = 'product-card bg-white rounded-2xl shadow-xl overflow-hidden group';
+        card.className = 'card group transition-all duration-500 transform hover:scale-105 relative p-6';
         card.setAttribute('data-id', product.id);
         
         if (product.category) {
             card.setAttribute('data-category', product.category);
         }
 
-        // Image container
-        const imgDiv = document.createElement('div');
-        imgDiv.className = 'h-64 bg-gray-100 flex items-center justify-center overflow-hidden relative';
+        // Floating circular image container
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'flex justify-center mb-4 relative';
         
+        // Product image (floating circular)
         const img = document.createElement('img');
         img.src = product.img;
         img.alt = product.name;
-        img.className = 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300';
-        imgDiv.appendChild(img);
+        img.className = 'foto w-40 h-40 object-cover rounded-full transition-all duration-500 hover:scale-110 shadow-2xl hover:shadow-3xl';
 
-        // Product info
+        imgContainer.appendChild(img);
+
+        // Floating product info
         const info = document.createElement('div');
-        info.className = 'p-6';
+        info.className = 'text-center relative';
         
-        // Tag
-        if (product.tag) {
-            const tag = document.createElement('span');
-            tag.className = 'inline-block bg-purple-100 text-purple-600 text-xs px-3 py-1 rounded-full mb-2';
-            tag.textContent = product.tag;
-            info.appendChild(tag);
-        } else if (product.category) {
-            const tag = document.createElement('span');
-            tag.className = 'inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full mb-2';
-            tag.textContent = product.category.charAt(0).toUpperCase() + product.category.slice(1);
-            info.appendChild(tag);
-        }
-
         // Product name
-        const h3 = document.createElement('h3');
-        h3.className = 'font-semibold text-lg mb-2 cursor-pointer hover:text-purple-600 transition-colors';
-        h3.textContent = product.name;
-        h3.addEventListener('click', () => {
+        const h1 = document.createElement('h1');
+        h1.className = 'text-xl font-bold text-white mb-2 cursor-pointer hover:text-[#D2C1B6] transition-colors duration-300 drop-shadow-lg';
+        h1.textContent = product.name;
+        h1.addEventListener('click', () => {
             window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
         });
         
-        // Description
-        const p = document.createElement('p');
-        p.className = 'text-gray-600 text-sm mb-4';
-        p.textContent = product.description || '';
-        
-        // Bottom section with price and button
-        const bottom = document.createElement('div');
-        bottom.className = 'flex items-center justify-between';
-        
-        const price = document.createElement('span');
-        price.className = 'text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent';
+        // Price
+        const price = document.createElement('div');
+        price.className = 'text-2xl font-bold text-white mb-4 drop-shadow-lg';
         price.textContent = `$${product.price.toFixed(2)}`;
         
+        // Add to cart button (floating)
         const btn = document.createElement('button');
-        btn.className = 'add-to-cart bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105';
+        btn.className = 'add-to-cart bg-gradient-to-r from-[#456882] to-[#D2C1B6] text-white px-8 py-3 rounded-full font-semibold hover:from-[#D2C1B6] hover:to-[#456882] transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105';
         btn.textContent = 'Add to Cart';
         btn.setAttribute('data-product-id', product.id);
 
-        bottom.appendChild(price);
-        bottom.appendChild(btn);
+        info.appendChild(h1);
+        info.appendChild(price);
+        info.appendChild(btn);
         
-        info.appendChild(h3);
-        info.appendChild(p);
-        info.appendChild(bottom);
-
-        card.appendChild(imgDiv);
+        card.appendChild(imgContainer);
         card.appendChild(info);
         
         return card;

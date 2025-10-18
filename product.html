@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classic Carry</title>
+    <title>Classic Carry - Product Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-gray-200">
     <!-- Header Component -->
@@ -23,114 +44,7 @@
 
     <main class="container mx-auto px-4 py-10">
         <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Product Details Section -->
-            <section class="py-16">
-                <div class="container mx-auto px-4">
-                    <div class="flex flex-col md:flex-row gap-12">
-                        <!-- Product Images -->
-                        <div class="md:w-1/2">
-                            <div class="bg-gray-700 rounded-xl shadow-lg overflow-hidden">
-                                <img id="main-product-image" src="assets/images/product1.jpg" alt="Vintage Leather Cap" class="w-full h-96 object-cover">
-                            </div>
-                            <div class="grid grid-cols-4 gap-4 mt-4">
-                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product1.jpg')">
-                                    <img src="assets/images/product1.jpg" alt="Vintage Leather Cap - View 1" class="w-full h-24 object-cover rounded-lg">
-                                </div>
-                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product2.jpg')">
-                                    <img src="assets/images/product2.jpg" alt="Vintage Leather Cap - View 2" class="w-full h-24 object-cover rounded-lg">
-                                </div>
-                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product3.jpg')">
-                                    <img src="assets/images/product3.jpg" alt="Vintage Leather Cap - View 3" class="w-full h-24 object-cover rounded-lg">
-                                </div>
-                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product4.jpg')">
-                                    <img src="assets/images/product4.jpg" alt="Vintage Leather Cap - View 4" class="w-full h-24 object-cover rounded-lg">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Product Info -->
-                        <div class="md:w-1/2">
-                            <h1 class="text-3xl font-display font-bold mb-4 text-gray-200">Vintage Leather Cap</h1>
-                            <div class="flex items-center mb-4">
-                                <div class="flex text-yellow-400">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                                <span class="text-gray-300 ml-2">4.5 (128 reviews)</span>
-                            </div>
-                            <p class="text-2xl font-bold mb-6 text-gray-200">$49.99</p>
-                            <p class="text-gray-300 mb-6">Crafted from premium genuine leather, this vintage-inspired cap combines classic style with modern comfort. Perfect for everyday wear or special occasions.</p>
-                            
-                            <!-- Color Selection -->
-                            <div class="mb-6">
-                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Color</h3>
-                                <div class="flex space-x-4">
-                                    <div class="w-8 h-8 bg-amber-800 rounded-full cursor-pointer border-2 border-amber-800"></div>
-                                    <div class="w-8 h-8 bg-gray-800 rounded-full cursor-pointer"></div>
-                                    <div class="w-8 h-8 bg-blue-800 rounded-full cursor-pointer"></div>
-                                </div>
-                            </div>
-                            
-                            <!-- Size Selection -->
-                            <div class="mb-6">
-                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Size</h3>
-                                <div class="flex space-x-4">
-                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] text-gray-200">S</button>
-                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] bg-[#456882] text-white">M</button>
-                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] text-gray-200">L</button>
-                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] text-gray-200">XL</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Quantity -->
-                            <div class="mb-8">
-                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Quantity</h3>
-                                <div class="flex items-center">
-                                    <button id="decrease-quantity" class="px-3 py-1 border border-gray-600 rounded-l-md hover:bg-gray-700 text-gray-200">-</button>
-                                    <input type="number" id="quantity" value="1" min="1" class="w-16 px-3 py-1 border-t border-b border-gray-600 text-center focus:outline-none bg-gray-700 text-gray-200">
-                                    <button id="increase-quantity" class="px-3 py-1 border border-gray-600 rounded-r-md hover:bg-gray-700 text-gray-200">+</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Add to Cart Button -->
-                            <div class="flex space-x-4">
-                                <button id="add-to-cart-btn" class="flex-1 bg-[#456882] text-white py-3 px-6 rounded-lg hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300">
-                                    Add to Cart
-                                </button>
-                                <button class="bg-[#456882] text-white py-3 px-6 rounded-lg hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300">
-                                    <i class="fab fa-whatsapp mr-2"></i> Buy on WhatsApp
-                                </button>
-                            </div>
-                            
-                            <!-- Product Features -->
-                            <div class="mt-8">
-                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Features</h3>
-                                <ul class="space-y-2">
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-400 mr-2"></i>
-                                        <span class="text-gray-300">100% Genuine Leather</span>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-400 mr-2"></i>
-                                        <span class="text-gray-300">Adjustable Size</span>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-400 mr-2"></i>
-                                        <span class="text-gray-300">Moisture-Wicking Sweatband</span>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-400 mr-2"></i>
-                                        <span class="text-gray-300">Embossed Logo</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <!-- Product details will be loaded dynamically by JavaScript -->
         </div>
     </main>
 
@@ -154,5 +68,3 @@
     <script src="assets/js/main.js"></script>
 </body>
 </html>
-
-

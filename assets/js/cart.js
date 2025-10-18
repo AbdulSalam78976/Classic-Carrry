@@ -90,15 +90,40 @@ class CartManager {
     // Update cart badge in UI
     updateCartBadge() {
         const count = this.getTotalItems();
-        const badges = document.querySelectorAll('.fa-shopping-cart + span, #cart-badge');
-        badges.forEach(badge => {
-            badge.textContent = count.toString();
+        console.log('Updating cart badge with count:', count); // Debug log
+        
+        // Update all possible cart badge elements
+        const badgeSelectors = [
+            '.fa-shopping-cart + span',
+            '#cart-badge', 
+            '#mobile-cart-count', 
+            '#desktop-cart-count',
+            'span[id*="cart-count"]',
+            'span[class*="cart"]'
+        ];
+        
+        badgeSelectors.forEach(selector => {
+            const badges = document.querySelectorAll(selector);
+            badges.forEach(badge => {
+                if (badge) {
+                    badge.textContent = count.toString();
+                    console.log('Updated badge:', selector, badge); // Debug log
+                }
+            });
         });
     }
     
     // Clear entire cart
     clearCart() {
         this.setCart([]);
+        console.log('Cart cleared');
+    }
+    
+    // Debug function to log cart state
+    debugCart() {
+        console.log('Current cart:', this.getCart());
+        console.log('Total items:', this.getTotalItems());
+        console.log('Cart total:', this.getCartTotal());
     }
 }
 
