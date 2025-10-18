@@ -317,7 +317,7 @@ class AppController {
             return;
         }
         
-        const phone = '1234567890'; // TODO: Set your WhatsApp number
+        const phone = '923160928206'; // TODO: Set your WhatsApp number
         const lines = cart.map((item, index) => {
             return `${index + 1}. ${item.name} x${item.qty || 1} - $${(item.price * (item.qty || 1)).toFixed(2)}`;
         });
