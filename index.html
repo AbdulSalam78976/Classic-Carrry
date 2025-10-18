@@ -154,38 +154,9 @@
 
 <body class="bg-gray-900 text-gray-200">
   
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50">
-    <div class="text-center">
-      <!-- Loading Spinner -->
-      <div class="relative w-16 h-16 mx-auto mb-6">
-        <div class="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
-        <div class="absolute inset-0 border-4 border-transparent border-t-[#D2C1B6] rounded-full animate-spin"></div>
-      </div>
-      
-      <!-- Loading Text -->
-      <div class="space-y-2">
-        <h2 class="font-display text-2xl font-bold text-white">Classic Carry</h2>
-        <p class="text-gray-300">Loading your premium experience...</p>
-      </div>
-      
-      <!-- Loading Progress Bar -->
-      <div class="w-48 h-1 bg-gray-700 rounded-full mx-auto mt-6 overflow-hidden">
-        <div id="loading-progress" class="h-full bg-gradient-to-r from-[#456882] to-[#D2C1B6] rounded-full transition-all duration-500" style="width: 0%"></div>
-      </div>
-    </div>
-  </div>
-  
     <!-- Header Component -->
   <div id="header-component">
-    <script>
-        fetch('components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-component').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading header:', error));
-    </script>
+    <!-- Header will be loaded synchronously -->
   </div>
 
   <!-- HERO SECTION -->
@@ -310,14 +281,7 @@
 
     <!-- Footer Component -->
   <div id="footer-component">
-    <script>
-        fetch('components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-component').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading footer:', error));
-    </script>
+    <!-- Footer will be loaded synchronously -->
   </div>
 
    <!-- FLOATING WHATSAPP -->
@@ -335,93 +299,5 @@
     <script src="assets/js/hero-carousel.js"></script>
     <script src="assets/js/main.js"></script>
   
-  <!-- Loading Screen Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const loadingScreen = document.getElementById('loading-screen');
-      const progressBar = document.getElementById('loading-progress');
-      
-      let componentsLoaded = 0;
-      const totalComponents = 2; // header and footer
-      let pageFullyLoaded = false;
-      
-      // Simulate loading progress
-      let progress = 0;
-      const progressInterval = setInterval(() => {
-        progress += Math.random() * 10;
-        if (progress > 80) progress = 80; // Don't go to 100% until everything is loaded
-        progressBar.style.width = progress + '%';
-      }, 100);
-      
-      // Function to check if everything is loaded
-      function checkIfReadyToHide() {
-        if (componentsLoaded >= totalComponents && pageFullyLoaded) {
-          hideLoadingScreen();
-        }
-      }
-      
-      // Function to hide loading screen
-      function hideLoadingScreen() {
-        clearInterval(progressInterval);
-        progressBar.style.width = '100%';
-        
-        setTimeout(() => {
-          loadingScreen.style.opacity = '0';
-          loadingScreen.style.transition = 'opacity 0.5s ease-out';
-          
-          setTimeout(() => {
-            loadingScreen.style.display = 'none';
-          }, 500);
-        }, 300);
-      }
-      
-      // Track header loading
-      const headerComponent = document.getElementById('header-component');
-      const headerObserver = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.type === 'childList' && headerComponent.innerHTML.trim() !== '') {
-            componentsLoaded++;
-            console.log('Header loaded, components:', componentsLoaded);
-            checkIfReadyToHide();
-          }
-        });
-      });
-      
-      if (headerComponent) {
-        headerObserver.observe(headerComponent, { childList: true, subtree: true });
-      }
-      
-      // Track footer loading
-      const footerComponent = document.getElementById('footer-component');
-      const footerObserver = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.type === 'childList' && footerComponent.innerHTML.trim() !== '') {
-            componentsLoaded++;
-            console.log('Footer loaded, components:', componentsLoaded);
-            checkIfReadyToHide();
-          }
-        });
-      });
-      
-      if (footerComponent) {
-        footerObserver.observe(footerComponent, { childList: true, subtree: true });
-      }
-      
-      // Hide loading screen when page is fully loaded
-      window.addEventListener('load', function() {
-        pageFullyLoaded = true;
-        console.log('Page fully loaded');
-        checkIfReadyToHide();
-      });
-      
-      // Fallback: hide loading screen after 8 seconds max
-      setTimeout(() => {
-        if (loadingScreen.style.display !== 'none') {
-          console.log('Fallback: hiding loading screen after timeout');
-          hideLoadingScreen();
-        }
-      }, 8000);
-    });
-  </script>
 </body>
 </html>

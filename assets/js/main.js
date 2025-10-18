@@ -22,6 +22,7 @@ class AppController {
     }
     
     initializeApp() {
+        this.loadComponents();
         this.setupProductGrids();
         this.setupCategoryFiltering();
         this.setupCartFunctionality();
@@ -30,6 +31,31 @@ class AppController {
         // Update cart badge on page load
         if (window.cartManager) {
             cartManager.updateCartBadge();
+        }
+    }
+    
+    // Load header and footer components synchronously
+    async loadComponents() {
+        try {
+            // Load header
+            const headerResponse = await fetch('components/header.html');
+            const headerHtml = await headerResponse.text();
+            const headerComponent = document.getElementById('header-component');
+            if (headerComponent) {
+                headerComponent.innerHTML = headerHtml;
+            }
+            
+            // Load footer
+            const footerResponse = await fetch('components/footer.html');
+            const footerHtml = await footerResponse.text();
+            const footerComponent = document.getElementById('footer-component');
+            if (footerComponent) {
+                footerComponent.innerHTML = footerHtml;
+            }
+            
+            console.log('Header and footer loaded successfully');
+        } catch (error) {
+            console.error('Error loading components:', error);
         }
     }
     
