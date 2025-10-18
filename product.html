@@ -3,127 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product - Classic Carry</title>
+    <title>Classic Carry</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50">
-    <header class="bg-white shadow-lg sticky top-0 z-50">
-        <nav class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <img src="assets/images/logo.png" alt="Classic Carry Logo" class="w-12 h-12 object-contain">
-                    <span class="font-display text-2xl font-bold bg-gradient-to-r from-[#1B3C53] to-[#456882] bg-clip-text text-transparent">Classic Carry</span>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
-                        Home
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="index.html#caps" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
-                        Caps
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="index.html#wallets" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
-                        Wallets
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="checkout.html" class="relative ml-4">
-                        <i class="fas fa-shopping-cart text-gray-700 text-xl hover:text-[#1B3C53] transition"></i>
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cart-badge">0</span>
-                    </a>
-                </div>
-                
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center">
-                    <a href="checkout.html" class="relative mr-6">
-                        <i class="fas fa-shopping-cart text-gray-700 text-xl hover:text-[#1B3C53] transition"></i>
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cart-badge-mobile">0</span>
-                    </a>
-                    <button id="mobile-menu-button" class="text-gray-500 hover:text-gray-800 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-        </nav>
-    </header>
+<body class="bg-gray-900 text-gray-200">
+    <!-- Header Component -->
+    <div id="header-component"></div>
+    
+    <!-- Load Header Component -->
+    <script>
+        fetch('components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-component').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading header:', error));
+    </script>
 
     <main class="container mx-auto px-4 py-10">
         <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- JS renders product details here -->
+            <!-- Product Details Section -->
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <div class="flex flex-col md:flex-row gap-12">
+                        <!-- Product Images -->
+                        <div class="md:w-1/2">
+                            <div class="bg-gray-700 rounded-xl shadow-lg overflow-hidden">
+                                <img id="main-product-image" src="assets/images/product1.jpg" alt="Vintage Leather Cap" class="w-full h-96 object-cover">
+                            </div>
+                            <div class="grid grid-cols-4 gap-4 mt-4">
+                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product1.jpg')">
+                                    <img src="assets/images/product1.jpg" alt="Vintage Leather Cap - View 1" class="w-full h-24 object-cover rounded-lg">
+                                </div>
+                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product2.jpg')">
+                                    <img src="assets/images/product2.jpg" alt="Vintage Leather Cap - View 2" class="w-full h-24 object-cover rounded-lg">
+                                </div>
+                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product3.jpg')">
+                                    <img src="assets/images/product3.jpg" alt="Vintage Leather Cap - View 3" class="w-full h-24 object-cover rounded-lg">
+                                </div>
+                                <div class="bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition" onclick="changeImage('assets/images/product4.jpg')">
+                                    <img src="assets/images/product4.jpg" alt="Vintage Leather Cap - View 4" class="w-full h-24 object-cover rounded-lg">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Info -->
+                        <div class="md:w-1/2">
+                            <h1 class="text-3xl font-display font-bold mb-4 text-gray-200">Vintage Leather Cap</h1>
+                            <div class="flex items-center mb-4">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-300 ml-2">4.5 (128 reviews)</span>
+                            </div>
+                            <p class="text-2xl font-bold mb-6 text-gray-200">$49.99</p>
+                            <p class="text-gray-300 mb-6">Crafted from premium genuine leather, this vintage-inspired cap combines classic style with modern comfort. Perfect for everyday wear or special occasions.</p>
+                            
+                            <!-- Color Selection -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Color</h3>
+                                <div class="flex space-x-4">
+                                    <div class="w-8 h-8 bg-amber-800 rounded-full cursor-pointer border-2 border-amber-800"></div>
+                                    <div class="w-8 h-8 bg-gray-800 rounded-full cursor-pointer"></div>
+                                    <div class="w-8 h-8 bg-blue-800 rounded-full cursor-pointer"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Size Selection -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Size</h3>
+                                <div class="flex space-x-4">
+                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] text-gray-200">S</button>
+                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] bg-[#456882] text-white">M</button>
+                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] text-gray-200">L</button>
+                                    <button class="px-4 py-2 border border-gray-600 rounded-md hover:border-[#D2C1B6] focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] text-gray-200">XL</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Quantity -->
+                            <div class="mb-8">
+                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Quantity</h3>
+                                <div class="flex items-center">
+                                    <button id="decrease-quantity" class="px-3 py-1 border border-gray-600 rounded-l-md hover:bg-gray-700 text-gray-200">-</button>
+                                    <input type="number" id="quantity" value="1" min="1" class="w-16 px-3 py-1 border-t border-b border-gray-600 text-center focus:outline-none bg-gray-700 text-gray-200">
+                                    <button id="increase-quantity" class="px-3 py-1 border border-gray-600 rounded-r-md hover:bg-gray-700 text-gray-200">+</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Add to Cart Button -->
+                            <div class="flex space-x-4">
+                                <button id="add-to-cart-btn" class="flex-1 bg-[#456882] text-white py-3 px-6 rounded-lg hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300">
+                                    Add to Cart
+                                </button>
+                                <button class="bg-[#456882] text-white py-3 px-6 rounded-lg hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300">
+                                    <i class="fab fa-whatsapp mr-2"></i> Buy on WhatsApp
+                                </button>
+                            </div>
+                            
+                            <!-- Product Features -->
+                            <div class="mt-8">
+                                <h3 class="text-lg font-semibold mb-3 text-gray-200">Features</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-green-400 mr-2"></i>
+                                        <span class="text-gray-300">100% Genuine Leather</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-green-400 mr-2"></i>
+                                        <span class="text-gray-300">Adjustable Size</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-green-400 mr-2"></i>
+                                        <span class="text-gray-300">Moisture-Wicking Sweatband</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-green-400 mr-2"></i>
+                                        <span class="text-gray-300">Embossed Logo</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
-    <footer class="bg-[#1B3C53] text-white py-16">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <!-- Brand -->
-                <div class="fade-in appear">
-                    <div class="flex items-center space-x-3 mb-6">
-                        <img src="assets/images/logo.png" alt="Classic Carry Logo" class="w-12 h-12 object-contain">
-                        <span class="font-display text-2xl font-bold bg-gradient-to-r from-[#456882] to-[#D2C1B6] bg-clip-text text-transparent">Classic Carry</span>
-                    </div>
-                    <p class="text-gray-400">Elevating your everyday style with premium accessories crafted for the modern individual.</p>
-                </div>
-                
-                <!-- Quick Links -->
-                <div class="fade-in appear">
-                    <h4 class="font-semibold text-lg mb-6 text-white">Quick Links</h4>
-                    <ul class="space-y-3">
-                        <li><a href="index.html" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Home</a></li>
-                        <li><a href="index.html#caps" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Caps</a></li>
-                        <li><a href="index.html#wallets" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Wallets</a></li>
-                        <li><a href="index.html#about" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">About</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Customer Service -->
-                <div class="fade-in appear">
-                    <h4 class="font-semibold text-lg mb-6 text-white">Customer Service</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Contact Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">FAQs</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Shipping</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">Returns</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Newsletter -->
-                <div class="fade-in appear">
-                    <h4 class="font-semibold text-lg mb-6 text-white">Stay Updated</h4>
-                    <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest products and offers.</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg w-full focus:outline-none focus:ring-2 focus:ring-[#234C6A]">
-                        <button class="bg-[#234C6A] hover:bg-[#1B3C53] text-white px-4 py-2 rounded-r-lg transition duration-300">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Social Media & Copyright -->
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 mb-4 md:mb-0">© 2023 Classic Carry. All rights reserved.</p>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
-                        <i class="fab fa-facebook-f text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
-                        <i class="fab fa-instagram text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-[#D2C1B6] transition duration-300">
-                        <i class="fab fa-pinterest text-xl"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Component -->
+    <div id="footer-component"></div>
+    
+    <!-- Load Footer Component -->
+    <script>
+        fetch('components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-component').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
 
     <!-- Scripts -->
     <script src="assets/js/cart.js"></script>

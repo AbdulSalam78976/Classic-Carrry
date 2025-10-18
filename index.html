@@ -132,64 +132,19 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-lg sticky top-0 z-50">
-        <nav class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <img src="assets/images/logo.png" alt="Classic Carry Logo" class="w-12 h-12 object-contain">
-                    <span class="font-display text-2xl font-bold bg-gradient-to-r from-[#1B3C53] to-[#456882] bg-clip-text text-transparent">Classic Carry</span>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-[#1B3C53] font-medium transition duration-300 relative group">
-                        Home
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1B3C53] transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="#caps" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300 relative group">
-                        Caps
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="#wallets" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300 relative group">
-                        Wallets
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="#about" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300 relative group">
-                        About
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <button id="cart-button" class="relative">
-                        <i class="fas fa-shopping-cart text-gray-700 text-xl hover:text-purple-600 transition duration-300"></i>
-                        <span class="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">0</span>
-                    </button>
-                </div>
-                
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-open" class="md:hidden text-gray-700">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-            </div>
-        </nav>
-        
-        <!-- Mobile Menu -->
-        <div class="mobile-menu md:hidden fixed top-0 right-0 w-64 h-full bg-white shadow-2xl z-50">
-            <div class="p-6">
-                <button id="mobile-menu-close" class="absolute top-4 right-4 text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-                <div class="mt-12 space-y-6">
-                    <a href="#home" class="block text-gray-700 hover:text-purple-600 font-medium py-2 border-b border-gray-100">Home</a>
-                    <a href="#caps" class="block text-gray-700 hover:text-purple-600 font-medium py-2 border-b border-gray-100">Caps</a>
-                    <a href="#wallets" class="block text-gray-700 hover:text-purple-600 font-medium py-2 border-b border-gray-100">Wallets</a>
-                    <a href="#about" class="block text-gray-700 hover:text-purple-600 font-medium py-2 border-b border-gray-100">About</a>
-                    <a href="#cart" class="block text-gray-700 hover:text-purple-600 font-medium py-2">Cart (0)</a>
-                </div>
-            </div>
-        </div>
-    </header>
+<body class="bg-gray-900 text-gray-200">
+    <!-- Header Component -->
+    <div id="header-component"></div>
+    
+    <!-- Load Header Component -->
+    <script>
+        fetch('components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-component').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading header:', error));
+    </script>
 
     <!-- Hero Section -->
     <section id="home" class="hero-carousel text-white py-20 md:py-32 relative overflow-hidden">
@@ -204,8 +159,8 @@
                 <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight">Elevate Your Style</h1>
                 <p class="text-xl md:text-2xl mb-10 opacity-90 max-w-2xl mx-auto">Premium caps and wallets crafted for the modern individual who values quality, style, and functionality.</p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#caps" class="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">Shop Caps</a>
-                    <a href="#wallets" class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-purple-600 transition duration-300 transform hover:scale-105">Shop Wallets</a>
+                    <a href="#caps" class="bg-[#D2C1B6] text-gray-800 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">Shop Caps</a>
+                    <a href="#wallets" class="border-2 border-[#D2C1B6] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300 transform hover:scale-105">Shop Wallets</a>
                 </div>
             </div>
         </div>
@@ -218,25 +173,25 @@
     </section>
 
     <!-- Hot Selling Products -->
-    <section class="py-20 bg-white">
+    <section class="py-20 bg-gray-800">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16 fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-800 mb-4">🔥 Hot Selling Products</h2>
-                <p class="text-gray-600 text-lg">Our most popular items loved by customers worldwide</p>
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-200 mb-4">🔥 Hot Selling Products</h2>
+                <p class="text-gray-300 text-lg">Our most popular items loved by customers worldwide</p>
             </div>
             
             <div id="hot-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Product 1 -->
-                <div class="product-card bg-white rounded-2xl shadow-xl overflow-hidden group">
-                    <div class="h-64 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center relative overflow-hidden">
+                <div class="product-card bg-gray-700 rounded-2xl shadow-xl overflow-hidden group">
+                    <div class="h-64 bg-gradient-to-br from-blue-800 to-blue-900 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                        <i class="fas fa-hat-cowboy text-6xl text-blue-600 transform group-hover:scale-110 transition-transform duration-300"></i>
+                        <i class="fas fa-hat-cowboy text-6xl text-blue-400 transform group-hover:scale-110 transition-transform duration-300"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="font-semibold text-lg mb-2">Classic Baseball Cap</h3>
-                        <p class="text-gray-600 text-sm mb-4">Premium cotton blend with embroidered logo</p>
+                        <h3 class="font-semibold text-lg mb-2 text-gray-200">Classic Baseball Cap</h3>
+                        <p class="text-gray-400 text-sm mb-4">Premium cotton blend with embroidered logo</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">$29.99</span>
+                            <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">$29.99</span>
                             <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105">Add to Cart</button>
                         </div>
                     </div>
@@ -435,101 +390,52 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-gray-50">
+    <section id="about" class="py-20 bg-gray-800">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-800 mb-8">About Classic Carry</h2>
-                <p class="text-lg text-gray-600 mb-12 leading-relaxed">
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-200 mb-8">About Classic Carry</h2>
+                <p class="text-lg text-gray-300 mb-12 leading-relaxed">
                     At Classic Carry, we believe that accessories are more than just functional items—they're expressions of personal style and character. Since our founding, we've been dedicated to crafting premium caps and wallets that blend timeless design with modern functionality.
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
-                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-gem text-purple-600 text-2xl"></i>
+                    <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-gem text-purple-300 text-2xl"></i>
                         </div>
-                        <h3 class="font-semibold text-xl mb-3 text-gray-800">Premium Quality</h3>
-                        <p class="text-gray-600">Crafted with the finest materials and attention to detail.</p>
+                        <h3 class="font-semibold text-xl mb-3 text-gray-200">Premium Quality</h3>
+                        <p class="text-gray-300">Crafted with the finest materials and attention to detail.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
-                        <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-paint-brush text-indigo-600 text-2xl"></i>
+                    <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-indigo-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-paint-brush text-indigo-300 text-2xl"></i>
                         </div>
-                        <h3 class="font-semibold text-xl mb-3 text-gray-800">Timeless Design</h3>
-                        <p class="text-gray-600">Classic styles that never go out of fashion.</p>
+                        <h3 class="font-semibold text-xl mb-3 text-gray-200">Timeless Design</h3>
+                        <p class="text-gray-300">Classic styles that never go out of fashion.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
-                        <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-heart text-pink-600 text-2xl"></i>
+                    <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+                        <div class="w-16 h-16 bg-pink-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-heart text-pink-300 text-2xl"></i>
                         </div>
-                        <h3 class="font-semibold text-xl mb-3 text-gray-800">Customer Love</h3>
-                        <p class="text-gray-600">Satisfaction guaranteed with every purchase.</p>
+                        <h3 class="font-semibold text-xl mb-3 text-gray-200">Customer Love</h3>
+                        <p class="text-gray-300">Satisfaction guaranteed with every purchase.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-16">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <!-- Brand -->
-                <div class="fade-in appear">
-                    <div class="flex items-center space-x-3 mb-6">
-                        <img src="assets/images/logo.png" alt="Classic Carry Logo" class="w-12 h-12 object-contain">
-                        <span class="font-display text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Classic Carry</span>
-                    </div>
-                    <p class="text-gray-400">Elevating your everyday style with premium accessories crafted for the modern individual.</p>
-                </div>
-                
-                <!-- Quick Links -->
-                <div class="fade-in appear">
-                    <h4 class="font-semibold text-lg mb-6 text-white">Quick Links</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#home" class="text-gray-400 hover:text-purple-400 transition duration-300">Home</a></li>
-                        <li><a href="#caps" class="text-gray-400 hover:text-purple-400 transition duration-300">Caps</a></li>
-                        <li><a href="#wallets" class="text-gray-400 hover:text-purple-400 transition duration-300">Wallets</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-purple-400 transition duration-300">About</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Customer Service -->
-                <div class="fade-in appear">
-                    <h4 class="font-semibold text-lg mb-6 text-white">Customer Service</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300">Contact Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300">Shipping Info</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300">Returns</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300">FAQ</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Newsletter -->
-                <div class="fade-in appear">
-                    <h4 class="font-semibold text-lg mb-6 text-white">Stay Updated</h4>
-                    <p class="text-gray-400 text-sm mb-6">Subscribe to our newsletter for exclusive offers and new arrivals</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Your email" class="flex-1 px-4 py-3 rounded-l-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <button class="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 rounded-r-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div class="flex space-x-4 mt-6">
-                        <a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300"><i class="fab fa-facebook text-xl"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300"><i class="fab fa-instagram text-xl"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300"><i class="fab fa-twitter text-xl"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-purple-400 transition duration-300"><i class="fab fa-pinterest text-xl"></i></a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Copyright -->
-             <div class="border-t border-gray-800 pt-4 text-center text-gray-400 text-sm fade-in appear">
-            <p>© <span id="current-year">2025</span> ClassicCarry All Rights Reserved.</p>
-            <p>Powered by <strong>AppCrafters</strong>.</p>
-          </div>
-        </div>
-    </footer>
+    <!-- Footer Component -->
+    <div id="footer-component"></div>
+    
+    <!-- Load Footer Component -->
+    <script>
+        fetch('components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-component').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
 
     <!-- Floating WhatsApp Button -->
     <a href="https://wa.me/923160928206" target="_blank" class="floating-whatsapp">
