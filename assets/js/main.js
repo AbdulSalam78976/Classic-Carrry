@@ -63,11 +63,8 @@ class AppController {
     setupProductGrids() {
         if (!window.productManager) return;
         
-        // Render hot products
-        const hotProducts = productManager.getHotProducts();
-        if (window.uiManager) {
-            uiManager.renderProductGrid('hot-grid', hotProducts);
-        }
+        // Render hot products in scrollable rows
+        this.renderHotProductsRows();
         
         // Render caps
         const caps = productManager.getCaps();
@@ -80,6 +77,66 @@ class AppController {
         if (window.uiManager) {
             uiManager.renderProductGrid('wallets-grid', wallets);
         }
+    }
+    
+    // Render hot products in scrollable rows
+    renderHotProductsRows() {
+        if (!window.productManager || !window.uiManager) return;
+        
+        const hotProducts = productManager.getHotProducts();
+        const caps = productManager.getCaps();
+        const wallets = productManager.getWallets();
+        
+        // Get hot caps (first 2 caps from caps array)
+        const hotCaps = caps.slice(0, 4);
+        
+        // Get hot wallets (first 2 wallets from wallets array)
+        const hotWallets = wallets.slice(0, 4);
+        
+        // Render hot caps row
+        const hotCapsRow = document.getElementById('hot-caps-row');
+        if (hotCapsRow) {
+            hotCapsRow.innerHTML = '';
+            hotCaps.forEach(product => {
+                const productCard = this.createScrollableProductCard(product);
+                hotCapsRow.appendChild(productCard);
+            });
+        }
+        
+        // Render hot wallets row
+        const hotWalletsRow = document.getElementById('hot-wallets-row');
+        if (hotWalletsRow) {
+            hotWalletsRow.innerHTML = '';
+            hotWallets.forEach(product => {
+                const productCard = this.createScrollableProductCard(product);
+                hotWalletsRow.appendChild(productCard);
+            });
+        }
+    }
+    
+    // Create scrollable product card
+    createScrollableProductCard(product) {
+        const card = document.createElement('div');
+        card.className = 'scroll-item card bg-gray-700 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300';
+        
+        card.innerHTML = `
+            <div class="relative">
+                <img src="${product.img}" alt="${product.name}" class="foto w-full h-48 md:h-56 object-cover">
+                ${product.tag ? `<span class="absolute top-2 left-2 bg-[#D2C1B6] text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">${product.tag}</span>` : ''}
+            </div>
+            <div class="p-4">
+                <h3 class="font-semibold text-white text-lg mb-2 line-clamp-2">${product.name}</h3>
+                <p class="text-gray-300 text-sm mb-3 line-clamp-2">${product.description || 'Premium quality product from Classic Carry.'}</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-[#D2C1B6]">$${product.price.toFixed(2)}</span>
+                    <button class="add-to-cart bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-300" data-product-id="${product.id}">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return card;
     }
     
     // Setup category filtering

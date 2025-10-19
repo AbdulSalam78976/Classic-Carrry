@@ -6,7 +6,7 @@ class ProductManager {
                 id: 'hot-1', 
                 name: 'Classic Baseball Cap', 
                 price: 29.99, 
-                img: 'https://images.unsplash.com/photo-1516826957135-700dedea698c?q=80&w=1200&auto=format&fit=crop', 
+                img: 'assets/images/c-1.png', 
                 tag: 'Fast Shipping',
                 description: 'Premium cotton blend with embroidered logo'
             },
@@ -14,7 +14,7 @@ class ProductManager {
                 id: 'hot-2', 
                 name: 'Leather Bi-Fold Wallet', 
                 price: 49.99, 
-                img: 'https://images.unsplash.com/photo-1549082984-1323b94df9bd?q=80&w=1200&auto=format&fit=crop', 
+                img: 'assets/images/w-1.png', 
                 tag: 'Premium Leather',
                 description: 'Genuine full-grain leather with RFID protection'
             },

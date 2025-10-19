@@ -9,144 +9,603 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
         
+        :root {
+            --primary: #D2C1B6;
+            --primary-dark: #b8a599;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-light: #e2e8f0;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-          scroll-behavior: smooth;
-          background-color: #0f172a;
+            scroll-behavior: smooth;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
         
         .font-display {
             font-family: 'Playfair Display', serif;
         }
+
+        /* Enhanced Header Animations */
+        .header-scrolled {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
         
-        /* --- HERO --- */
+        .logo-emoji {
+            display: inline-block;
+            animation: sparkle 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px rgba(210, 193, 182, 0.6));
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.15) rotate(8deg); }
+            50% { transform: scale(1) rotate(0deg); }
+            75% { transform: scale(1.15) rotate(-8deg); }
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), #e2c9b8);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .cart-icon {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-icon:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px rgba(210, 193, 182, 0.5));
+        }
+        
+        .cart-icon.pulse {
+            animation: cartPulse 0.5s ease;
+        }
+        
+        @keyframes cartPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+        
+        #cart-badge {
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(210, 193, 182, 0.6);
+        }
+        
+        #cart-badge.added {
+            animation: badgeBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes badgeBounce {
+            0%, 20%, 60%, 100% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-12px) scale(1.2); }
+            80% { transform: translateY(-6px) scale(1.1); }
+        }
+        
+        #mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        
+        .mobile-menu-btn {
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu-btn.open {
+            transform: rotate(90deg);
+        }
+        
+        .nav-link.active {
+            color: white;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .cart-preview {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 340px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            border: 1px solid rgba(210, 193, 182, 0.2);
+        }
+        
+        .cart-icon:hover .cart-preview {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .cart-preview-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .cart-preview-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-bar {
+            width: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .search-bar.open {
+            width: 200px;
+            opacity: 1;
+            margin-right: 1rem;
+        }
+
+        /* Enhanced Hero Section */
         .hero-carousel {
             position: relative;
-          min-height: 90vh;
+            min-height: 70vh;
+            overflow: hidden;
         }
+        
+        @media (min-width: 768px) {
+            .hero-carousel {
+                min-height: 92vh;
+            }
+        }
+        
         .hero-slide {
             position: absolute;
-          inset: 0;
+            inset: 0;
             background-size: cover;
             background-position: center;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1.05);
         }
+        
         .hero-slide.active {
             opacity: 1;
+            animation: zoomOut 20s ease-in-out infinite;
         }
+        
+        @keyframes zoomOut {
+            0% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         .hero-overlay {
             position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(27, 60, 83, 0.6) 0%, rgba(35, 76, 106, 0.6) 100%);
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 41, 59, 0.65) 50%, rgba(15, 23, 42, 0.75) 100%);
             z-index: 1;
         }
         
-        /* Mobile hero adjustments */
-        @media (max-width: 768px) {
-          .hero-carousel {
-            min-height: 50vh;
-          }
-          .hero-slide {
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-          }
+        .hero-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
         }
         
         .hero-nav-btn {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-          border: 2px solid rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             background: transparent;
-            transition: all 0.3s ease;
-        }
-        .hero-nav-btn.active,
-        .hero-nav-btn:hover {
-          background: #fff;
-          border-color: #fff;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
         }
         
-        /* --- FLOATING WHATSAPP --- */
+        @media (min-width: 768px) {
+            .hero-nav-btn {
+                width: 14px;
+                height: 14px;
+            }
+        }
+        
+        .hero-nav-btn::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+        
+        .hero-nav-btn:hover::before {
+            background: rgba(210, 193, 182, 0.2);
+        }
+        
+        .hero-nav-btn.active,
+        .hero-nav-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(210, 193, 182, 0.6);
+            transform: scale(1.2);
+        }
+        
         .floating-whatsapp {
             position: fixed;
-          bottom: 28px;
-          right: 28px;
+            bottom: 24px;
+            right: 24px;
             z-index: 1000;
             animation: float 3s ease-in-out infinite;
         }
+        
+        @media (min-width: 768px) {
+            .floating-whatsapp {
+                bottom: 32px;
+                right: 32px;
+            }
+        }
+        
         @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(2deg); }
+            50% { transform: translateY(-12px) rotate(0deg); }
+            75% { transform: translateY(-8px) rotate(-2deg); }
+        }
+        
+        .floating-whatsapp:hover {
+            animation: none;
+            transform: scale(1.1) rotate(5deg);
         }
       
-        /* --- PRODUCT CARD --- */
+        /* Enhanced Product Cards */
         .card {
-          background: transparent;
-          border: none;
-          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
+            background: transparent;
+            border: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        .card:hover {
-          transform: translateY(-20px) scale(1.05);
+        @media (min-width: 768px) {
+            .card:hover {
+                transform: translateY(-24px) scale(1.06);
+            }
         }
 
         .card .foto {
-          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
-          border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.15);
+            border: 2px solid rgba(210, 193, 182, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card .foto::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(210, 193, 182, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
-        .card:hover .foto {
-          box-shadow: 0 35px 70px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.3);
+        @media (min-width: 768px) {
+            .card:hover .foto {
+                box-shadow: 0 40px 80px -15px rgba(0,0,0,0.6), 0 0 0 1px rgba(210, 193, 182, 0.5);
+                border-color: rgba(210, 193, 182, 0.6);
+            }
+            
+            .card:hover .foto::before {
+                opacity: 1;
+            }
         }
       
         .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
       
-        /* --- CATEGORY PILLS --- */
+        /* Enhanced Category Pills */
         .category-pill {
-          background: #f8fafc;
-          color: #374151;
-          transition: all 0.3s ease;
-          border: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(210, 193, 182, 0.2);
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .category-pill::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(210, 193, 182, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        @media (min-width: 640px) {
+            .category-pill {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+        }
+        
+        .category-pill:hover::before {
+            opacity: 1;
+        }
+        
         .category-pill:hover,
         .category-pill.active {
-          background-color: #1B3C53;
-          color: #fff;
-          transform: scale(1.05);
-          box-shadow: 0 6px 20px rgba(27, 60, 83, 0.3);
+            background: linear-gradient(135deg, var(--primary) 0%, #b8a599 100%);
+            color: #0f172a;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(210, 193, 182, 0.4);
+            border-color: var(--primary);
         }
       
-        /* --- ANIMATIONS --- */
+        /* Enhanced Animations */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
+        @media (min-width: 768px) {
+            .fade-in {
+                transform: translateY(40px);
+            }
+        }
+        
         .fade-in.appear {
             opacity: 1;
             transform: translateY(0);
         }
       
-        /* --- ABOUT CARDS --- */
+        /* Enhanced About Cards */
         .about-card {
-          background: #1e293b;
-          border-radius: 1rem;
-          padding: 2rem;
-          transition: all 0.4s ease;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(210, 193, 182, 0.2);
+            position: relative;
+            overflow: hidden;
         }
-        .about-card:hover {
-          transform: translateY(-8px);
-          background: #334155;
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), #e2c9b8);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .about-card:hover {
+                transform: translateY(-12px) scale(1.02);
+                background: linear-gradient(135deg, #334155 0%, #475569 100%);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+                border-color: rgba(210, 193, 182, 0.4);
+            }
+            
+            .about-card:hover::before {
+                transform: scaleX(1);
+            }
+        }
+        
+        .about-card .icon-circle {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @media (min-width: 768px) {
+            .about-card:hover .icon-circle {
+                transform: scale(1.15) rotate(10deg);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        /* Enhanced Buttons */
+        .btn-primary {
+            padding: 0.875rem 1.75rem;
+            font-size: 0.9375rem;
+            border-radius: 0.875rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+        
+        @media (min-width: 640px) {
+            .btn-primary {
+                padding: 1.125rem 2.25rem;
+                font-size: 1.0625rem;
+                border-radius: 1rem;
+            }
+        }
+        
+        /* Enhanced Typography */
+        .hero-title {
+            font-size: 2.25rem;
+            line-height: 1.15;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            letter-spacing: -0.02em;
+        }
+        
+        @media (min-width: 640px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 4.5rem;
+            }
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @media (min-width: 768px) {
+            .section-title {
+                font-size: 2.75rem;
+            }
+        }
+        
+        /* Enhanced Spacing */
+        .section-padding {
+            padding: 3.5rem 0;
+        }
+        
+        @media (min-width: 768px) {
+            .section-padding {
+                padding: 6rem 0;
+            }
+        }
+        
+        /* Enhanced Horizontal Scroll */
+        .scroll-container {
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 0;
+        }
+        
+        .scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--primary), #e2c9b8);
+            border-radius: 4px;
+        }
+        
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, #e2c9b8, var(--primary));
+        }
+        
+        .scroll-row {
+            display: flex;
+            gap: 1.25rem;
+            padding: 0.75rem 0;
+            min-width: max-content;
+        }
+        
+        @media (min-width: 640px) {
+            .scroll-row {
+                gap: 1.75rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .scroll-row {
+                gap: 2.25rem;
+            }
+        }
+        
+        .scroll-item {
+            flex-shrink: 0;
+            width: 290px;
+        }
+        
+        @media (min-width: 640px) {
+            .scroll-item {
+                width: 330px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .scroll-item {
+                width: 360px;
+            }
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Glow Effects */
+        .glow-text {
+            text-shadow: 0 0 20px rgba(210, 193, 182, 0.5);
+        }
+        
+        .glow-box {
+            box-shadow: 0 0 30px rgba(210, 193, 182, 0.2);
+        }
+        
+        /* Enhanced Footer */
+        footer {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-top: 1px solid rgba(210, 193, 182, 0.2);
         }
     </style>
       
@@ -154,38 +613,83 @@
 
 <body class="bg-gray-900 text-gray-200">
   
-    <!-- Header Component -->
-  <div id="header-component">
-    <!-- Header will be loaded synchronously -->
-  </div>
+  <!-- Enhanced Header -->
+  <header id="main-header" class="bg-gray-900 border-b border-gray-700 sticky top-0 z-50 transition-all duration-300">
+    <nav class="container mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <a href="index.html" class="font-display text-xl md:text-2xl font-bold text-white hover:text-[#D2C1B6] transition duration-300 flex items-center">
+            <span>Classic Carry</span>
+            <span class="logo-emoji ml-2">✨</span>
+          </a>
+        </div>
+        
+         <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Home</a>
+          <a href="caps.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Caps</a>
+          <a href="wallets.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Wallets</a>
+          <a href="about.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">About</a>
+        </div>
+        
+        <!-- Cart & Mobile Menu -->
+        <div class="flex items-center space-x-4">
+          <a href="checkout.html" class="relative text-[#D2C1B6] hover:text-white transition duration-300">
+            <div class="relative">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M27 25.15 25.28 10.5a2.93 2.93 0 0 0-3-2.5h-1.35c0-.19 0-.38-.06-.57-.22-1.54-.41-2.87-1.59-4a4.51 4.51 0 0 0-6.56 0c-1.18 1.14-1.37 2.47-1.59 4 0 .19 0 .38-.06.57H9.69a2.93 2.93 0 0 0-3 2.5L5 25.15a4.13 4.13 0 0 0 1 3.26A4.87 4.87 0 0 0 9.72 30h12.56a4.87 4.87 0 0 0 3.64-1.59A4.13 4.13 0 0 0 27 25.15zM13.11 7.71c.22-1.52.34-2.21 1-2.85A2.78 2.78 0 0 1 16 4a2.78 2.78 0 0 1 1.89.86c.66.64.78 1.33 1 2.85V8h-5.8c.01-.1.01-.19.02-.29zm11.31 19.37a2.83 2.83 0 0 1-2.14.92H9.72a2.83 2.83 0 0 1-2.14-.92 2.14 2.14 0 0 1-.58-1.7l1.7-14.65a.94.94 0 0 1 1-.73H11c0 .38.05.76.1 1.14a1 1 0 1 0 2-.28c0-.29 0-.57-.06-.86H19c0 .29 0 .57-.06.86a1 1 0 0 0 .8 1.14h.14a1 1 0 0 0 1-.86c.05-.38.08-.76.1-1.14h1.34a.94.94 0 0 1 1 .73L25 25.38a2.14 2.14 0 0 1-.58 1.7z" style="fill:#D2C1B6" data-name="shopping bag"/></svg>
+              </svg>
+              <span id="cart-badge" class="absolute -top-2 -right-2 bg-gradient-to-r from-[#D2C1B6] to-amber-200 text-gray-900 text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg hidden">0</span>
+            </div>
+          </a>
+          
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white transition duration-300">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="md:hidden mt-4 pb-4 border-t border-gray-700">
+        <div class="flex flex-col space-y-3 pt-4">
+          <a href="index.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Home</a>
+          <a href="caps.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Caps</a>
+          <a href="wallets.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Wallets</a>
+          <a href="about.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">About</a>
+        </div>
+      </div>
+    </nav>
+  </header>
 
   <!-- HERO SECTION -->
-    <section id="home" class="hero-carousel text-white py-20 md:py-32 relative overflow-hidden">
-            <div class="hero-slide active" style="background-image: url('assets/images/hero/1.png');"></div>
-            <div class="hero-slide" style="background-image: url('assets/images/hero/2.png');"></div>
-            <div class="hero-slide" style="background-image: url('assets/images/hero/3.png');"></div>
+    <section id="home" class="hero-carousel text-white py-12 md:py-20 lg:py-32 relative overflow-hidden">
+        <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=1600');"></div>
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1521369909029-2afed882baee?w=1600');"></div>
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1627123424574-724758594e93?w=1600');"></div>
         <div class="hero-overlay"></div>
 
         <div class="container mx-auto px-4 relative z-10">
             <div class="max-w-4xl mx-auto text-center fade-in appear">
-        <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
+        <h1 class="font-display hero-title font-bold mb-4 md:mb-6 leading-tight tracking-tight glow-text">
           Elevate Your Style
         </h1>
-        <p class="text-lg md:text-xl mb-10 text-gray-100 opacity-90 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-base md:text-lg lg:text-xl mb-6 md:mb-10 text-gray-100 opacity-95 max-w-2xl mx-auto leading-relaxed">
           Premium caps and wallets crafted for the modern individual who values quality, style, and functionality.
         </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#caps" class="bg-[#D2C1B6] text-gray-800 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+          <a href="caps.html" class="bg-gradient-to-r from-[#D2C1B6] to-[#e2c9b8] text-gray-900 px-6 py-3 md:px-8 md:py-4 rounded-lg md:rounded-xl font-semibold hover:from-[#e2c9b8] hover:to-[#D2C1B6] transition duration-300 transform hover:scale-105 shadow-2xl btn-primary glow-box">
             Shop Caps
           </a>
-          <a href="#wallets" class="border-2 border-[#D2C1B6] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300 transform hover:scale-105">
+          <a href="wallets.html" class="glass-effect border-2 border-[#D2C1B6] text-white px-6 py-3 md:px-8 md:py-4 rounded-lg md:rounded-xl font-semibold hover:bg-[#D2C1B6] hover:text-gray-900 transition duration-300 transform hover:scale-105 btn-primary">
             Shop Wallets
           </a>
                 </div>
             </div>
         </div>
 
-    <div class="hero-nav absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex gap-3">
+    <div class="hero-nav absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex gap-2 md:gap-3">
             <button class="hero-nav-btn active" data-slide="0"></button>
             <button class="hero-nav-btn" data-slide="1"></button>
             <button class="hero-nav-btn" data-slide="2"></button>
@@ -193,111 +697,318 @@
     </section>
 
   <!-- HOT PRODUCTS -->
-    <section class="py-20 bg-gray-800">
-    <div class="container mx-auto px-4 text-center">
-      <div class="mb-16 fade-in appear">
-        <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">🔥 Hot Selling Products</h2>
-                <p class="text-gray-300 text-lg">Our most popular items loved by customers worldwide</p>
-            </div>
-      <div id="hot-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+    <section class="section-padding bg-gradient-to-b from-gray-900 to-gray-800">
+    <div class="container mx-auto px-4">
+      <div class="mb-8 md:mb-16 fade-in appear text-center">
+        <h2 class="font-display section-title font-bold text-white mb-3 md:mb-4">🔥 Hot Selling Products</h2>
+        <p class="text-gray-300 text-base md:text-lg">Our most popular items loved by customers worldwide</p>
+      </div>
+      
+      <!-- Hot Selling Caps Row -->
+      <div class="mb-8 md:mb-12">
+        <div class="flex items-center justify-between mb-4 md:mb-6">
+          <h3 class="text-xl md:text-2xl font-semibold text-white flex items-center gap-2">
+            <span class="text-2xl">🧢</span>
+            <span>Hot Selling Caps</span>
+          </h3>
+          <a href="caps.html" class="text-[#D2C1B6] hover:text-[#e2c9b8] transition duration-300 text-sm md:text-base font-medium group">
+            View All Caps 
+            <i class="fas fa-arrow-right ml-1 group-hover:translate-x-2 transition-transform duration-300 inline-block"></i>
+          </a>
         </div>
+        <div class="scroll-container">
+          <div id="hot-caps-row" class="scroll-row">
+            <!-- Product cards will be loaded here -->
+            <div class="scroll-item">
+              <div class="card">
+                <div class="foto rounded-2xl overflow-hidden bg-gray-700 h-72 flex items-center justify-center">
+                  <i class="fas fa-spinner fa-spin text-[#D2C1B6] text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hot Selling Wallets Row -->
+      <div>
+        <div class="flex items-center justify-between mb-4 md:mb-6">
+          <h3 class="text-xl md:text-2xl font-semibold text-white flex items-center gap-2">
+            <span class="text-2xl">👛</span>
+            <span>Hot Selling Wallets</span>
+          </h3>
+          <a href="wallets.html" class="text-[#D2C1B6] hover:text-[#e2c9b8] transition duration-300 text-sm md:text-base font-medium group">
+            View All Wallets 
+            <i class="fas fa-arrow-right ml-1 group-hover:translate-x-2 transition-transform duration-300 inline-block"></i>
+          </a>
+        </div>
+        <div class="scroll-container">
+          <div id="hot-wallets-row" class="scroll-row">
+            <!-- Product cards will be loaded here -->
+            <div class="scroll-item">
+              <div class="card">
+                <div class="foto rounded-2xl overflow-hidden bg-gray-700 h-72 flex items-center justify-center">
+                  <i class="fas fa-spinner fa-spin text-[#D2C1B6] text-3xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     </section>
 
-  <!-- CAPS SECTION -->
-    <section id="caps" class="py-20 bg-gray-900">
-    <div class="container mx-auto px-4 text-center">
-      <div class="mb-16 fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Premium Caps Collection</h2>
-                <p class="text-gray-300 text-lg">Find the perfect cap for every occasion</p>
-            </div>
-      <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-14 fade-in appear">
-        <button class="category-pill active px-6 py-3 rounded-full shadow-md font-medium">All</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Summer</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Winter</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Male</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Female</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Sports</button>
-            </div>
-      <div id="caps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-        </div>
-    </section>
-
-  <!-- WALLETS SECTION -->
-    <section id="wallets" class="py-20 bg-gray-900">
-    <div class="container mx-auto px-4 text-center">
-      <div class="mb-16 fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Premium Wallets Collection</h2>
-                <p class="text-gray-300 text-lg">Crafted with precision for everyday elegance</p>
-            </div>
-      <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-14 fade-in appear">
-        <button class="category-pill active px-6 py-3 rounded-full shadow-md font-medium">All</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Male</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Female</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Long</button>
-        <button class="category-pill px-6 py-3 rounded-full shadow-md font-medium">Card Holders</button>
-            </div>
-      <div id="wallets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-        </div>
-    </section>
 
   <!-- ABOUT SECTION -->
-    <section id="about" class="py-20 bg-gray-800">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
+    <section id="about" class="section-padding bg-gradient-to-b from-gray-800 to-gray-900">
+    <div class="container mx-auto px-4 text-center max-w-6xl">
       <div class="fade-in appear">
-                <h2 class="font-display text-3xl md:text-4xl font-bold text-gray-200 mb-8">About Classic Carry</h2>
-                <p class="text-lg text-gray-300 mb-12 leading-relaxed">
+                <h2 class="font-display section-title font-bold text-gray-200 mb-6 md:mb-8">About Classic Carry</h2>
+                <p class="text-base md:text-lg text-gray-300 mb-8 md:mb-12 leading-relaxed max-w-3xl mx-auto">
           At Classic Carry, we believe that accessories are more than just functional items—they're expressions of personal style and character. 
           Since our founding, we've been dedicated to crafting premium caps and wallets that blend timeless design with modern functionality.
                 </p>
+               
       </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
-                        <div class="w-16 h-16 bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-gem text-purple-300 text-2xl"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div class="about-card group">
+                        <div class="icon-circle w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-gem text-purple-200 text-2xl md:text-3xl"></i>
                         </div>
-                        <h3 class="font-semibold text-xl mb-3 text-gray-200">Premium Quality</h3>
-                        <p class="text-gray-300">Crafted with the finest materials and attention to detail.</p>
+                        <h3 class="font-semibold text-xl md:text-2xl mb-3 text-gray-100">Premium Quality</h3>
+                        <p class="text-gray-300 text-sm md:text-base leading-relaxed">Crafted with the finest materials and meticulous attention to detail for lasting excellence.</p>
                     </div>
 
-        <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
-                        <div class="w-16 h-16 bg-indigo-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-paint-brush text-indigo-300 text-2xl"></i>
+        <div class="about-card group">
+                        <div class="icon-circle w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-paint-brush text-indigo-200 text-2xl md:text-3xl"></i>
                         </div>
-                        <h3 class="font-semibold text-xl mb-3 text-gray-200">Timeless Design</h3>
-                        <p class="text-gray-300">Classic styles that never go out of fashion.</p>
+                        <h3 class="font-semibold text-xl md:text-2xl mb-3 text-gray-100">Timeless Design</h3>
+                        <p class="text-gray-300 text-sm md:text-base leading-relaxed">Classic styles that never go out of fashion, designed to complement your unique personality.</p>
                     </div>
 
-        <div class="bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
-                        <div class="w-16 h-16 bg-pink-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <i class="fas fa-heart text-pink-300 text-2xl"></i>
+        <div class="about-card group">
+                        <div class="icon-circle w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-pink-600 to-pink-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <i class="fas fa-heart text-pink-200 text-2xl md:text-3xl"></i>
                         </div>
-                        <h3 class="font-semibold text-xl mb-3 text-gray-200">Customer Love</h3>
-                        <p class="text-gray-300">Satisfaction guaranteed with every purchase.</p>
+                        <h3 class="font-semibold text-xl md:text-2xl mb-3 text-gray-100">Customer Love</h3>
+                        <p class="text-gray-300 text-sm md:text-base leading-relaxed">Satisfaction guaranteed with every purchase. Your happiness is our priority.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Component -->
-  <div id="footer-component">
-    <!-- Footer will be loaded synchronously -->
-  </div>
+    <!-- Footer -->
+  <footer class="bg-gray-900 border-t border-gray-700">
+    <div class="container mx-auto px-4 py-12 md:py-16">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
+        <!-- Brand Section -->
+        <div class="md:col-span-2">
+          <div class="flex items-center space-x-3 mb-4">
+          
+            <span class="font-display text-2xl font-bold text-white">Classic Carry</span>
+              <div class="w-10 h-10  rounded-lg flex items-center justify-center">
+              <span class="text-2xl">✨</span>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md leading-relaxed">
+            Premium caps and wallets crafted for the modern individual who values quality, style, and functionality.
+          </p>
+          <div class="flex space-x-4">
+            <a href="https://wa.me/923160928206" target="_blank" class="w-12 h-12 bg-gray-800 hover:bg-green-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+              <i class="fab fa-whatsapp text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 bg-gray-800 hover:bg-blue-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+              <i class="fab fa-facebook text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 bg-gray-800 hover:bg-pink-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+              <i class="fab fa-instagram text-xl"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div>
+          <h3 class="text-white font-semibold mb-4 text-lg">Quick Links</h3>
+          <ul class="space-y-3">
+            <li><a href="index.html" class="text-gray-300 hover:text-[#D2C1B6] transition duration-300 flex items-center group">
+              <i class="fas fa-chevron-right text-xs mr-2 text-[#D2C1B6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+              Home
+            </a></li>
+            <li><a href="caps.html" class="text-gray-300 hover:text-[#D2C1B6] transition duration-300 flex items-center group">
+              <i class="fas fa-chevron-right text-xs mr-2 text-[#D2C1B6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+              Caps
+            </a></li>
+            <li><a href="wallets.html" class="text-gray-300 hover:text-[#D2C1B6] transition duration-300 flex items-center group">
+              <i class="fas fa-chevron-right text-xs mr-2 text-[#D2C1B6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+              Wallets
+            </a></li>
+            <li><a href="about.html" class="text-gray-300 hover:text-[#D2C1B6] transition duration-300 flex items-center group">
+              <i class="fas fa-chevron-right text-xs mr-2 text-[#D2C1B6] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></i>
+              About Us
+            </a></li>
+          </ul>
+        </div>
+        
+        <!-- Contact Info -->
+        <div>
+          <h3 class="text-white font-semibold mb-4 text-lg">Contact</h3>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-center space-x-3 group hover:text-[#D2C1B6] transition duration-300">
+              <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-[#D2C1B6] group-hover:text-gray-900 transition duration-300">
+                <i class="fas fa-phone text-sm"></i>
+              </div>
+              <span>+92 316 092 8206</span>
+            </li>
+            <li class="flex items-center space-x-3 group hover:text-[#D2C1B6] transition duration-300">
+              <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-[#D2C1B6] group-hover:text-gray-900 transition duration-300">
+                <i class="fas fa-envelope text-sm"></i>
+              </div>
+              <span>info@classiccarry.com</span>
+            </li>
+            <li class="flex items-center space-x-3 group hover:text-[#D2C1B6] transition duration-300">
+              <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-[#D2C1B6] group-hover:text-gray-900 transition duration-300">
+                <i class="fas fa-map-marker-alt text-sm"></i>
+              </div>
+              <span>Pakistan</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-10 pt-8 text-center">
+        <p class="text-gray-400">
+          &copy; 2024 Classic Carry. All rights reserved. 
+          <span class="mx-2">|</span>
+         Powered by <b>AppCrafters</b>
+        </p>
+      </div>
+    </div>
+  </footer>
 
    <!-- FLOATING WHATSAPP -->
    <a href="https://wa.me/923160928206" target="_blank" class="floating-whatsapp group">
-     <div class="bg-green-500 hover:bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl transition transform hover:scale-110 relative">
-            <i class="fab fa-whatsapp text-3xl"></i>
-       <span class="absolute -top-8 right-0 bg-gray-800 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition">Chat with us</span>
+     <div class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl transition transform relative">
+            <i class="fab fa-whatsapp text-3xl md:text-4xl"></i>
+       <span class="absolute -top-10 right-0 bg-gray-800 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap shadow-xl">Chat with us! 💬</span>
+            <div class="absolute inset-0 rounded-full bg-green-400 opacity-0 group-hover:opacity-30 animate-ping"></div>
         </div>
     </a>
 
   <!-- JS FILES -->
-    <script src="assets/js/cart.js"></script>
-    <script src="assets/js/products.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/hero-carousel.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script>
+    // Enhanced Header Scroll Effect
+    let lastScroll = 0;
+    const header = document.getElementById('main-header');
+    
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 100) {
+            header.classList.add('header-scrolled');
+        } else {
+            header.classList.remove('header-scrolled');
+        }
+        
+        lastScroll = currentScroll;
+    });
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+        mobileMenuBtn.classList.toggle('open');
+    });
+
+    // Hero Carousel
+    const slides = document.querySelectorAll('.hero-slide');
+    const navBtns = document.querySelectorAll('.hero-nav-btn');
+    let currentSlide = 0;
+    
+    function showSlide(index) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        navBtns.forEach(btn => btn.classList.remove('active'));
+        
+        slides[index].classList.add('active');
+        navBtns[index].classList.add('active');
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+    
+    // Auto advance slides
+    let slideInterval = setInterval(nextSlide, 5000);
+    
+    // Manual navigation
+    navBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            clearInterval(slideInterval);
+            currentSlide = index;
+            showSlide(currentSlide);
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+    });
+
+    // Fade-in on Scroll Animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('appear');
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Cart Badge Animation
+    const cartBadge = document.getElementById('cart-badge');
+    
+    function updateCartBadge(count) {
+        if (count > 0) {
+            cartBadge.textContent = count;
+            cartBadge.classList.remove('hidden');
+            cartBadge.classList.add('added');
+            
+            setTimeout(() => {
+                cartBadge.classList.remove('added');
+            }, 600);
+        } else {
+            cartBadge.classList.add('hidden');
+        }
+    }
+    
+    // Simulate cart update (replace with actual cart logic)
+    // updateCartBadge(0);
+
+    // Smooth Scroll for Anchor Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Loading placeholder for hot products
+    console.log('Page loaded. Waiting for products.js to populate product rows...');
+    </script>
   
 </body>
 </html>
