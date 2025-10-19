@@ -22,7 +22,7 @@ class ProductManager {
                 id: 'hot-3', 
                 name: 'Snapback Cap', 
                 price: 34.99, 
-                img: 'https://images.unsplash.com/photo-1483982258113-b72862e6cff6?q=80&w=1200&auto=format&fit=crop', 
+                img: 'assets/images/c-2.png', 
                 tag: 'Best Seller',
                 description: 'Adjustable fit with premium embroidery'
             },
@@ -30,7 +30,7 @@ class ProductManager {
                 id: 'hot-4', 
                 name: 'Minimalist Card Holder', 
                 price: 24.99, 
-                img: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=1200&auto=format&fit=crop', 
+                img: 'assets/images/w-2.png', 
                 tag: 'Slim Design',
                 description: 'Slim design with premium metal finish'
             }
@@ -42,7 +42,7 @@ class ProductManager {
                 name: 'Summer Breeze Cap', 
                 price: 27.99, 
                 category: 'summer', 
-                img: 'https://images.unsplash.com/photo-1543363136-63d3d66d1c00?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/caps/1.png',
                 description: 'Breathable straw material perfect for summer'
             },
             { 
@@ -50,7 +50,7 @@ class ProductManager {
                 name: 'Wool Blend Beanie', 
                 price: 32.99, 
                 category: 'winter', 
-                img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/caps/2.png',
                 description: 'Warm wool blend for cold weather'
             },
             { 
@@ -58,7 +58,7 @@ class ProductManager {
                 name: 'Performance Sport Cap', 
                 price: 35.99, 
                 category: 'sports', 
-                img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/caps/3.png',
                 description: 'Moisture-wicking fabric for active lifestyle'
             },
             { 
@@ -66,7 +66,7 @@ class ProductManager {
                 name: 'Floral Embroidered Cap', 
                 price: 31.99, 
                 category: 'female', 
-                img: 'https://images.unsplash.com/photo-1503342331086-4ff3c3c5b392?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/c-1.png',
                 description: 'Elegant floral design for women'
             },
             { 
@@ -74,7 +74,7 @@ class ProductManager {
                 name: 'Urban Street Cap', 
                 price: 29.99, 
                 category: 'male', 
-                img: 'https://images.unsplash.com/photo-1520975922325-24baf7601c31?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/c-2.png',
                 description: 'Modern street style for urban fashion'
             },
             { 
@@ -82,7 +82,7 @@ class ProductManager {
                 name: 'Beach Visor', 
                 price: 25.99, 
                 category: 'summer', 
-                img: 'https://images.unsplash.com/photo-1520975618319-8bdfb3f3f1e5?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/c-3.png',
                 description: 'Lightweight visor for beach and outdoor activities'
             }
         ];
@@ -93,7 +93,7 @@ class ProductManager {
                 name: 'Executive Bi-Fold', 
                 price: 49.99, 
                 category: 'male', 
-                img: 'https://images.unsplash.com/photo-1599050751795-5f3e89c4b2ba?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/wallets/1.png',
                 description: 'Professional bi-fold wallet for business'
             },
             { 
@@ -101,7 +101,7 @@ class ProductManager {
                 name: 'Elegant Clutch Wallet', 
                 price: 54.99, 
                 category: 'female', 
-                img: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/wallets/2.png',
                 description: 'Elegant design with chain strap'
             },
             { 
@@ -109,7 +109,7 @@ class ProductManager {
                 name: 'Travel Organizer', 
                 price: 62.99, 
                 category: 'long', 
-                img: 'https://images.unsplash.com/photo-1520785643438-5bf77931f493?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/wallets/3.png',
                 description: 'Large capacity wallet for travel'
             },
             { 
@@ -117,7 +117,7 @@ class ProductManager {
                 name: 'Minimalist Cardholder', 
                 price: 24.99, 
                 category: 'cardholder', 
-                img: 'https://images.unsplash.com/photo-1606313564200-2b2f3b8c1b63?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/wallets/4.png',
                 description: 'Slim design with security protection'
             },
             { 
@@ -125,7 +125,7 @@ class ProductManager {
                 name: 'Designer Bifold', 
                 price: 58.99, 
                 category: 'female', 
-                img: 'https://images.unsplash.com/photo-1547149609-1bd8f7e64494?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/w-1.png',
                 description: 'Luxury designer wallet for women'
             },
             { 
@@ -133,7 +133,7 @@ class ProductManager {
                 name: 'Smart Money Clip', 
                 price: 39.99, 
                 category: 'male', 
-                img: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020b?q=80&w=1200&auto=format&fit=crop',
+                img: 'assets/images/w-2.png',
                 description: 'Modern money clip with card slots'
             }
         ];

@@ -37,25 +37,25 @@ class AppController {
     // Load header and footer components synchronously
     async loadComponents() {
         try {
-            // Load header
-            const headerResponse = await fetch('components/header.html');
-            const headerHtml = await headerResponse.text();
-            const headerComponent = document.getElementById('header-component');
-            if (headerComponent) {
-                headerComponent.innerHTML = headerHtml;
-            }
+            // Wait for components to be loaded by components.js
+            await new Promise(resolve => {
+                const checkComponents = () => {
+                    const headerComponent = document.getElementById('header-component');
+                    const footerComponent = document.getElementById('footer-component');
+                    
+                    if (headerComponent && headerComponent.innerHTML.trim() !== '' &&
+                        footerComponent && footerComponent.innerHTML.trim() !== '') {
+                        resolve();
+                    } else {
+                        setTimeout(checkComponents, 100);
+                    }
+                };
+                checkComponents();
+            });
             
-            // Load footer
-            const footerResponse = await fetch('components/footer.html');
-            const footerHtml = await footerResponse.text();
-            const footerComponent = document.getElementById('footer-component');
-            if (footerComponent) {
-                footerComponent.innerHTML = footerHtml;
-            }
-            
-            console.log('Header and footer loaded successfully');
+            console.log('Header and footer components ready');
         } catch (error) {
-            console.error('Error loading components:', error);
+            console.error('Error waiting for components:', error);
         }
     }
     
@@ -117,24 +117,62 @@ class AppController {
     // Create scrollable product card
     createScrollableProductCard(product) {
         const card = document.createElement('div');
-        card.className = 'scroll-item card bg-gray-700 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300';
+        card.className = 'scroll-item card';
+        card.setAttribute('data-id', product.id);
         
-        card.innerHTML = `
-            <div class="relative">
-                <img src="${product.img}" alt="${product.name}" class="foto w-full h-48 md:h-56 object-cover">
-                ${product.tag ? `<span class="absolute top-2 left-2 bg-[#D2C1B6] text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">${product.tag}</span>` : ''}
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-white text-lg mb-2 line-clamp-2">${product.name}</h3>
-                <p class="text-gray-300 text-sm mb-3 line-clamp-2">${product.description || 'Premium quality product from Classic Carry.'}</p>
-                <div class="flex items-center justify-between">
-                    <span class="text-2xl font-bold text-[#D2C1B6]">$${product.price.toFixed(2)}</span>
-                    <button class="add-to-cart bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-300" data-product-id="${product.id}">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-        `;
+        if (product.category) {
+            card.setAttribute('data-category', product.category);
+        }
+
+        // Image container
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'flex justify-center mb-4 relative';
+        
+        // Product image
+        const img = document.createElement('img');
+        img.src = product.img;
+        img.alt = product.name;
+        img.className = 'foto w-full h-48 object-cover rounded-lg shadow-lg';
+
+        // Tag if exists
+        if (product.tag) {
+            const tag = document.createElement('span');
+            tag.className = 'absolute top-2 left-2 bg-[#D2C1B6] text-gray-900 px-2 py-1 rounded-full text-xs font-semibold';
+            tag.textContent = product.tag;
+            imgContainer.appendChild(tag);
+        }
+
+        imgContainer.appendChild(img);
+
+        // Product info
+        const info = document.createElement('div');
+        info.className = 'text-center space-y-3';
+        
+        // Product name
+        const h1 = document.createElement('h1');
+        h1.className = 'text-lg font-semibold text-white mb-2 cursor-pointer hover:text-[#D2C1B6] transition-colors duration-300 line-clamp-2';
+        h1.textContent = product.name;
+        h1.addEventListener('click', () => {
+            window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
+        });
+        
+        // Price
+        const price = document.createElement('div');
+        price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
+        price.textContent = `Rs ${product.price.toFixed(2)}`;
+        
+        // Add to cart button
+        const btn = document.createElement('button');
+        btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full';
+        btn.textContent = 'Add to Cart';
+        btn.setAttribute('data-product-id', product.id);
+
+        info.appendChild(h1);
+        info.appendChild(price);
+        info.appendChild(btn);
+        
+        card.appendChild(imgContainer);
+        card.appendChild(info);
         
         return card;
     }
@@ -148,6 +186,9 @@ class AppController {
         
         uiManager.setupCategoryFiltering('caps', 'caps-grid', caps);
         uiManager.setupCategoryFiltering('wallets', 'wallets-grid', wallets);
+        
+        // Initialize product counts
+        uiManager.updateProductCount(caps.length);
     }
     
     // Setup cart functionality
@@ -300,7 +341,7 @@ class AppController {
         
         const price = document.createElement('div');
         price.className = 'text-3xl font-bold text-gray-200 mb-6';
-        price.textContent = `$${product.price.toFixed(2)}`;
+        price.textContent = `Rs ${product.price.toFixed(2)}`;
         
         const description = document.createElement('p');
         description.className = 'text-gray-300 mb-6';
@@ -347,16 +388,19 @@ class AppController {
         
         const addToCartBtn = document.createElement('button');
         addToCartBtn.id = 'add-to-cart-btn';
-        addToCartBtn.className = 'flex-1 bg-[#456882] text-white py-3 px-6 rounded-lg hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300 add-to-cart';
+        addToCartBtn.className = 'flex-1 bg-[#D2C1B6] text-gray-900 py-3 px-6 rounded-lg hover:bg-[#e2c9b8] transition duration-300 add-to-cart font-medium';
         addToCartBtn.textContent = 'Add to Cart';
         addToCartBtn.setAttribute('data-product-id', product.id);
         
         const whatsappBtn = document.createElement('button');
-        whatsappBtn.className = 'bg-[#456882] text-white py-3 px-6 rounded-lg hover:bg-[#D2C1B6] hover:text-gray-800 transition duration-300';
+        whatsappBtn.className = 'bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 font-medium';
         whatsappBtn.innerHTML = '<i class="fab fa-whatsapp mr-2"></i> Buy on WhatsApp';
         whatsappBtn.onclick = () => {
-            const message = `Hello Classic Carry!%0A%0AI would like to buy: ${product.name} - $${product.price.toFixed(2)}%0A%0A`;
+            const message = `Hello Classic Carry!%0A%0AI would like to buy: ${product.name} - Rs ${product.price.toFixed(2)}%0A%0A`;
             window.open(`https://wa.me/923160928206?text=${message}`, '_blank');
+            
+            // Show success message for individual product order
+            this.showProductOrderSuccessMessage(product.name);
         };
         
         actions.appendChild(addToCartBtn);
@@ -613,7 +657,7 @@ class AppController {
         
         cart.forEach(item => {
             const card = document.createElement('div');
-            card.className = 'bg-gray-700 rounded-2xl p-6 hover:bg-gray-600 transition-all duration-300 transform hover:scale-[1.02]';
+            card.className = 'bg-gray-700 rounded-2xl p-6 hover:bg-gray-600 transition-all duration-300';
             
             const row = document.createElement('div');
             row.className = 'flex items-center gap-6';
@@ -625,7 +669,7 @@ class AppController {
             const img = document.createElement('img');
             img.src = item.img;
             img.alt = item.name;
-            img.className = 'w-24 h-24 object-cover rounded-xl shadow-lg';
+            img.className = 'w-24 h-24 object-cover rounded-lg shadow-lg';
             
             imgContainer.appendChild(img);
             
@@ -639,7 +683,7 @@ class AppController {
             
             const price = document.createElement('p');
             price.className = 'text-gray-300 mb-3';
-            price.textContent = `$${item.price.toFixed(2)} each`;
+            price.textContent = `Rs ${item.price.toFixed(2)} each`;
             
             // Quantity Controls
             const qtyContainer = document.createElement('div');
@@ -677,8 +721,8 @@ class AppController {
             const linePrice = document.createElement('div');
             linePrice.className = 'text-right';
             linePrice.innerHTML = `
-                <div class="text-2xl font-bold text-white">$${lineTotal.toFixed(2)}</div>
-                <div class="text-sm text-gray-400">${item.qty || 1} × $${item.price.toFixed(2)}</div>
+                <div class="text-2xl font-bold text-white">Rs ${lineTotal.toFixed(2)}</div>
+                <div class="text-sm text-gray-400">${item.qty || 1} × Rs ${item.price.toFixed(2)}</div>
             `;
             
             const removeBtn = document.createElement('button');
@@ -697,7 +741,7 @@ class AppController {
             cartItemsContainer.appendChild(card);
         });
         
-        subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+        subtotalElement.textContent = `Rs ${subtotal.toFixed(2)}`;
     }
     
     // Handle WhatsApp order
@@ -738,17 +782,112 @@ class AppController {
         
         const phone = '923160928206';
         const lines = cart.map((item, index) => {
-            return `${index + 1}. ${item.name} x${item.qty || 1} - $${(item.price * (item.qty || 1)).toFixed(2)}`;
+            return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${(item.price * (item.qty || 1)).toFixed(2)}`;
         });
         
         const total = cart.reduce((sum, item) => {
             return sum + (item.price * (item.qty || 1));
         }, 0);
         
-        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ATotal: $${total.toFixed(2)}${deliveryInfo}`;
+        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ATotal: Rs ${total.toFixed(2)}${deliveryInfo}`;
         const url = `https://wa.me/${phone}?text=${message}`;
         
+        // Open WhatsApp
         window.open(url, '_blank');
+        
+        // Clear cart and show success message
+        cartManager.clearCart();
+        this.renderCart();
+        
+        // Show success notification
+        this.showOrderSuccessMessage();
+    }
+    
+    // Show order success message
+    showOrderSuccessMessage() {
+        // Create success modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-gray-800 rounded-xl p-8 max-w-md mx-4 text-center shadow-2xl">
+                <div class="text-green-500 text-6xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-4">Order Placed Successfully!</h2>
+                <p class="text-gray-300 mb-6">
+                    Your order has been sent to WhatsApp. Our team will contact you shortly to confirm your order and arrange delivery.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="this.closest('.fixed').remove()" class="bg-[#D2C1B6] text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200">
+                        Continue Shopping
+                    </button>
+                    <a href="index.html" class="bg-gray-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 text-center">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Auto-remove modal after 10 seconds
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.remove();
+            }
+        }, 10000);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+    
+    // Show product order success message
+    showProductOrderSuccessMessage(productName) {
+        // Create success modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-gray-800 rounded-xl p-8 max-w-md mx-4 text-center shadow-2xl">
+                <div class="text-green-500 text-6xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-4">Order Request Sent!</h2>
+                <p class="text-gray-300 mb-2">
+                    Your request for <strong>${productName}</strong> has been sent to WhatsApp.
+                </p>
+                <p class="text-gray-300 mb-6">
+                    Our team will contact you shortly to confirm your order and arrange delivery.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="this.closest('.fixed').remove()" class="bg-[#D2C1B6] text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200">
+                        Continue Shopping
+                    </button>
+                    <a href="index.html" class="bg-gray-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 text-center">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Auto-remove modal after 8 seconds
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.remove();
+            }
+        }, 8000);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
     }
     
     // Setup quantity controls for product page
@@ -826,6 +965,13 @@ function addTestItem() {
         cartManager.addToCart(testProduct);
         console.log('Added test item to cart');
         debugCheckout();
+    }
+}
+
+function updateCurrentYear() {
+    const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
     }
 }
 

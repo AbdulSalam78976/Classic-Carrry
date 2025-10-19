@@ -77,32 +77,32 @@ class UIManager {
     // Create product card element
     createProductCard(product) {
         const card = document.createElement('div');
-        card.className = 'card group transition-all duration-500 transform hover:scale-105 relative p-6';
+        card.className = 'card group relative';
         card.setAttribute('data-id', product.id);
         
         if (product.category) {
             card.setAttribute('data-category', product.category);
         }
 
-        // Floating circular image container
+        // Image container
         const imgContainer = document.createElement('div');
         imgContainer.className = 'flex justify-center mb-4 relative';
         
-        // Product image (floating circular)
+        // Product image
         const img = document.createElement('img');
         img.src = product.img;
         img.alt = product.name;
-        img.className = 'foto w-40 h-40 object-cover rounded-full transition-all duration-500 hover:scale-110 shadow-2xl hover:shadow-3xl';
+        img.className = 'foto w-full h-48 object-cover rounded-lg shadow-lg';
 
         imgContainer.appendChild(img);
 
-        // Floating product info
+        // Product info
         const info = document.createElement('div');
-        info.className = 'text-center relative';
+        info.className = 'text-center space-y-3';
         
         // Product name
         const h1 = document.createElement('h1');
-        h1.className = 'text-xl font-bold text-white mb-2 cursor-pointer hover:text-[#D2C1B6] transition-colors duration-300 drop-shadow-lg';
+        h1.className = 'text-lg font-semibold text-white mb-2 cursor-pointer hover:text-[#D2C1B6] transition-colors duration-300 line-clamp-2';
         h1.textContent = product.name;
         h1.addEventListener('click', () => {
             window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
@@ -110,12 +110,12 @@ class UIManager {
         
         // Price
         const price = document.createElement('div');
-        price.className = 'text-2xl font-bold text-white mb-4 drop-shadow-lg';
-        price.textContent = `$${product.price.toFixed(2)}`;
+        price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
+        price.textContent = `Rs ${product.price.toFixed(2)}`;
         
         // Add to cart button (floating)
         const btn = document.createElement('button');
-        btn.className = 'add-to-cart bg-gradient-to-r from-[#456882] to-[#D2C1B6] text-white px-8 py-3 rounded-full font-semibold hover:from-[#D2C1B6] hover:to-[#456882] transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105';
+        btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full';
         btn.textContent = 'Add to Cart';
         btn.setAttribute('data-product-id', product.id);
 
@@ -129,16 +129,6 @@ class UIManager {
         return card;
     }
     
-    // Render product grid
-    renderProductGrid(containerId, products) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        
-        container.innerHTML = '';
-        products.forEach(product => {
-            container.appendChild(this.createProductCard(product));
-        });
-    }
     
     // Setup category filtering
     setupCategoryFiltering(sectionId, gridId, products) {
@@ -153,22 +143,58 @@ class UIManager {
         pills.forEach(pill => {
             pill.addEventListener('click', () => {
                 // Update active state
-                pills.forEach(p => {
-                    p.classList.remove('bg-purple-600', 'text-white');
-                    p.classList.add('bg-white', 'text-gray-700');
-                });
-                
-                pill.classList.remove('bg-white', 'text-gray-700');
-                pill.classList.add('bg-purple-600', 'text-white');
+                pills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
                 
                 // Filter products
-                const category = pill.textContent.toLowerCase();
+                const category = pill.getAttribute('data-category');
                 const filteredProducts = category === 'all' 
                     ? products 
                     : products.filter(p => p.category === category);
                 
                 this.renderProductGrid(gridId, filteredProducts);
+                
+                // Update product count
+                this.updateProductCount(filteredProducts.length);
             });
+        });
+    }
+    
+    // Update product count display
+    updateProductCount(count) {
+        const countElement = document.getElementById('product-count');
+        if (countElement) {
+            countElement.textContent = count;
+        }
+    }
+    
+    // Render product grid with empty state handling
+    renderProductGrid(containerId, products) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (products.length === 0) {
+            // Show empty state message
+            const emptyState = document.createElement('div');
+            emptyState.className = 'col-span-full text-center py-12';
+            emptyState.innerHTML = `
+                <div class="text-gray-400 mb-4">
+                    <i class="fas fa-search text-4xl mb-4"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-300 mb-2">No products found</h3>
+                <p class="text-gray-400 mb-6">We couldn't find any products in this category. Try selecting a different category.</p>
+                <button onclick="location.reload()" class="bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200">
+                    View All Products
+                </button>
+            `;
+            container.appendChild(emptyState);
+            return;
+        }
+        
+        products.forEach(product => {
+            container.appendChild(this.createProductCard(product));
         });
     }
     
