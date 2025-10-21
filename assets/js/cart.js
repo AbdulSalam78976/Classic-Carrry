@@ -6,6 +6,8 @@ class CartManager {
     }
     
     init() {
+        // Check and fix cart data on initialization
+        this.fixCart();
         this.updateCartBadge();
     }
     
@@ -90,27 +92,32 @@ class CartManager {
     // Update cart badge in UI
     updateCartBadge() {
         const count = this.getTotalItems();
-        console.log('Updating cart badge with count:', count); // Debug log
+        console.log('Updating cart badge with count:', count);
         
-        // Update all possible cart badge elements
-        const badgeSelectors = [
-            '.fa-shopping-cart + span',
-            '#cart-badge', 
-            '#mobile-cart-count', 
-            '#desktop-cart-count',
-            'span[id*="cart-count"]',
-            'span[class*="cart"]'
-        ];
-        
-        badgeSelectors.forEach(selector => {
-            const badges = document.querySelectorAll(selector);
-            badges.forEach(badge => {
-                if (badge) {
-                    badge.textContent = count.toString();
-                    console.log('Updated badge:', selector, badge); // Debug log
+        // Wait a bit for DOM to be ready
+        setTimeout(() => {
+            // Update cart badge
+            const cartBadge = document.getElementById('cart-badge');
+            if (cartBadge) {
+                cartBadge.textContent = count.toString();
+                if (count > 0) {
+                    cartBadge.classList.remove('hidden');
+                    cartBadge.classList.add('added');
+                    setTimeout(() => cartBadge.classList.remove('added'), 600);
+                } else {
+                    cartBadge.classList.add('hidden');
                 }
+                console.log('Cart badge updated:', count);
+            } else {
+                console.log('Cart badge element not found');
+            }
+            
+            // Update any other cart count elements
+            const otherBadges = document.querySelectorAll('[id*="cart-count"], [class*="cart-count"]');
+            otherBadges.forEach(badge => {
+                badge.textContent = count.toString();
             });
-        });
+        }, 100);
     }
     
     // Clear entire cart
@@ -124,6 +131,48 @@ class CartManager {
         console.log('Current cart:', this.getCart());
         console.log('Total items:', this.getTotalItems());
         console.log('Cart total:', this.getCartTotal());
+        console.log('Raw localStorage:', localStorage.getItem(this.cartKey));
+    }
+    
+    // Fix corrupted cart data
+    fixCart() {
+        try {
+            const rawCart = localStorage.getItem(this.cartKey);
+            console.log('Raw cart data:', rawCart);
+            
+            if (!rawCart) {
+                console.log('No cart data found, initializing empty cart');
+                this.setCart([]);
+                return;
+            }
+            
+            const cart = JSON.parse(rawCart);
+            if (!Array.isArray(cart)) {
+                console.log('Cart data is not an array, resetting');
+                this.setCart([]);
+                return;
+            }
+            
+            // Validate each item
+            const validCart = cart.filter(item => {
+                return item && 
+                       typeof item.id === 'string' && 
+                       typeof item.name === 'string' && 
+                       typeof item.price === 'number' && 
+                       typeof item.img === 'string';
+            });
+            
+            if (validCart.length !== cart.length) {
+                console.log('Found invalid cart items, cleaning up');
+                this.setCart(validCart);
+            }
+            
+            console.log('Cart validation complete, valid items:', validCart.length);
+            
+        } catch (error) {
+            console.error('Error fixing cart:', error);
+            this.setCart([]);
+        }
     }
 }
 

@@ -64,9 +64,22 @@
         <!-- Products will be loaded here by JavaScript -->
         <!-- Loading placeholders -->
         <div class="grid-item">
-          <div class="card">
+          <div class="card loading-skeleton">
             <div class="foto rounded-2xl overflow-hidden bg-gray-700 h-80 flex items-center justify-center">
-              <i class="fas fa-spinner fa-spin text-[#D2C1B6] text-3xl"></i>
+              <div class="flex flex-col items-center gap-3">
+                <i class="fas fa-spinner fa-spin text-[#D2C1B6] text-3xl"></i>
+                <span class="text-gray-400 text-sm">Loading caps...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-item">
+          <div class="card loading-skeleton">
+            <div class="foto rounded-2xl overflow-hidden bg-gray-700 h-80"></div>
+            <div class="mt-4 space-y-3">
+              <div class="h-4 bg-gray-600 rounded loading-skeleton"></div>
+              <div class="h-6 bg-gray-600 rounded loading-skeleton w-3/4"></div>
+              <div class="h-10 bg-gray-600 rounded loading-skeleton"></div>
             </div>
           </div>
         </div>

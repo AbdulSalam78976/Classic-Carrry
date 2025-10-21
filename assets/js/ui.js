@@ -92,7 +92,7 @@ class UIManager {
         const img = document.createElement('img');
         img.src = product.img;
         img.alt = product.name;
-        img.className = 'foto w-full h-48 object-cover rounded-lg shadow-lg';
+        img.className = 'foto w-full h-48 object-cover';
 
         imgContainer.appendChild(img);
 
@@ -111,7 +111,7 @@ class UIManager {
         // Price
         const price = document.createElement('div');
         price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
-        price.textContent = `Rs ${product.price.toFixed(2)}`;
+        price.textContent = `Rs ${product.price.toLocaleString()}`;
         
         // Add to cart button (floating)
         const btn = document.createElement('button');
@@ -201,29 +201,35 @@ class UIManager {
     // Show notification
     showNotification(message, type = 'success') {
         const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full`;
+        notification.className = `notification fixed top-4 right-4 z-50 px-6 py-4 rounded-xl shadow-2xl transition-all duration-500 transform translate-x-full ${type}`;
         
-        if (type === 'success') {
-            notification.classList.add('bg-green-500', 'text-white');
-        } else if (type === 'error') {
-            notification.classList.add('bg-red-500', 'text-white');
-        }
+        // Add icon based on type
+        const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        notification.innerHTML = `
+            <div class="flex items-center gap-3">
+                <i class="${icon} text-xl"></i>
+                <span class="font-medium">${message}</span>
+            </div>
+        `;
         
-        notification.textContent = message;
         document.body.appendChild(notification);
         
         // Animate in
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
+            notification.classList.add('translate-x-0');
         }, 100);
         
-        // Remove after 3 seconds
+        // Remove after 4 seconds
         setTimeout(() => {
+            notification.classList.remove('translate-x-0');
             notification.classList.add('translate-x-full');
             setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 500);
+        }, 4000);
     }
 }
 

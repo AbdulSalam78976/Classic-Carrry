@@ -2,6 +2,27 @@
 
 A modern e-commerce website for premium caps and wallets with a clean, responsive design.
 
+## 🚀 Quick Start
+
+1. **Clone or download** the project files
+2. **Open `index.html`** in a web browser or use a local server
+3. **For development**, use Live Server extension in VS Code for best results
+
+## 🧪 Testing
+
+- Open `test.html` for debugging and testing functionality
+- Use browser console to see detailed logs
+- Test cart functionality, product loading, and navigation
+
+## 🔧 Recent Fixes
+
+- ✅ Fixed cart functionality - products now add to cart properly
+- ✅ Fixed product detail pages - now load correctly with URL parameters
+- ✅ Improved price formatting - now shows Pakistani Rupees properly
+- ✅ Enhanced loading states and error handling
+- ✅ Better mobile responsiveness and animations
+- ✅ Fixed component loading timing issues
+
 ## Project Structure
 
 ```

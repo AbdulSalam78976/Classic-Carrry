@@ -11,7 +11,11 @@ class HeroCarousel {
     }
     
     init() {
-        if (this.slides.length === 0) return;
+        if (this.slides.length === 0) {
+            // Even if no slides, still update the year
+            this.updateCurrentYear();
+            return;
+        }
         
         this.setupEventListeners();
         this.startAutoSlide();
