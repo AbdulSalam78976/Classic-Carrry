@@ -182,7 +182,7 @@ class AppController {
 
         // Product image
         const img = document.createElement('img');
-        img.src = product.img;
+        img.src = product.getMainImage ? product.getMainImage() : product.img;
         img.alt = product.name;
         img.className = 'foto w-full h-48 object-cover';
 
@@ -294,8 +294,14 @@ class AppController {
             return;
         }
 
-        // Add to cart
-        cartManager.addToCart(product);
+        // Add to cart (convert Product to cart format)
+        const cartProduct = product.getCartData ? product.getCartData() : {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            img: product.getMainImage ? product.getMainImage() : product.img
+        };
+        cartManager.addToCart(cartProduct);
         console.log('Product added to cart');
 
         // Visual feedback
@@ -387,24 +393,56 @@ class AppController {
 
         const img = document.createElement('img');
         img.id = 'main-product-image';
-        img.src = product.img;
+        img.src = product.getMainImage();
         img.alt = product.name;
-        img.className = 'w-full h-96 object-cover';
+        img.className = 'w-full h-96 object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105';
+        
+        // Add click event for image zoom
+        img.addEventListener('click', () => {
+            this.showImageModal(product.getMainImage(), product.name);
+        });
+        
         mainImgDiv.appendChild(img);
 
-        // Thumbnail images (using the same image for now)
+        // Thumbnail images using all available images
         const thumbnailsDiv = document.createElement('div');
-        thumbnailsDiv.className = 'grid grid-cols-4 gap-4';
+        const allImages = product.getAllImages();
+        const maxThumbnails = Math.min(allImages.length, 4);
+        
+        if (maxThumbnails > 1) {
+            thumbnailsDiv.className = `grid grid-cols-${maxThumbnails} gap-4`;
+            
+            allImages.slice(0, maxThumbnails).forEach((imageUrl, index) => {
+                const thumbDiv = document.createElement('div');
+                thumbDiv.className = 'bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition hover:ring-2 hover:ring-[#D2C1B6]';
+                
+                // Change main image on click
+                thumbDiv.onclick = () => {
+                    changeImage(imageUrl);
+                    // Update main image click event for zoom
+                    const mainImg = document.getElementById('main-product-image');
+                    if (mainImg) {
+                        mainImg.onclick = () => this.showImageModal(imageUrl, product.name);
+                    }
+                };
 
-        for (let i = 0; i < 4; i++) {
+                const thumbImg = document.createElement('img');
+                thumbImg.src = imageUrl;
+                thumbImg.alt = `${product.name} - View ${index + 1}`;
+                thumbImg.className = 'w-full h-24 object-cover rounded-lg';
+                thumbDiv.appendChild(thumbImg);
+                thumbnailsDiv.appendChild(thumbDiv);
+            });
+        } else {
+            // If only one image, show a single larger thumbnail
+            thumbnailsDiv.className = 'grid grid-cols-1 gap-4';
             const thumbDiv = document.createElement('div');
-            thumbDiv.className = 'bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition';
-            thumbDiv.onclick = () => changeImage(product.img);
-
+            thumbDiv.className = 'bg-gray-700 rounded-lg shadow';
+            
             const thumbImg = document.createElement('img');
-            thumbImg.src = product.img;
-            thumbImg.alt = `${product.name} - View ${i + 1}`;
-            thumbImg.className = 'w-full h-24 object-cover rounded-lg';
+            thumbImg.src = product.getMainImage();
+            thumbImg.alt = `${product.name} - Main View`;
+            thumbImg.className = 'w-full h-24 object-cover rounded-lg opacity-50';
             thumbDiv.appendChild(thumbImg);
             thumbnailsDiv.appendChild(thumbDiv);
         }
@@ -426,22 +464,46 @@ class AppController {
 
         const starsDiv = document.createElement('div');
         starsDiv.className = 'flex text-yellow-400';
+        const rating = product.rating || 4.5;
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 !== 0;
+        
         for (let i = 0; i < 5; i++) {
             const star = document.createElement('i');
-            star.className = i < 4 ? 'fas fa-star' : 'fas fa-star-half-alt';
+            if (i < fullStars) {
+                star.className = 'fas fa-star';
+            } else if (i === fullStars && hasHalfStar) {
+                star.className = 'fas fa-star-half-alt';
+            } else {
+                star.className = 'far fa-star';
+            }
             starsDiv.appendChild(star);
         }
 
         const ratingText = document.createElement('span');
         ratingText.className = 'text-gray-300 ml-2';
-        ratingText.textContent = '4.5 (128 reviews)';
+        ratingText.textContent = `${rating} (${product.reviewCount || 128} reviews)`;
 
         ratingDiv.appendChild(starsDiv);
         ratingDiv.appendChild(ratingText);
 
         const price = document.createElement('div');
-        price.className = 'text-3xl font-bold text-gray-200 mb-6';
+        price.className = 'text-3xl font-bold text-gray-200 mb-4';
         price.textContent = `Rs ${product.price.toLocaleString()}`;
+
+        // Stock status
+        const stockDiv = document.createElement('div');
+        stockDiv.className = 'mb-6';
+        
+        const stockStatus = document.createElement('span');
+        stockStatus.className = `text-sm font-semibold ${product.getStockStatusClass ? product.getStockStatusClass() : 'text-green-400'}`;
+        stockStatus.textContent = product.getStockStatus ? product.getStockStatus() : 'In Stock';
+        
+        const stockIcon = document.createElement('i');
+        stockIcon.className = `fas ${product.isInStock && product.isInStock() ? 'fa-check-circle' : 'fa-times-circle'} mr-2`;
+        
+        stockDiv.appendChild(stockIcon);
+        stockDiv.appendChild(stockStatus);
 
         const description = document.createElement('p');
         description.className = 'text-gray-300 mb-6';
@@ -497,8 +559,10 @@ class AppController {
         whatsappBtn.innerHTML = '<i class="fab fa-whatsapp mr-2"></i> Buy on WhatsApp';
         whatsappBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
-            const total = product.price * quantity;
-            const message = `Hello Classic Carry!%0A%0AI would like to buy:%0A${product.name} x${quantity} - Rs ${total.toLocaleString()}%0A%0ATotal: Rs ${total.toLocaleString()}%0A%0A`;
+            const subtotal = product.price * quantity;
+            const deliveryCharge = cartManager.deliveryCharge;
+            const total = subtotal + deliveryCharge;
+            const message = `Hello Classic Carry!%0A%0AI would like to buy:%0A${product.name} x${quantity} - Rs ${subtotal.toLocaleString()}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: Rs ${deliveryCharge.toLocaleString()}%0ATotal: Rs ${total.toLocaleString()}%0A%0A`;
             window.open(`https://wa.me/923160928206?text=${message}`, '_blank');
 
             // Show success message for individual product order
@@ -519,7 +583,7 @@ class AppController {
         const featuresList = document.createElement('ul');
         featuresList.className = 'space-y-2';
 
-        const features = [
+        const features = product.features && product.features.length > 0 ? product.features : [
             'Premium Quality Materials',
             'Durable Construction',
             'Modern Design',
@@ -545,9 +609,44 @@ class AppController {
         featuresDiv.appendChild(featuresTitle);
         featuresDiv.appendChild(featuresList);
 
+        // Specifications section (if available)
+        if (product.specifications && Object.keys(product.specifications).length > 0) {
+            const specsDiv = document.createElement('div');
+            specsDiv.className = 'mt-6';
+
+            const specsTitle = document.createElement('h3');
+            specsTitle.className = 'text-lg font-semibold mb-3 text-gray-200';
+            specsTitle.textContent = 'Specifications';
+
+            const specsTable = document.createElement('div');
+            specsTable.className = 'bg-gray-700 rounded-lg p-4 space-y-2';
+
+            Object.entries(product.specifications).forEach(([key, value]) => {
+                const specRow = document.createElement('div');
+                specRow.className = 'flex justify-between items-center py-1 border-b border-gray-600 last:border-b-0';
+
+                const specKey = document.createElement('span');
+                specKey.className = 'text-gray-300 font-medium';
+                specKey.textContent = key;
+
+                const specValue = document.createElement('span');
+                specValue.className = 'text-gray-400';
+                specValue.textContent = value;
+
+                specRow.appendChild(specKey);
+                specRow.appendChild(specValue);
+                specsTable.appendChild(specRow);
+            });
+
+            specsDiv.appendChild(specsTitle);
+            specsDiv.appendChild(specsTable);
+            featuresDiv.appendChild(specsDiv);
+        }
+
         rightDiv.appendChild(title);
         rightDiv.appendChild(ratingDiv);
         rightDiv.appendChild(price);
+        rightDiv.appendChild(stockDiv);
         rightDiv.appendChild(description);
         rightDiv.appendChild(quantityDiv);
         rightDiv.appendChild(actions);
@@ -664,42 +763,90 @@ class AppController {
         console.log('Cart total items:', cartManager.getTotalItems());
         this.renderCart();
 
+        // Debounce function to prevent rapid clicking
+        let debounceTimer = null;
+        const debounce = (func, delay) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(func, delay);
+        };
+
         // Quantity controls and cart actions
         document.body.addEventListener('click', (e) => {
             const target = e.target;
 
-            if (target.classList.contains('qty-plus')) {
-                const productId = target.getAttribute('data-id');
-                const cart = cartManager.getCart();
-                const item = cart.find(i => i.id === productId);
-                if (item) {
-                    cartManager.updateQuantity(productId, (item.qty || 1) + 1);
-                    this.renderCart();
+            if (target.classList.contains('qty-plus') || target.closest('.qty-plus')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const button = target.classList.contains('qty-plus') ? target : target.closest('.qty-plus');
+                const productId = button.getAttribute('data-id');
+                console.log('Plus button clicked for product:', productId);
+                
+                if (productId && !button.disabled) {
+                    button.disabled = true;
+                    const cart = cartManager.getCart();
+                    const item = cart.find(i => i.id === productId);
+                    if (item) {
+                        cartManager.updateQuantity(productId, (item.qty || 1) + 1);
+                        this.renderCart();
+                    }
+                    
+                    // Re-enable button after short delay
+                    setTimeout(() => {
+                        button.disabled = false;
+                    }, 200);
                 }
+                return;
             }
 
-            if (target.classList.contains('qty-minus')) {
-                const productId = target.getAttribute('data-id');
-                const cart = cartManager.getCart();
-                const item = cart.find(i => i.id === productId);
-                if (item && item.qty > 1) {
-                    cartManager.updateQuantity(productId, item.qty - 1);
-                    this.renderCart();
+            if (target.classList.contains('qty-minus') || target.closest('.qty-minus')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const button = target.classList.contains('qty-minus') ? target : target.closest('.qty-minus');
+                const productId = button.getAttribute('data-id');
+                console.log('Minus button clicked for product:', productId);
+                
+                if (productId && !button.disabled) {
+                    button.disabled = true;
+                    const cart = cartManager.getCart();
+                    const item = cart.find(i => i.id === productId);
+                    if (item && item.qty > 1) {
+                        cartManager.updateQuantity(productId, item.qty - 1);
+                        this.renderCart();
+                    }
+                    
+                    // Re-enable button after short delay
+                    setTimeout(() => {
+                        button.disabled = false;
+                    }, 200);
                 }
+                return;
             }
 
-            if (target.classList.contains('remove-item')) {
-                const productId = target.getAttribute('data-id');
-                cartManager.removeFromCart(productId);
-                this.renderCart();
+            if (target.classList.contains('remove-item') || target.closest('.remove-item')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const button = target.classList.contains('remove-item') ? target : target.closest('.remove-item');
+                const productId = button.getAttribute('data-id');
+                console.log('Remove button clicked for product:', productId);
+                
+                if (productId) {
+                    cartManager.removeFromCart(productId);
+                    this.renderCart();
+                }
+                return;
             }
 
             // Clear cart functionality
             if (target.id === 'clear-cart') {
+                e.preventDefault();
                 if (confirm('Are you sure you want to clear your entire cart?')) {
                     cartManager.clearCart();
                     this.renderCart();
                 }
+                return;
             }
         });
 
@@ -753,10 +900,22 @@ class AppController {
                 emptyCartMessage.classList.remove('hidden');
                 cartActions.classList.add('hidden');
                 console.log('Showing empty cart message');
+                
+                // Hide delivery charge section when cart is empty
+                const deliveryChargeRow = document.querySelector('#delivery-charge')?.closest('.flex');
+                const totalRow = document.querySelector('#total-amount')?.closest('.flex');
+                if (deliveryChargeRow) deliveryChargeRow.style.display = 'none';
+                if (totalRow) totalRow.style.display = 'none';
             } else {
                 emptyCartMessage.classList.add('hidden');
                 cartActions.classList.remove('hidden');
                 console.log('Hiding empty cart message, rendering', cart.length, 'items');
+                
+                // Show delivery charge section when cart has items
+                const deliveryChargeRow = document.querySelector('#delivery-charge')?.closest('.flex');
+                const totalRow = document.querySelector('#total-amount')?.closest('.flex');
+                if (deliveryChargeRow) deliveryChargeRow.style.display = 'flex';
+                if (totalRow) totalRow.style.display = 'flex';
             }
         }
 
@@ -848,7 +1007,33 @@ class AppController {
             cartItemsContainer.appendChild(card);
         });
 
+        // Update subtotal
         subtotalElement.textContent = `Rs ${subtotal.toLocaleString()}`;
+        
+        // Update delivery charge and total using CartManager methods
+        const deliveryChargeElement = document.getElementById('delivery-charge');
+        const totalAmountElement = document.getElementById('total-amount');
+        const deliveryCharge = cartManager.getDeliveryCharge();
+        const totalAmount = cartManager.getTotalWithDelivery();
+        
+        if (deliveryChargeElement) {
+            deliveryChargeElement.textContent = `Rs ${deliveryCharge.toLocaleString()}`;
+        } else {
+            console.log('Delivery charge element not found');
+        }
+        
+        if (totalAmountElement) {
+            totalAmountElement.textContent = `Rs ${totalAmount.toLocaleString()}`;
+        } else {
+            console.log('Total amount element not found');
+        }
+        
+        console.log('Cart rendered:', {
+            items: cart.length,
+            subtotal: subtotal,
+            deliveryCharge: deliveryCharge,
+            total: totalAmount
+        });
     }
 
     // Handle WhatsApp order
@@ -892,11 +1077,11 @@ class AppController {
             return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${(item.price * (item.qty || 1)).toLocaleString()}`;
         });
 
-        const total = cart.reduce((sum, item) => {
-            return sum + (item.price * (item.qty || 1));
-        }, 0);
+        const subtotal = cartManager.getCartTotal();
+        const deliveryCharge = cartManager.getDeliveryCharge();
+        const total = cartManager.getTotalWithDelivery();
 
-        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ATotal: Rs ${total.toLocaleString()}${deliveryInfo}`;
+        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: Rs ${deliveryCharge.toLocaleString()}%0ATotal: Rs ${total.toLocaleString()}${deliveryInfo}`;
         const url = `https://wa.me/${phone}?text=${message}`;
 
         // Open WhatsApp
@@ -950,6 +1135,44 @@ class AppController {
                 modal.remove();
             }
         });
+    }
+
+    // Show image modal for zoom
+    showImageModal(imageSrc, productName) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4';
+        modal.innerHTML = `
+            <div class="relative max-w-4xl max-h-full">
+                <button class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-times"></i>
+                </button>
+                <img src="${imageSrc}" alt="${productName}" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+                <div class="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
+                    <p class="text-sm">${productName}</p>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal events
+        const closeBtn = modal.querySelector('button');
+        closeBtn.addEventListener('click', () => modal.remove());
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+
+        // Close with escape key
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                modal.remove();
+                document.removeEventListener('keydown', handleEscape);
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
     }
 
     // Show product order success message
@@ -1030,23 +1253,54 @@ class AppController {
         const increaseBtn = document.getElementById('increase-quantity');
         const quantityInput = document.getElementById('quantity');
 
+        console.log('Setting up quantity controls:', {
+            decreaseBtn: !!decreaseBtn,
+            increaseBtn: !!increaseBtn,
+            quantityInput: !!quantityInput
+        });
+
         if (decreaseBtn && increaseBtn && quantityInput) {
-            decreaseBtn.addEventListener('click', () => {
+            // Remove any existing listeners to prevent duplicates
+            decreaseBtn.replaceWith(decreaseBtn.cloneNode(true));
+            increaseBtn.replaceWith(increaseBtn.cloneNode(true));
+            
+            // Get fresh references after cloning
+            const newDecreaseBtn = document.getElementById('decrease-quantity');
+            const newIncreaseBtn = document.getElementById('increase-quantity');
+            
+            newDecreaseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const currentValue = parseInt(quantityInput.value) || 1;
                 if (currentValue > 1) {
                     quantityInput.value = currentValue - 1;
+                    console.log('Quantity decreased to:', quantityInput.value);
                 }
             });
 
-            increaseBtn.addEventListener('click', () => {
+            newIncreaseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const currentValue = parseInt(quantityInput.value) || 1;
                 quantityInput.value = currentValue + 1;
+                console.log('Quantity increased to:', quantityInput.value);
             });
 
-            quantityInput.addEventListener('change', () => {
+            quantityInput.addEventListener('change', (e) => {
                 const value = parseInt(quantityInput.value) || 1;
                 quantityInput.value = Math.max(1, value);
+                console.log('Quantity changed to:', quantityInput.value);
             });
+
+            quantityInput.addEventListener('input', (e) => {
+                const value = parseInt(quantityInput.value) || 1;
+                if (value < 1) {
+                    quantityInput.value = 1;
+                }
+            });
+        } else {
+            console.log('Quantity control elements not found, retrying...');
+            setTimeout(() => this.setupQuantityControls(), 100);
         }
     }
 }

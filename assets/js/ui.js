@@ -90,7 +90,7 @@ class UIManager {
         
         // Product image
         const img = document.createElement('img');
-        img.src = product.img;
+        img.src = product.getMainImage ? product.getMainImage() : product.img;
         img.alt = product.name;
         img.className = 'foto w-full h-48 object-cover';
 

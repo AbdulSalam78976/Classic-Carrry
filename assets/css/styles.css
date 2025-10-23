@@ -1141,3 +1141,244 @@ footer {
     font-size: 0.875rem;
   }
 }
+/* Enhanced Hero Sections with Background Images */
+.hero-section {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    min-height: 70vh;
+  }
+}
+
+.hero-section img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  transition: transform 20s ease-in-out;
+}
+
+.hero-section:hover img {
+  transform: scale(1.05);
+}
+
+/* Enhanced overlay gradients for better text readability */
+.hero-section .absolute.inset-0 {
+  z-index: 1;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 10;
+}
+
+/* Enhanced text shadows for better visibility */
+.hero-section .hero-title {
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 8px 16px rgba(0, 0, 0, 0.4);
+  font-weight: 800;
+}
+
+.hero-section p {
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+  font-weight: 500;
+}
+
+/* Parallax effect for hero backgrounds */
+@media (min-width: 1024px) {
+  .hero-section {
+    background-attachment: fixed;
+  }
+}
+
+/* Enhanced gradient overlays */
+.hero-section .bg-gradient-to-r {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.85) 0%,
+    rgba(30, 41, 59, 0.75) 25%,
+    rgba(15, 23, 42, 0.65) 50%,
+    rgba(30, 41, 59, 0.75) 75%,
+    rgba(15, 23, 42, 0.85) 100%
+  );
+}
+
+.hero-section .bg-gradient-to-b {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 25%,
+    rgba(0, 0, 0, 0.3) 75%,
+    rgba(15, 23, 42, 0.6) 100%
+  );
+}
+
+/* Animation for hero content */
+.hero-section .fade-in {
+  animation: heroFadeIn 1.2s ease-out forwards;
+}
+
+@keyframes heroFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced glow effect for hero text */
+.hero-section .glow-text {
+  text-shadow: 
+    0 0 10px rgba(210, 193, 182, 0.3),
+    0 0 20px rgba(210, 193, 182, 0.2),
+    0 0 30px rgba(210, 193, 182, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive adjustments for hero sections */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 50vh;
+    padding: 4rem 0;
+  }
+  
+  .hero-section .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    min-height: 40vh;
+    padding: 3rem 0;
+  }
+  
+  .hero-section .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-section p {
+    font-size: 0.9rem;
+  }
+}/* 
+Hero Image Loading Animation */
+.hero-section img {
+  animation: heroImageLoad 1.5s ease-out forwards;
+  transform: scale(1.1);
+  opacity: 0;
+}
+
+@keyframes heroImageLoad {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Enhanced hover effects for hero sections */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero-section:hover::before {
+  opacity: 1;
+}
+
+/* Improved text contrast on hero sections */
+.hero-section .max-w-3xl {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .hero-section .max-w-3xl {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+}/
+* Subtle Pattern Overlay for Hero Sections */
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(210, 193, 182, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(210, 193, 182, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  z-index: 3;
+  pointer-events: none;
+  animation: patternFloat 20s ease-in-out infinite;
+}
+
+@keyframes patternFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translateY(-10px) rotate(1deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-5px) rotate(-0.5deg);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translateY(-15px) rotate(0.5deg);
+    opacity: 0.8;
+  }
+}
+
+/* Ensure content stays above pattern */
+.hero-section .container {
+  z-index: 10;
+  position: relative;
+}

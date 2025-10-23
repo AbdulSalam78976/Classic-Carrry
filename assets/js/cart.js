@@ -2,6 +2,7 @@
 class CartManager {
     constructor() {
         this.cartKey = 'cc_cart';
+        this.deliveryCharge = 300; // Fixed delivery charge in Rs
         this.init();
     }
     
@@ -34,23 +35,30 @@ class CartManager {
     
     // Add item to cart
     addToCart(product) {
-        const cart = this.getCart();
-        const existingItem = cart.find(item => item.id === product.id);
-        
-        if (existingItem) {
-            existingItem.qty = (existingItem.qty || 1) + 1;
-        } else {
-            cart.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                img: product.img,
-                qty: 1
-            });
+        try {
+            const cart = this.getCart();
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                existingItem.qty = (existingItem.qty || 1) + 1;
+                console.log(`Increased quantity for ${product.name} to ${existingItem.qty}`);
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    img: product.img,
+                    qty: 1
+                });
+                console.log(`Added new item to cart: ${product.name}`);
+            }
+            
+            this.setCart(cart);
+            return cart;
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            return this.getCart();
         }
-        
-        this.setCart(cart);
-        return cart;
     }
     
     // Remove item from cart
@@ -62,19 +70,27 @@ class CartManager {
     
     // Update item quantity
     updateQuantity(productId, newQty) {
-        const cart = this.getCart();
-        const item = cart.find(item => item.id === productId);
-        
-        if (item) {
-            if (newQty <= 0) {
-                return this.removeFromCart(productId);
+        try {
+            const cart = this.getCart();
+            const item = cart.find(item => item.id === productId);
+            
+            if (item) {
+                if (newQty <= 0) {
+                    return this.removeFromCart(productId);
+                } else {
+                    item.qty = Math.max(1, parseInt(newQty) || 1);
+                    this.setCart(cart);
+                    console.log(`Updated quantity for ${productId} to ${item.qty}`);
+                }
             } else {
-                item.qty = newQty;
-                this.setCart(cart);
+                console.warn(`Item ${productId} not found in cart`);
             }
+            
+            return cart;
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+            return this.getCart();
         }
-        
-        return cart;
     }
     
     // Get total items in cart
@@ -87,6 +103,16 @@ class CartManager {
         return this.getCart().reduce((total, item) => {
             return total + (item.price * (item.qty || 1));
         }, 0);
+    }
+    
+    // Get delivery charge
+    getDeliveryCharge() {
+        return this.getCart().length > 0 ? this.deliveryCharge : 0;
+    }
+    
+    // Get total including delivery
+    getTotalWithDelivery() {
+        return this.getCartTotal() + this.getDeliveryCharge();
     }
     
     // Update cart badge in UI
