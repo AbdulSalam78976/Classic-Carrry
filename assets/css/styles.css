@@ -1340,8 +1340,7 @@ Hero Image Loading Animation */
     padding: 1.5rem;
     margin: 0 1rem;
   }
-}/
-* Subtle Pattern Overlay for Hero Sections */
+}
 .hero-section::after {
   content: '';
   position: absolute;
