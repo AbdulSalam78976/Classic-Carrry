@@ -77,45 +77,58 @@ class UIManager {
     // Create product card element
     createProductCard(product) {
         const card = document.createElement('div');
-        card.className = 'card group relative';
+        card.className = 'card group relative cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl';
         card.setAttribute('data-id', product.id);
         
         if (product.category) {
             card.setAttribute('data-category', product.category);
         }
 
+        // Make entire card clickable
+        card.addEventListener('click', (e) => {
+            // Don't navigate if clicking on the add to cart button
+            if (!e.target.closest('.add-to-cart')) {
+                window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
+            }
+        });
+
         // Image container
         const imgContainer = document.createElement('div');
-        imgContainer.className = 'flex justify-center mb-4 relative';
+        imgContainer.className = 'flex justify-center mb-4 relative overflow-hidden rounded-2xl';
         
         // Product image
         const img = document.createElement('img');
         img.src = product.getMainImage ? product.getMainImage() : product.img;
         img.alt = product.name;
-        img.className = 'foto w-full h-48 object-cover';
+        img.className = 'foto w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110';
+
+        // Tag if exists
+        if (product.tag) {
+            const tag = document.createElement('span');
+            tag.className = 'absolute top-2 left-2 bg-[#D2C1B6] text-gray-900 px-2 py-1 rounded-full text-xs font-semibold shadow-lg z-10';
+            tag.textContent = product.tag;
+            imgContainer.appendChild(tag);
+        }
 
         imgContainer.appendChild(img);
 
         // Product info
         const info = document.createElement('div');
-        info.className = 'text-center space-y-3';
+        info.className = 'text-center space-y-3 p-4';
         
         // Product name
         const h1 = document.createElement('h1');
-        h1.className = 'text-lg font-semibold text-white mb-2 cursor-pointer hover:text-[#D2C1B6] transition-colors duration-300 line-clamp-2';
+        h1.className = 'text-lg font-semibold text-white mb-2 group-hover:text-[#D2C1B6] transition-colors duration-300 line-clamp-2';
         h1.textContent = product.name;
-        h1.addEventListener('click', () => {
-            window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
-        });
         
         // Price
         const price = document.createElement('div');
         price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
         price.textContent = `Rs ${product.price.toLocaleString()}`;
         
-        // Add to cart button (floating)
+        // Add to cart button
         const btn = document.createElement('button');
-        btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full';
+        btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full z-10 relative';
         btn.textContent = 'Add to Cart';
         btn.setAttribute('data-product-id', product.id);
 

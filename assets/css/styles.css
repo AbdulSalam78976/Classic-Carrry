@@ -378,6 +378,7 @@ div {
   position: relative;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  cursor: pointer;
 }
 
 .card::before {
@@ -404,7 +405,11 @@ div {
   );
   border-color: rgba(210, 193, 182, 0.4);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  transform: translateY(-8px);
+}
+
+.card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 /* Card hover effect removed - only image animates on hover */
@@ -424,7 +429,6 @@ div {
 
 @media (min-width: 768px) {
   .card:hover .foto {
-    transform: scale(1.05) translateY(-8px);
     box-shadow: none;
     border: none;
     border-radius: 0;
@@ -1017,6 +1021,8 @@ footer {
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .add-to-cart::after {

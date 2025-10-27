@@ -105,9 +105,16 @@ class CartManager {
         }, 0);
     }
     
-    // Get delivery charge
+    // Get delivery charge (free if order total >= 4000)
     getDeliveryCharge() {
-        return this.getCart().length > 0 ? this.deliveryCharge : 0;
+        if (this.getCart().length === 0) return 0;
+        const cartTotal = this.getCartTotal();
+        return cartTotal >= 4000 ? 0 : this.deliveryCharge;
+    }
+    
+    // Check if order qualifies for free delivery
+    qualifiesForFreeDelivery() {
+        return this.getCartTotal() >= 4000;
     }
     
     // Get total including delivery

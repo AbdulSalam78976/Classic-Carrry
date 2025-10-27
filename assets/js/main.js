@@ -119,11 +119,18 @@ class AppController {
             const caps = productManager.getCaps();
             const wallets = productManager.getWallets();
 
-            // Get hot caps (first 4 caps from caps array)
-            const hotCaps = caps.slice(0, 4);
-
-            // Get hot wallets (first 4 wallets from wallets array)
-            const hotWallets = wallets.slice(0, 4);
+            // Get hot products and separate by type
+            const allHotProducts = productManager.getHotProducts();
+            const hotCaps = allHotProducts.filter(product => 
+                ['male', 'female', 'summer', 'winter'].includes(product.category) && 
+                product.id.startsWith('hot-') && 
+                parseInt(product.id.split('-')[1]) <= 4
+            );
+            const hotWallets = allHotProducts.filter(product => 
+                ['male', 'female', 'cardholder', 'long'].includes(product.category) && 
+                product.id.startsWith('hot-') && 
+                parseInt(product.id.split('-')[1]) >= 5
+            );
 
             console.log('Hot caps:', hotCaps.length);
             console.log('Hot wallets:', hotWallets.length);
@@ -169,27 +176,35 @@ class AppController {
     // Create scrollable product card
     createScrollableProductCard(product) {
         const card = document.createElement('div');
-        card.className = 'scroll-item card';
+        card.className = 'scroll-item card group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl';
         card.setAttribute('data-id', product.id);
 
         if (product.category) {
             card.setAttribute('data-category', product.category);
         }
 
+        // Make entire card clickable
+        card.addEventListener('click', (e) => {
+            // Don't navigate if clicking on the add to cart button
+            if (!e.target.closest('.add-to-cart')) {
+                window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
+            }
+        });
+
         // Image container
         const imgContainer = document.createElement('div');
-        imgContainer.className = 'flex justify-center mb-4 relative';
+        imgContainer.className = 'flex justify-center mb-4 relative overflow-hidden rounded-2xl';
 
         // Product image
         const img = document.createElement('img');
         img.src = product.getMainImage ? product.getMainImage() : product.img;
         img.alt = product.name;
-        img.className = 'foto w-full h-48 object-cover';
+        img.className = 'foto w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110';
 
         // Tag if exists
         if (product.tag) {
             const tag = document.createElement('span');
-            tag.className = 'absolute top-2 left-2 bg-[#D2C1B6] text-gray-900 px-2 py-1 rounded-full text-xs font-semibold';
+            tag.className = 'absolute top-2 left-2 bg-[#D2C1B6] text-gray-900 px-2 py-1 rounded-full text-xs font-semibold shadow-lg z-10';
             tag.textContent = product.tag;
             imgContainer.appendChild(tag);
         }
@@ -198,15 +213,12 @@ class AppController {
 
         // Product info
         const info = document.createElement('div');
-        info.className = 'text-center space-y-3';
+        info.className = 'text-center space-y-3 p-4';
 
         // Product name
         const h1 = document.createElement('h1');
-        h1.className = 'text-lg font-semibold text-white mb-2 cursor-pointer hover:text-[#D2C1B6] transition-colors duration-300 line-clamp-2';
+        h1.className = 'text-lg font-semibold text-white mb-2 group-hover:text-[#D2C1B6] transition-colors duration-300 line-clamp-2';
         h1.textContent = product.name;
-        h1.addEventListener('click', () => {
-            window.location.href = `product.html?id=${encodeURIComponent(product.id)}`;
-        });
 
         // Price
         const price = document.createElement('div');
@@ -215,7 +227,7 @@ class AppController {
 
         // Add to cart button
         const btn = document.createElement('button');
-        btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full';
+        btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full z-10 relative';
         btn.textContent = 'Add to Cart';
         btn.setAttribute('data-product-id', product.id);
 
@@ -560,9 +572,10 @@ class AppController {
         whatsappBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
             const subtotal = product.price * quantity;
-            const deliveryCharge = cartManager.deliveryCharge;
+            const deliveryCharge = subtotal >= 4000 ? 0 : cartManager.deliveryCharge;
             const total = subtotal + deliveryCharge;
-            const message = `Hello Classic Carry!%0A%0AI would like to buy:%0A${product.name} x${quantity} - Rs ${subtotal.toLocaleString()}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: Rs ${deliveryCharge.toLocaleString()}%0ATotal: Rs ${total.toLocaleString()}%0A%0A`;
+            const deliveryText = subtotal >= 4000 ? 'FREE (Order above Rs 4,000)' : `Rs ${deliveryCharge.toLocaleString()}`;
+            const message = `Hello Classic Carry!%0A%0AI would like to buy:%0A${product.name} x${quantity} - Rs ${subtotal.toLocaleString()}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: ${deliveryText}%0ATotal: Rs ${total.toLocaleString()}%0A%0A`;
             window.open(`https://wa.me/923160928206?text=${message}`, '_blank');
 
             // Show success message for individual product order
@@ -1013,13 +1026,28 @@ class AppController {
         // Update delivery charge and total using CartManager methods
         const deliveryChargeElement = document.getElementById('delivery-charge');
         const totalAmountElement = document.getElementById('total-amount');
+        const freeDeliveryNotice = document.getElementById('free-delivery-notice');
         const deliveryCharge = cartManager.getDeliveryCharge();
         const totalAmount = cartManager.getTotalWithDelivery();
+        const qualifiesForFree = cartManager.qualifiesForFreeDelivery();
         
         if (deliveryChargeElement) {
-            deliveryChargeElement.textContent = `Rs ${deliveryCharge.toLocaleString()}`;
+            if (qualifiesForFree) {
+                deliveryChargeElement.innerHTML = '<span class="line-through text-gray-500">Rs 300.00</span> <span class="text-green-400 font-bold">FREE</span>';
+            } else {
+                deliveryChargeElement.textContent = `Rs ${deliveryCharge.toLocaleString()}`;
+            }
         } else {
             console.log('Delivery charge element not found');
+        }
+        
+        // Show/hide free delivery notice
+        if (freeDeliveryNotice) {
+            if (qualifiesForFree) {
+                freeDeliveryNotice.classList.remove('hidden');
+            } else {
+                freeDeliveryNotice.classList.add('hidden');
+            }
         }
         
         if (totalAmountElement) {
@@ -1081,7 +1109,8 @@ class AppController {
         const deliveryCharge = cartManager.getDeliveryCharge();
         const total = cartManager.getTotalWithDelivery();
 
-        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: Rs ${deliveryCharge.toLocaleString()}%0ATotal: Rs ${total.toLocaleString()}${deliveryInfo}`;
+        const deliveryText = cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${deliveryCharge.toLocaleString()}`;
+        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: ${deliveryText}%0ATotal: Rs ${total.toLocaleString()}${deliveryInfo}`;
         const url = `https://wa.me/${phone}?text=${message}`;
 
         // Open WhatsApp
