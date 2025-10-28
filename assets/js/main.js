@@ -867,8 +867,8 @@ class AppController {
         const deliveryForm = document.getElementById('delivery-form');
         
         if (placeOrderBtn && deliveryForm) {
-            deliveryForm.addEventListener('submit', (e) => {
-                this.handleFormSubmission(e);
+            placeOrderBtn.addEventListener('click', (e) => {
+                this.handleOrderSubmission(e, deliveryForm);
             });
         }
     }
@@ -1066,8 +1066,8 @@ class AppController {
         });
     }
 
-    // Handle form submission
-    handleFormSubmission(e) {
+    // Handle order submission
+    handleOrderSubmission(e, form) {
         e.preventDefault();
         
         const cart = cartManager.getCart();
@@ -1077,7 +1077,6 @@ class AppController {
         }
 
         // Validate required fields
-        const form = e.target;
         const formData = new FormData(form);
         
         const email = formData.get('email');
@@ -1091,6 +1090,13 @@ class AppController {
         if (!email || !firstName || !lastName || !phone || !address || !city || !province) {
             this.showNotification('Please fill in all required fields.', 'error');
             return;
+        }
+
+        // Show loading state
+        const submitBtn = document.getElementById('place-order');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-xl"></i> <span>Processing Order...</span>';
         }
 
         // Prepare order data
@@ -1111,18 +1117,24 @@ class AppController {
         document.getElementById('order-total').value = `Rs ${total.toLocaleString()}`;
         document.getElementById('order-date').value = orderDate;
 
-        // Disable submit button to prevent double submission
-        const submitBtn = document.getElementById('place-order');
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-xl"></i> <span>Processing Order...</span>';
-        }
-
-        // Clear cart before form submission
+        // Clear cart and submit form
         cartManager.clearCart();
         
-        // Let the form submit naturally to Netlify
-        // The form will redirect to order-success.html automatically
+        // Submit form using fetch to Netlify
+        fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(new FormData(form)).toString()
+        })
+        .then(() => {
+            // Redirect to success page
+            window.location.href = '/order-success.html';
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            // Fallback: try regular form submission
+            form.submit();
+        });
     }
 
     // Show order success message
