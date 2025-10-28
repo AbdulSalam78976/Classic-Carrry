@@ -566,24 +566,23 @@ class AppController {
         addToCartBtn.textContent = 'Add to Cart';
         addToCartBtn.setAttribute('data-product-id', product.id);
 
-        const whatsappBtn = document.createElement('button');
-        whatsappBtn.className = 'bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 font-medium';
-        whatsappBtn.innerHTML = '<i class="fab fa-whatsapp mr-2"></i> Buy on WhatsApp';
-        whatsappBtn.onclick = () => {
+        const buyNowBtn = document.createElement('button');
+        buyNowBtn.className = 'bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition duration-300 font-medium';
+        buyNowBtn.innerHTML = '<i class="fas fa-bolt mr-2"></i> Buy Now';
+        buyNowBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
-            const subtotal = product.price * quantity;
-            const deliveryCharge = subtotal >= 4000 ? 0 : cartManager.deliveryCharge;
-            const total = subtotal + deliveryCharge;
-            const deliveryText = subtotal >= 4000 ? 'FREE (Order above Rs 4,000)' : `Rs ${deliveryCharge.toLocaleString()}`;
-            const message = `Hello Classic Carry!%0A%0AI would like to buy:%0A${product.name} x${quantity} - Rs ${subtotal.toLocaleString()}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: ${deliveryText}%0ATotal: Rs ${total.toLocaleString()}%0A%0A`;
-            window.open(`https://wa.me/923160928206?text=${message}`, '_blank');
-
-            // Show success message for individual product order
-            this.showProductOrderSuccessMessage(product.name);
+            
+            // Add to cart with specified quantity
+            for (let i = 0; i < quantity; i++) {
+                cartManager.addToCart(product.getCartData());
+            }
+            
+            // Redirect to checkout
+            window.location.href = 'checkout.html';
         };
 
         actions.appendChild(addToCartBtn);
-        actions.appendChild(whatsappBtn);
+        actions.appendChild(buyNowBtn);
 
         // Features section
         const featuresDiv = document.createElement('div');
@@ -863,10 +862,13 @@ class AppController {
             }
         });
 
-        // WhatsApp order
-        if (whatsappBtn) {
-            whatsappBtn.addEventListener('click', () => {
-                this.handleWhatsAppOrder();
+        // Form submission handling
+        const placeOrderBtn = document.getElementById('place-order');
+        const deliveryForm = document.getElementById('delivery-form');
+        
+        if (placeOrderBtn && deliveryForm) {
+            deliveryForm.addEventListener('submit', (e) => {
+                this.handleFormSubmission(e);
             });
         }
     }
@@ -1064,64 +1066,105 @@ class AppController {
         });
     }
 
-    // Handle WhatsApp order
-    handleWhatsAppOrder() {
+    // Handle form submission
+    handleFormSubmission(e) {
+        e.preventDefault();
+        
         const cart = cartManager.getCart();
-
         if (!cart.length) {
-            alert('Your cart is empty.');
+            this.showNotification('Your cart is empty. Please add items before placing an order.', 'error');
             return;
         }
 
-        // Get delivery form data
-        const deliveryForm = document.getElementById('delivery-form');
-        let deliveryInfo = '';
+        // Validate required fields
+        const form = e.target;
+        const formData = new FormData(form);
+        
+        const email = formData.get('email');
+        const firstName = formData.get('firstName');
+        const lastName = formData.get('lastName');
+        const phone = formData.get('phone');
+        const address = formData.get('address');
+        const city = formData.get('city');
+        const province = formData.get('province');
 
-        if (deliveryForm) {
-            const formData = new FormData(deliveryForm);
-            const firstName = formData.get('firstName') || '';
-            const lastName = formData.get('lastName') || '';
-            const phone = formData.get('phone') || '';
-            const address = formData.get('address') || '';
-            const city = formData.get('city') || '';
-            const province = formData.get('province') || '';
-            const postalCode = formData.get('postalCode') || '';
-            const deliveryNotes = formData.get('deliveryNotes') || '';
-
-            if (firstName || lastName || phone || address) {
-                deliveryInfo = `%0A%0ADelivery Information:%0A`;
-                if (firstName || lastName) deliveryInfo += `Name: ${firstName} ${lastName}%0A`;
-                if (phone) deliveryInfo += `Phone: ${phone}%0A`;
-                if (address) deliveryInfo += `Address: ${address}%0A`;
-                if (city) deliveryInfo += `City: ${city}%0A`;
-                if (province) deliveryInfo += `Province: ${province}%0A`;
-                if (postalCode) deliveryInfo += `Postal Code: ${postalCode}%0A`;
-                if (deliveryNotes) deliveryInfo += `Delivery Notes: ${deliveryNotes}%0A`;
-            }
+        if (!email || !firstName || !lastName || !phone || !address || !city || !province) {
+            this.showNotification('Please fill in all required fields.', 'error');
+            return;
         }
 
-        const phone = '923160928206';
-        const lines = cart.map((item, index) => {
-            return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${(item.price * (item.qty || 1)).toLocaleString()}`;
-        });
-
+        // Prepare order data
         const subtotal = cartManager.getCartTotal();
         const deliveryCharge = cartManager.getDeliveryCharge();
         const total = cartManager.getTotalWithDelivery();
+        const orderDate = new Date().toLocaleString();
 
-        const deliveryText = cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${deliveryCharge.toLocaleString()}`;
-        const message = `Hello Classic Carry!%0A%0AI would like to place an order:%0A${lines.join('%0A')}%0A%0ASubtotal: Rs ${subtotal.toLocaleString()}%0ADelivery Charge: ${deliveryText}%0ATotal: Rs ${total.toLocaleString()}${deliveryInfo}`;
-        const url = `https://wa.me/${phone}?text=${message}`;
+        // Format order items for submission
+        const orderItems = cart.map((item, index) => {
+            return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${(item.price * (item.qty || 1)).toLocaleString()}`;
+        }).join('\n');
 
-        // Open WhatsApp
-        window.open(url, '_blank');
+        // Update hidden form fields
+        document.getElementById('order-items').value = orderItems;
+        document.getElementById('order-subtotal').value = `Rs ${subtotal.toLocaleString()}`;
+        document.getElementById('order-delivery-charge').value = cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${deliveryCharge.toLocaleString()}`;
+        document.getElementById('order-total').value = `Rs ${total.toLocaleString()}`;
+        document.getElementById('order-date').value = orderDate;
 
-        // Clear cart and show success message
+        // Disable submit button to prevent double submission
+        const submitBtn = document.getElementById('place-order');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-xl"></i> <span>Processing Order...</span>';
+        }
+
+        // Clear cart before form submission
         cartManager.clearCart();
-        this.renderCart();
+        
+        // Let the form submit naturally to Netlify
+        // The form will redirect to order-success.html automatically
+    }
 
-        // Show success notification
-        this.showOrderSuccessMessage();
+    // Show order success message
+    showOrderSuccessMessage(email, total) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+        modal.innerHTML = `
+            <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 max-w-md w-full mx-4 border border-gray-700 shadow-2xl">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Order Placed Successfully!</h3>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        Thank you for your order! We've sent a confirmation email to <strong class="text-[#D2C1B6]">${email}</strong> with your order details.
+                    </p>
+                    <div class="bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg p-4 mb-6">
+                        <p class="text-sm text-gray-300">
+                            <i class="fas fa-info-circle text-[#D2C1B6] mr-2"></i>
+                            Order Total: <span class="font-bold text-[#D2C1B6]">Rs ${total.toLocaleString()}</span>
+                        </p>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="window.location.href='index.html'" class="bg-gradient-to-r from-[#D2C1B6] to-amber-200 text-gray-900 px-6 py-3 rounded-lg font-medium hover:from-amber-200 hover:to-[#D2C1B6] transition-all duration-200">
+                            Continue Shopping
+                        </button>
+                        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Auto-remove after 10 seconds
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.remove();
+            }
+        }, 10000);
     }
 
     // Show order success message

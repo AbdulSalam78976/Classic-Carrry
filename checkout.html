@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - Classic Carry</title>
+  <title>Checkout - Classic Carrry</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -80,7 +80,29 @@
             Delivery Information
           </h2>
           
-          <form id="delivery-form" class="space-y-5">
+          <form id="delivery-form" name="order-form" method="POST" action="/order-success.html" data-netlify="true" netlify-honeypot="bot-field" class="space-y-5">
+            <!-- Honeypot field for spam protection -->
+            <div style="display: none;">
+              <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+            </div>
+            
+            <!-- Hidden fields for order data -->
+            <input type="hidden" name="form-name" value="order-form">
+            <input type="hidden" id="order-items" name="orderItems" value="">
+            <input type="hidden" id="order-subtotal" name="orderSubtotal" value="">
+            <input type="hidden" id="order-delivery-charge" name="orderDeliveryCharge" value="">
+            <input type="hidden" id="order-total" name="orderTotal" value="">
+            <input type="hidden" id="order-date" name="orderDate" value="">
+            
+            <!-- Customer Email Field -->
+            <div>
+              <label for="email" class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
+                <i class="fas fa-envelope text-[#D2C1B6] text-xs"></i>
+                Email Address
+              </label>
+              <input type="email" id="email" name="email" required placeholder="your.email@example.com"
+                class="form-input w-full px-4 py-3 rounded-lg text-gray-100">
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label for="first-name" class="block text-sm font-semibold text-gray-300 mb-2 flex items-center gap-2">
@@ -205,7 +227,7 @@
           <div class="bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg p-4 mb-6">
             <p class="text-xs text-gray-300 leading-relaxed flex items-start gap-2 mb-2">
               <i class="fas fa-info-circle text-[#D2C1B6] mt-0.5"></i>
-              <span>Delivery charge of Rs 300 applies to orders below Rs 4,000. Your order details will be confirmed via WhatsApp.</span>
+              <span>Delivery charge of Rs 300 applies to orders below Rs 4,000. Order confirmation will be sent via email.</span>
             </p>
             <p class="text-xs text-green-300 leading-relaxed flex items-start gap-2">
               <i class="fas fa-gift text-green-400 mt-0.5"></i>
@@ -213,10 +235,10 @@
             </p>
           </div>
 
-          <button id="whatsapp-order"
-            class="w-full btn-whatsapp text-white px-5 py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-2xl text-lg">
-            <i class="fab fa-whatsapp text-2xl"></i> 
-            <span>Place Order on WhatsApp</span>
+          <button id="place-order" type="submit" form="delivery-form"
+            class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-5 py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="fas fa-shopping-cart text-xl"></i> 
+            <span>Place Order</span>
           </button>
           
           <div class="mt-6 space-y-3">
@@ -233,6 +255,26 @@
       </aside>
     </div>
   </main>
+
+  <!-- Hidden form for Netlify form detection -->
+  <form name="order-form" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="bot-field" />
+    <input type="text" name="form-name" />
+    <input type="email" name="email" />
+    <input type="text" name="firstName" />
+    <input type="text" name="lastName" />
+    <input type="tel" name="phone" />
+    <input type="text" name="address" />
+    <input type="text" name="city" />
+    <input type="text" name="province" />
+    <input type="text" name="postalCode" />
+    <textarea name="deliveryNotes"></textarea>
+    <textarea name="orderItems"></textarea>
+    <input type="text" name="orderSubtotal" />
+    <input type="text" name="orderDeliveryCharge" />
+    <input type="text" name="orderTotal" />
+    <input type="text" name="orderDate" />
+  </form>
 
   <!-- Footer Component -->
   <div id="footer-component"></div>
