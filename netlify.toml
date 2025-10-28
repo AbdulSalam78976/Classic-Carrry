@@ -8,76 +8,12 @@
 [[forms]]
   name = "order-form"
 
-# Email notifications for form submissions
-[[notifications]]
-  type = "email"
-  event = "submission-created"
-  form = "order-form"
-  to = ["mrdj78976@gmail.com"]
-  subject = "New Order Received - Classic Carry"
-  body = """
-New order received from Classic Carry website!
+[[forms]]
+  name = "contact-form"
 
-Customer Details:
-- Name: {{firstName}} {{lastName}}
-- Email: {{email}}
-- Phone: {{phone}}
-- Address: {{address}}, {{city}}, {{province}} {{postalCode}}
-
-Order Details:
-{{orderItems}}
-
-Order Summary:
-- Subtotal: {{orderSubtotal}}
-- Delivery Charge: {{orderDeliveryCharge}}
-- Total: {{orderTotal}}
-- Order Date: {{orderDate}}
-
-Delivery Notes: {{deliveryNotes}}
-
-Please process this order as soon as possible.
-"""
-
-# Auto-responder for customers
-[[notifications]]
-  type = "email"
-  event = "submission-created"
-  form = "order-form"
-  to = ["{{email}}"]
-  subject = "Order Confirmation - Classic Carry"
-  body = """
-Dear {{firstName}} {{lastName}},
-
-Thank you for your order with Classic Carry! We're excited to get your premium caps and wallets to you.
-
-Order Confirmation Details:
-{{orderItems}}
-
-Order Summary:
-- Subtotal: {{orderSubtotal}}
-- Delivery Charge: {{orderDeliveryCharge}}
-- Total: {{orderTotal}}
-- Order Date: {{orderDate}}
-
-Delivery Address:
-{{address}}
-{{city}}, {{province}} {{postalCode}}
-
-What happens next?
-1. We'll process your order within 1-2 business days
-2. Your items will be carefully packaged and shipped
-3. You'll receive tracking information once shipped
-4. Delivery typically takes 3-5 business days
-
-If you have any questions about your order, please don't hesitate to contact us:
-- Email: support@classiccarry.com
-- Phone: +92 316 092 8206
-
-Thank you for choosing Classic Carry!
-
-Best regards,
-The Classic Carry Team
-"""
+# Build settings - Email notifications configured in Netlify Dashboard
+[build.processing.html]
+  pretty_urls = true
 
 # Headers for security
 [[headers]]
