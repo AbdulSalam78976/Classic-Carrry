@@ -973,13 +973,7 @@ footer {
   top: 100px;
 }
 
-/* Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* Gradient Text - Removed for better mobile compatibility */
 
 /* Loading Spinner */
 .spinner {
@@ -1386,4 +1380,82 @@ Hero Image Loading Animation */
 .hero-section .container {
   z-index: 10;
   position: relative;
+}/* Mobile
+ Cart Improvements */
+@media (max-width: 640px) {
+  /* Cart item improvements */
+  .cart-item-mobile {
+    padding: 1rem;
+  }
+  
+  /* Better touch targets for mobile */
+  .qty-minus, .qty-plus {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Remove button improvements */
+  .remove-item {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Cart header improvements */
+  .cart-header-mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  /* Better spacing for cart items */
+  .cart-items-container {
+    gap: 0.75rem;
+  }
+  
+  /* Improved text sizing for mobile */
+  .cart-item-name {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .cart-item-price {
+    font-size: 0.75rem;
+  }
+  
+  /* Better button sizing */
+  .cart-action-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Line clamp utility for product names */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Improved hover states for touch devices */
+@media (hover: hover) {
+  .cart-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) {
+  .cart-item:active {
+    transform: scale(0.98);
+  }
+  
+  .qty-minus:active,
+  .qty-plus:active,
+  .remove-item:active {
+    transform: scale(0.95);
+  }
 }

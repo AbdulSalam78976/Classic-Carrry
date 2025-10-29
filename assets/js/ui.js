@@ -126,6 +126,37 @@ class UIManager {
         price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
         price.textContent = `Rs ${product.price.toLocaleString()}`;
         
+        // Available colors
+        const colorsDiv = document.createElement('div');
+        colorsDiv.className = 'mb-3';
+        
+        const colorsLabel = document.createElement('div');
+        colorsLabel.className = 'text-xs text-gray-400 mb-2';
+        colorsLabel.textContent = 'Available Colors:';
+        
+        const colorsContainer = document.createElement('div');
+        colorsContainer.className = 'flex flex-wrap gap-1 justify-center';
+        
+        const availableColors = product.getAvailableColors ? product.getAvailableColors() : product.colors || ['Black', 'Brown'];
+        const maxColorsToShow = 4;
+        
+        availableColors.slice(0, maxColorsToShow).forEach(color => {
+            const colorChip = document.createElement('span');
+            colorChip.className = 'px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded-full border border-gray-600';
+            colorChip.textContent = color;
+            colorsContainer.appendChild(colorChip);
+        });
+        
+        if (availableColors.length > maxColorsToShow) {
+            const moreColors = document.createElement('span');
+            moreColors.className = 'px-2 py-1 bg-gray-600 text-gray-400 text-xs rounded-full border border-gray-500';
+            moreColors.textContent = `+${availableColors.length - maxColorsToShow}`;
+            colorsContainer.appendChild(moreColors);
+        }
+        
+        colorsDiv.appendChild(colorsLabel);
+        colorsDiv.appendChild(colorsContainer);
+        
         // Add to cart button
         const btn = document.createElement('button');
         btn.className = 'add-to-cart bg-[#D2C1B6] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200 shadow-sm hover:shadow-md w-full z-10 relative';
@@ -134,6 +165,7 @@ class UIManager {
 
         info.appendChild(h1);
         info.appendChild(price);
+        info.appendChild(colorsDiv);
         info.appendChild(btn);
         
         card.appendChild(imgContainer);

@@ -395,19 +395,24 @@ class AppController {
         }
 
         container.innerHTML = '';
+        container.className = 'max-w-7xl mx-auto px-4 py-8';
 
-        // Product image
+        // Main product container with improved layout
+        const productWrapper = document.createElement('div');
+        productWrapper.className = 'grid grid-cols-1 lg:grid-cols-2 gap-12 items-start';
+
+        // Product image section with enhanced styling
         const leftDiv = document.createElement('div');
-        leftDiv.className = 'md:w-1/2';
+        leftDiv.className = 'space-y-6';
 
         const mainImgDiv = document.createElement('div');
-        mainImgDiv.className = 'bg-gray-700 rounded-xl shadow-lg overflow-hidden mb-4';
+        mainImgDiv.className = 'bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl shadow-2xl overflow-hidden border border-gray-600';
 
         const img = document.createElement('img');
         img.id = 'main-product-image';
         img.src = product.getMainImage();
         img.alt = product.name;
-        img.className = 'w-full h-96 object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105';
+        img.className = 'w-full h-[500px] object-cover cursor-zoom-in transition-all duration-500 hover:scale-110';
         
         // Add click event for image zoom
         img.addEventListener('click', () => {
@@ -416,17 +421,17 @@ class AppController {
         
         mainImgDiv.appendChild(img);
 
-        // Thumbnail images using all available images
+        // Enhanced thumbnail images
         const thumbnailsDiv = document.createElement('div');
         const allImages = product.getAllImages();
         const maxThumbnails = Math.min(allImages.length, 4);
         
         if (maxThumbnails > 1) {
-            thumbnailsDiv.className = `grid grid-cols-${maxThumbnails} gap-4`;
+            thumbnailsDiv.className = `grid grid-cols-${maxThumbnails} gap-3`;
             
             allImages.slice(0, maxThumbnails).forEach((imageUrl, index) => {
                 const thumbDiv = document.createElement('div');
-                thumbDiv.className = 'bg-gray-700 rounded-lg shadow cursor-pointer hover:shadow-md transition hover:ring-2 hover:ring-[#D2C1B6]';
+                thumbDiv.className = 'bg-gradient-to-br from-gray-700 to-gray-600 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 hover:ring-2 hover:ring-[#D2C1B6] hover:ring-opacity-50 hover:scale-105 border border-gray-600';
                 
                 // Change main image on click
                 thumbDiv.onclick = () => {
@@ -441,7 +446,7 @@ class AppController {
                 const thumbImg = document.createElement('img');
                 thumbImg.src = imageUrl;
                 thumbImg.alt = `${product.name} - View ${index + 1}`;
-                thumbImg.className = 'w-full h-24 object-cover rounded-lg';
+                thumbImg.className = 'w-full h-28 object-cover rounded-xl transition-transform duration-300';
                 thumbDiv.appendChild(thumbImg);
                 thumbnailsDiv.appendChild(thumbDiv);
             });
@@ -462,20 +467,37 @@ class AppController {
         leftDiv.appendChild(mainImgDiv);
         leftDiv.appendChild(thumbnailsDiv);
 
-        // Product details
+        // Enhanced product details section
         const rightDiv = document.createElement('div');
-        rightDiv.className = 'md:w-1/2';
+        rightDiv.className = 'space-y-6';
+
+        // Product header with improved styling
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'border-b border-gray-700 pb-6';
 
         const title = document.createElement('h1');
-        title.className = 'font-display text-3xl font-bold mb-4 text-gray-200';
+        title.className = 'font-display text-4xl font-bold mb-3 text-white leading-tight';
         title.textContent = product.name;
 
-        // Star rating
+        // Product tag with enhanced styling
+        if (product.tag) {
+            const tagElement = document.createElement('div');
+            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#D2C1B6] text-gray-900 mb-4 shadow-lg';
+            tagElement.innerHTML = `<i class="fas fa-star mr-2"></i>${product.tag}`;
+            headerDiv.appendChild(tagElement);
+        }
+
+        headerDiv.appendChild(title);
+
+        // Enhanced star rating section
         const ratingDiv = document.createElement('div');
-        ratingDiv.className = 'flex items-center mb-4';
+        ratingDiv.className = 'flex items-center justify-between bg-gray-800 rounded-xl p-4 border border-gray-700';
+
+        const ratingLeft = document.createElement('div');
+        ratingLeft.className = 'flex items-center space-x-3';
 
         const starsDiv = document.createElement('div');
-        starsDiv.className = 'flex text-yellow-400';
+        starsDiv.className = 'flex text-yellow-400 text-lg';
         const rating = product.rating || 4.5;
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 !== 0;
@@ -492,62 +514,106 @@ class AppController {
             starsDiv.appendChild(star);
         }
 
-        const ratingText = document.createElement('span');
-        ratingText.className = 'text-gray-300 ml-2';
-        ratingText.textContent = `${rating} (${product.reviewCount || 128} reviews)`;
+        const ratingText = document.createElement('div');
+        ratingText.className = 'text-gray-300';
+        ratingText.innerHTML = `
+            <div class="font-semibold text-white">${rating}/5</div>
+            <div class="text-sm text-gray-400">${product.reviewCount || 128} reviews</div>
+        `;
 
-        ratingDiv.appendChild(starsDiv);
-        ratingDiv.appendChild(ratingText);
+        ratingLeft.appendChild(starsDiv);
+        ratingLeft.appendChild(ratingText);
+        ratingDiv.appendChild(ratingLeft);
 
-        const price = document.createElement('div');
-        price.className = 'text-3xl font-bold text-gray-200 mb-4';
-        price.textContent = `Rs ${product.price.toLocaleString()}`;
-
-        // Stock status
-        const stockDiv = document.createElement('div');
-        stockDiv.className = 'mb-6';
+        // Enhanced price section
+        const priceSection = document.createElement('div');
+        priceSection.className = 'bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 border border-gray-600';
         
-        const stockStatus = document.createElement('span');
-        stockStatus.className = `text-sm font-semibold ${product.getStockStatusClass ? product.getStockStatusClass() : 'text-green-400'}`;
-        stockStatus.textContent = product.getStockStatus ? product.getStockStatus() : 'In Stock';
+        const priceLabel = document.createElement('div');
+        priceLabel.className = 'text-sm text-gray-400 mb-2';
+        priceLabel.textContent = 'Price';
+        
+        const price = document.createElement('div');
+        price.className = 'text-4xl font-bold text-[#D2C1B6] mb-2';
+        price.textContent = `Rs ${product.price.toLocaleString()}`;
+        
+        const priceNote = document.createElement('div');
+        priceNote.className = 'text-sm text-gray-400';
+        priceNote.innerHTML = '<i class="fas fa-truck mr-1"></i>Free shipping on orders over Rs 5,000';
+        
+        priceSection.appendChild(priceLabel);
+        priceSection.appendChild(price);
+        priceSection.appendChild(priceNote);
+
+        // Enhanced stock status
+        const stockDiv = document.createElement('div');
+        stockDiv.className = 'bg-gray-800 rounded-xl p-4 border border-gray-700';
+        
+        const stockContainer = document.createElement('div');
+        stockContainer.className = 'flex items-center justify-between';
+        
+        const stockLeft = document.createElement('div');
+        stockLeft.className = 'flex items-center';
         
         const stockIcon = document.createElement('i');
-        stockIcon.className = `fas ${product.isInStock && product.isInStock() ? 'fa-check-circle' : 'fa-times-circle'} mr-2`;
+        stockIcon.className = `fas ${product.isInStock && product.isInStock() ? 'fa-check-circle text-green-400' : 'fa-times-circle text-red-400'} mr-3 text-xl`;
         
-        stockDiv.appendChild(stockIcon);
-        stockDiv.appendChild(stockStatus);
+        const stockLabel = document.createElement('span');
+        stockLabel.className = 'text-gray-300 font-medium';
+        stockLabel.textContent = 'Availability:';
+        
+        const stockStatus = document.createElement('span');
+        stockStatus.className = `ml-2 font-bold text-lg ${product.getStockStatusClass ? product.getStockStatusClass() : 'text-green-400'}`;
+        stockStatus.textContent = product.getStockStatus ? product.getStockStatus() : 'In Stock';
+        
+        stockLeft.appendChild(stockIcon);
+        stockLeft.appendChild(stockLabel);
+        stockLeft.appendChild(stockStatus);
+        stockContainer.appendChild(stockLeft);
+        stockDiv.appendChild(stockContainer);
 
+        // Enhanced description section
+        const descriptionDiv = document.createElement('div');
+        descriptionDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
+        
+        const descriptionLabel = document.createElement('h3');
+        descriptionLabel.className = 'text-xl font-semibold mb-3 text-white flex items-center';
+        descriptionLabel.innerHTML = '<i class="fas fa-info-circle mr-2 text-[#D2C1B6]"></i>Description';
+        
         const description = document.createElement('p');
-        description.className = 'text-gray-300 mb-6';
+        description.className = 'text-gray-300 leading-relaxed text-lg';
         description.textContent = product.description || 'Premium quality product from classiccarrry.';
+        
+        descriptionDiv.appendChild(descriptionLabel);
+        descriptionDiv.appendChild(description);
 
-        // Quantity selector
+        // Enhanced quantity selector
         const quantityDiv = document.createElement('div');
-        quantityDiv.className = 'mb-8';
+        quantityDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
 
         const quantityLabel = document.createElement('h3');
-        quantityLabel.className = 'text-lg font-semibold mb-3 text-gray-200';
-        quantityLabel.textContent = 'Quantity';
+        quantityLabel.className = 'text-xl font-semibold mb-4 text-white flex items-center';
+        quantityLabel.innerHTML = '<i class="fas fa-sort-numeric-up mr-2 text-[#D2C1B6]"></i>Quantity';
 
         const quantityControls = document.createElement('div');
-        quantityControls.className = 'flex items-center';
+        quantityControls.className = 'flex items-center justify-center bg-gray-700 rounded-xl p-2 border border-gray-600';
 
         const decreaseBtn = document.createElement('button');
         decreaseBtn.id = 'decrease-quantity';
-        decreaseBtn.className = 'px-3 py-1 border border-gray-600 rounded-l-md hover:bg-gray-700 text-gray-200';
-        decreaseBtn.textContent = '-';
+        decreaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-300 font-bold text-lg';
+        decreaseBtn.innerHTML = '<i class="fas fa-minus"></i>';
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.id = 'quantity';
         quantityInput.value = '1';
         quantityInput.min = '1';
-        quantityInput.className = 'w-16 px-3 py-1 border-t border-b border-gray-600 text-center focus:outline-none bg-gray-700 text-gray-200';
+        quantityInput.className = 'w-20 h-12 mx-4 text-center text-xl font-bold bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] rounded-lg';
 
         const increaseBtn = document.createElement('button');
         increaseBtn.id = 'increase-quantity';
-        increaseBtn.className = 'px-3 py-1 border border-gray-600 rounded-r-md hover:bg-gray-700 text-gray-200';
-        increaseBtn.textContent = '+';
+        increaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-300 font-bold text-lg';
+        increaseBtn.innerHTML = '<i class="fas fa-plus"></i>';
 
         quantityControls.appendChild(decreaseBtn);
         quantityControls.appendChild(quantityInput);
@@ -556,16 +622,16 @@ class AppController {
         quantityDiv.appendChild(quantityLabel);
         quantityDiv.appendChild(quantityControls);
 
-        // Color selection
+        // Enhanced color selection
         const colorDiv = document.createElement('div');
-        colorDiv.className = 'mb-6';
+        colorDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
 
         const colorLabel = document.createElement('h3');
-        colorLabel.className = 'text-lg font-semibold mb-3 text-gray-200';
-        colorLabel.textContent = 'Color';
+        colorLabel.className = 'text-xl font-semibold mb-4 text-white flex items-center';
+        colorLabel.innerHTML = '<i class="fas fa-palette mr-2 text-[#D2C1B6]"></i>Choose Color';
 
         const colorOptions = document.createElement('div');
-        colorOptions.className = 'flex flex-wrap gap-2';
+        colorOptions.className = 'grid grid-cols-2 sm:grid-cols-3 gap-3';
 
         const availableColors = product.getAvailableColors ? product.getAvailableColors() : product.colors || [];
         const selectedColor = product.getSelectedColor ? product.getSelectedColor() : availableColors[0];
@@ -574,10 +640,10 @@ class AppController {
             const colorButton = document.createElement('button');
             const isSelected = selectedColor === color;
             
-            colorButton.className = `px-4 py-2 rounded-lg border transition-all duration-200 ${
+            colorButton.className = `px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center ${
                 isSelected
-                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium' 
-                    : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500'
+                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105' 
+                    : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-[#D2C1B6] hover:shadow-md hover:scale-102'
             }`;
             colorButton.textContent = color;
             colorButton.setAttribute('data-color', color);
@@ -590,11 +656,11 @@ class AppController {
                 
                 // Update UI - remove selection from all buttons
                 document.querySelectorAll('[data-color]').forEach(btn => {
-                    btn.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500';
+                    btn.className = 'px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-[#D2C1B6] hover:shadow-md hover:scale-102';
                 });
                 
                 // Add selection to clicked button
-                colorButton.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium';
+                colorButton.className = 'px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105';
 
                 // Update selected color display
                 const selectedColorText = document.getElementById('selected-color-text');
@@ -606,123 +672,65 @@ class AppController {
             colorOptions.appendChild(colorButton);
         });
 
-        // Selected color display
+        // Enhanced selected color display
         const selectedColorDisplay = document.createElement('div');
-        selectedColorDisplay.className = 'mt-3 text-sm text-gray-300';
-        selectedColorDisplay.innerHTML = `Selected: <span id="selected-color-text" class="font-medium text-gray-200">${selectedColor || 'None'}</span>`;
+        selectedColorDisplay.className = 'mt-4 p-3 bg-gray-700 rounded-lg border border-gray-600';
+        selectedColorDisplay.innerHTML = `
+            <div class="flex items-center justify-between">
+                <span class="text-gray-300">Selected Color:</span>
+                <span id="selected-color-text" class="font-semibold text-[#D2C1B6]">${selectedColor || 'None'}</span>
+            </div>
+        `;
 
         colorDiv.appendChild(colorLabel);
         colorDiv.appendChild(colorOptions);
         colorDiv.appendChild(selectedColorDisplay);
 
-        // Theme selection
-        const themeDiv = document.createElement('div');
-        themeDiv.className = 'mb-6';
-
-        const themeLabel = document.createElement('h3');
-        themeLabel.className = 'text-lg font-semibold mb-3 text-gray-200';
-        themeLabel.textContent = 'Theme';
-
-        const themeOptions = document.createElement('div');
-        themeOptions.className = 'flex flex-wrap gap-2';
-
-        const availableThemes = product.getAvailableThemes ? product.getAvailableThemes() : product.themes || [];
-        const selectedTheme = product.getSelectedTheme ? product.getSelectedTheme() : availableThemes[0];
-
-        availableThemes.forEach(theme => {
-            const themeButton = document.createElement('button');
-            const isSelected = selectedTheme === theme;
-            
-            themeButton.className = `px-4 py-2 rounded-lg border transition-all duration-200 ${
-                isSelected
-                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium' 
-                    : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500'
-            }`;
-            themeButton.textContent = theme;
-            themeButton.setAttribute('data-theme', theme);
-
-            themeButton.addEventListener('click', () => {
-                // Update selected theme
-                if (product.setSelectedTheme) {
-                    product.setSelectedTheme(theme);
-                }
-                
-                // Update UI - remove selection from all buttons
-                document.querySelectorAll('[data-theme]').forEach(btn => {
-                    btn.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500';
-                });
-                
-                // Add selection to clicked button
-                themeButton.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium';
-
-                // Update selected theme display
-                const selectedThemeText = document.getElementById('selected-theme-text');
-                if (selectedThemeText) {
-                    selectedThemeText.textContent = theme;
-                }
-            });
-
-            themeOptions.appendChild(themeButton);
-        });
-
-        // Selected theme display
-        const selectedThemeDisplay = document.createElement('div');
-        selectedThemeDisplay.className = 'mt-3 text-sm text-gray-300';
-        selectedThemeDisplay.innerHTML = `Selected: <span id="selected-theme-text" class="font-medium text-gray-200">${selectedTheme || 'None'}</span>`;
-
-        themeDiv.appendChild(themeLabel);
-        themeDiv.appendChild(themeOptions);
-        themeDiv.appendChild(selectedThemeDisplay);
-
-        // Action buttons
+        // Enhanced action buttons
         const actions = document.createElement('div');
-        actions.className = 'flex space-x-4 mb-8';
+        actions.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
 
         const addToCartBtn = document.createElement('button');
         addToCartBtn.id = 'add-to-cart-btn';
-        addToCartBtn.className = 'flex-1 bg-[#D2C1B6] text-gray-900 py-3 px-6 rounded-lg hover:bg-[#e2c9b8] transition duration-300 add-to-cart font-medium';
-        addToCartBtn.textContent = 'Add to Cart';
+        addToCartBtn.className = 'bg-[#D2C1B6] text-gray-900 py-4 px-8 rounded-xl hover:bg-[#e2c9b8] transition-all duration-300 add-to-cart font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center';
+        addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-3"></i>Add to Cart';
         addToCartBtn.setAttribute('data-product-id', product.id);
         
-        // Override the default add to cart behavior to include color and theme
+        // Override the default add to cart behavior to include color
         addToCartBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
             const selectedColor = product.getSelectedColor ? product.getSelectedColor() : null;
-            const selectedTheme = product.getSelectedTheme ? product.getSelectedTheme() : null;
             
             const cartData = {
                 ...product.getCartData(),
                 selectedColor: selectedColor,
-                selectedTheme: selectedTheme,
                 quantity: quantity
             };
             
-            // Add to cart with specified quantity, color and theme
+            // Add to cart with specified quantity and color
             for (let i = 0; i < quantity; i++) {
                 cartManager.addToCart(cartData);
             }
             
             // Show success feedback
-            this.showAddToCartSuccess(product.name, selectedColor, selectedTheme);
+            this.showAddToCartSuccess(product.name, selectedColor);
         });
 
         const buyNowBtn = document.createElement('button');
-        buyNowBtn.className = 'bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition duration-300 font-medium';
-        buyNowBtn.innerHTML = '<i class="fas fa-bolt mr-2"></i> Buy Now';
+        buyNowBtn.className = 'bg-green-600 text-white py-4 px-8 rounded-xl hover:bg-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center';
+        buyNowBtn.innerHTML = '<i class="fas fa-bolt mr-3"></i>Buy Now';
         buyNowBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
             const selectedColor = product.getSelectedColor ? product.getSelectedColor() : null;
-            const selectedTheme = product.getSelectedTheme ? product.getSelectedTheme() : null;
             
             const cartData = {
                 ...product.getCartData(),
                 selectedColor: selectedColor,
-                selectedTheme: selectedTheme,
                 quantity: quantity
             };
             
-            // Add to cart with specified quantity, color and theme
+            // Add to cart with specified quantity and color
             for (let i = 0; i < quantity; i++) {
                 cartManager.addToCart(cartData);
             }
@@ -805,19 +813,23 @@ class AppController {
             featuresDiv.appendChild(specsDiv);
         }
 
-        rightDiv.appendChild(title);
+        // Organize sections in the right div
+        rightDiv.appendChild(headerDiv);
         rightDiv.appendChild(ratingDiv);
-        rightDiv.appendChild(price);
+        rightDiv.appendChild(priceSection);
         rightDiv.appendChild(stockDiv);
-        rightDiv.appendChild(description);
+        rightDiv.appendChild(descriptionDiv);
         rightDiv.appendChild(colorDiv);
-        rightDiv.appendChild(themeDiv);
         rightDiv.appendChild(quantityDiv);
         rightDiv.appendChild(actions);
         rightDiv.appendChild(featuresDiv);
 
-        container.appendChild(leftDiv);
-        container.appendChild(rightDiv);
+        // Add to product wrapper
+        productWrapper.appendChild(leftDiv);
+        productWrapper.appendChild(rightDiv);
+        
+        // Add wrapper to container
+        container.appendChild(productWrapper);
 
         // Add quantity control event listeners
         this.setupQuantityControls();
@@ -1090,10 +1102,15 @@ class AppController {
 
         cart.forEach(item => {
             const card = document.createElement('div');
-            card.className = 'bg-gray-700 rounded-2xl p-6 hover:bg-gray-600 transition-all duration-300';
+            card.className = 'bg-gray-700 rounded-2xl p-4 sm:p-6 hover:bg-gray-600 transition-all duration-300';
 
+            // Mobile-first responsive layout
             const row = document.createElement('div');
-            row.className = 'flex items-center gap-6';
+            row.className = 'flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6';
+
+            // Product Image and Basic Info (Mobile: horizontal, Desktop: part of row)
+            const topSection = document.createElement('div');
+            topSection.className = 'flex items-center gap-4 sm:gap-6';
 
             // Product Image
             const imgContainer = document.createElement('div');
@@ -1102,73 +1119,95 @@ class AppController {
             const img = document.createElement('img');
             img.src = item.img;
             img.alt = item.name;
-            img.className = 'w-24 h-24 object-cover rounded-lg shadow-lg';
+            img.className = 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover rounded-lg shadow-lg';
 
             imgContainer.appendChild(img);
 
-            // Product Info
+            // Product Info (Mobile: takes remaining space)
             const info = document.createElement('div');
             info.className = 'flex-1 min-w-0';
 
             const name = document.createElement('h3');
-            name.className = 'font-semibold text-white text-lg mb-1 truncate';
+            name.className = 'font-semibold text-white text-base sm:text-lg mb-1 line-clamp-2';
             name.textContent = item.name;
 
             const price = document.createElement('p');
-            price.className = 'text-gray-300 mb-3';
+            price.className = 'text-gray-300 text-sm sm:text-base mb-2 sm:mb-3';
             price.textContent = `Rs ${item.price.toLocaleString()} each`;
+
+            // Show selected color if available
+            if (item.selectedColor) {
+                const colorInfo = document.createElement('p');
+                colorInfo.className = 'text-xs text-gray-400 mb-2';
+                colorInfo.innerHTML = `<i class="fas fa-palette mr-1"></i>Color: ${item.selectedColor}`;
+                info.appendChild(colorInfo);
+            }
+
+            info.appendChild(name);
+            info.appendChild(price);
+
+            topSection.appendChild(imgContainer);
+            topSection.appendChild(info);
+
+            // Bottom section for mobile (Quantity, Price, Remove)
+            const bottomSection = document.createElement('div');
+            bottomSection.className = 'flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6';
 
             // Quantity Controls
             const qtyContainer = document.createElement('div');
-            qtyContainer.className = 'flex items-center gap-3';
+            qtyContainer.className = 'flex items-center justify-center sm:justify-start gap-3';
+
+            const qtyLabel = document.createElement('span');
+            qtyLabel.className = 'text-gray-300 text-sm font-medium sm:hidden';
+            qtyLabel.textContent = 'Qty:';
 
             const minusBtn = document.createElement('button');
-            minusBtn.className = 'qty-minus w-10 h-10 bg-gray-600 text-white rounded-full hover:bg-gray-500 transition-all duration-200 flex items-center justify-center font-bold text-lg';
-            minusBtn.innerHTML = '<i class="fas fa-minus text-sm"></i>';
+            minusBtn.className = 'qty-minus w-8 h-8 sm:w-10 sm:h-10 bg-gray-600 text-white rounded-full hover:bg-gray-500 transition-all duration-200 flex items-center justify-center font-bold';
+            minusBtn.innerHTML = '<i class="fas fa-minus text-xs"></i>';
             minusBtn.setAttribute('data-id', item.id);
 
             const qty = document.createElement('span');
-            qty.className = 'text-white font-semibold text-lg min-w-[2rem] text-center';
+            qty.className = 'text-white font-semibold text-base sm:text-lg min-w-[2rem] text-center px-2';
             qty.textContent = String(item.qty || 1);
 
             const plusBtn = document.createElement('button');
-            plusBtn.className = 'qty-plus w-10 h-10 bg-gray-600 text-white rounded-full hover:bg-gray-500 transition-all duration-200 flex items-center justify-center font-bold text-lg';
-            plusBtn.innerHTML = '<i class="fas fa-plus text-sm"></i>';
+            plusBtn.className = 'qty-plus w-8 h-8 sm:w-10 sm:h-10 bg-gray-600 text-white rounded-full hover:bg-gray-500 transition-all duration-200 flex items-center justify-center font-bold';
+            plusBtn.innerHTML = '<i class="fas fa-plus text-xs"></i>';
             plusBtn.setAttribute('data-id', item.id);
 
+            qtyContainer.appendChild(qtyLabel);
             qtyContainer.appendChild(minusBtn);
             qtyContainer.appendChild(qty);
             qtyContainer.appendChild(plusBtn);
 
-            info.appendChild(name);
-            info.appendChild(price);
-            info.appendChild(qtyContainer);
-
             // Price and Remove Section
             const priceRemoveContainer = document.createElement('div');
-            priceRemoveContainer.className = 'flex flex-col items-end gap-3';
+            priceRemoveContainer.className = 'flex flex-col sm:flex-col items-center sm:items-end gap-2 sm:gap-3 flex-1';
 
             const lineTotal = (item.qty || 1) * item.price;
             subtotal += lineTotal;
 
             const linePrice = document.createElement('div');
-            linePrice.className = 'text-right';
+            linePrice.className = 'text-center sm:text-right';
             linePrice.innerHTML = `
-                <div class="text-2xl font-bold text-white">Rs ${lineTotal.toLocaleString()}</div>
-                <div class="text-sm text-gray-400">${item.qty || 1} × Rs ${item.price.toLocaleString()}</div>
+                <div class="text-xl sm:text-2xl font-bold text-white">Rs ${lineTotal.toLocaleString()}</div>
+                <div class="text-xs sm:text-sm text-gray-400">${item.qty || 1} × Rs ${item.price.toLocaleString()}</div>
             `;
 
             const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-item flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 text-sm font-medium';
+            removeBtn.className = 'remove-item flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 text-xs sm:text-sm font-medium w-full sm:w-auto';
             removeBtn.innerHTML = '<i class="fas fa-trash"></i> Remove';
             removeBtn.setAttribute('data-id', item.id);
 
             priceRemoveContainer.appendChild(linePrice);
             priceRemoveContainer.appendChild(removeBtn);
 
-            row.appendChild(imgContainer);
-            row.appendChild(info);
-            row.appendChild(priceRemoveContainer);
+            bottomSection.appendChild(qtyContainer);
+            bottomSection.appendChild(priceRemoveContainer);
+
+            // Assemble the card
+            row.appendChild(topSection);
+            row.appendChild(bottomSection);
 
             card.appendChild(row);
             cartItemsContainer.appendChild(card);
@@ -1310,7 +1349,7 @@ class AppController {
                         </p>
                     </div>
                     <div class="flex flex-col gap-3">
-                        <button onclick="window.location.href='index.html'" class="bg-gradient-to-r from-[#D2C1B6] to-amber-200 text-gray-900 px-6 py-3 rounded-lg font-medium hover:from-amber-200 hover:to-[#D2C1B6] transition-all duration-200">
+                        <button onclick="window.location.href='index.html'" class="bg-[#D2C1B6] text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-[#e2c9b8] transition-all duration-200">
                             Continue Shopping
                         </button>
                         <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white transition-colors duration-200">
@@ -1457,14 +1496,10 @@ class AppController {
     }
 
     // Show add to cart success feedback
-    showAddToCartSuccess(productName, selectedColor, selectedTheme) {
+    showAddToCartSuccess(productName, selectedColor) {
         let message = productName;
-        const options = [];
-        if (selectedColor) options.push(selectedColor);
-        if (selectedTheme) options.push(selectedTheme);
-        
-        if (options.length > 0) {
-            message += ` (${options.join(', ')})`;
+        if (selectedColor) {
+            message += ` (${selectedColor})`;
         }
         message += ' added to cart!';
             

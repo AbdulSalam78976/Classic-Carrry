@@ -21,10 +21,6 @@ class Product {
         this.colors = data.colors || ['Black', 'Brown', 'Navy'];
         this.selectedColor = data.selectedColor || this.colors[0];
 
-        // Theme options
-        this.themes = data.themes || ['Classic', 'Modern', 'Vintage'];
-        this.selectedTheme = data.selectedTheme || this.themes[0];
-
         // Features and specifications
         this.features = data.features || [];
         this.specifications = data.specifications || {};
@@ -123,24 +119,7 @@ class Product {
         return this.selectedColor;
     }
 
-    // Get available themes
-    getAvailableThemes() {
-        return this.themes;
-    }
 
-    // Set selected theme
-    setSelectedTheme(themeName) {
-        if (this.themes.includes(themeName)) {
-            this.selectedTheme = themeName;
-            return true;
-        }
-        return false;
-    }
-
-    // Get selected theme
-    getSelectedTheme() {
-        return this.selectedTheme;
-    }
 
     // Get product JSON (for compatibility with existing code)
     toJSON() {
@@ -183,7 +162,6 @@ class ProductManager {
                 description: 'Timeless baseball cap design. Perfect for casual everyday wear with premium cotton construction.',
                 category: 'male',
                 colors: ['Black', 'Navy Blue', 'Forest Green', 'Burgundy', 'Charcoal'],
-                themes: ['Classic', 'Sports', 'Casual', 'Urban'],
                 features: ['Cotton Twill', 'Curved Brim', 'Adjustable Strap', 'Embroidered Logo'],
                 specifications: {
                     'Style': 'Baseball',
@@ -227,7 +205,6 @@ class ProductManager {
                 tag: '💖 Popular',
                 description: 'Elegant floral design for women. Beautiful embroidery with premium finish and feminine charm.',
                 colors: ['Blush Pink', 'Lavender', 'Mint Green', 'Cream', 'White'],
-                themes: ['Elegant', 'Romantic', 'Bohemian', 'Garden Party'],
                 features: ['Floral Embroidery', 'Premium Cotton', 'Feminine Design', 'Adjustable Strap'],
                 specifications: {
                     'Design': 'Floral Embroidered',
@@ -273,7 +250,6 @@ class ProductManager {
                 tag: '💼 Executive Choice',
                 description: 'Professional bi-fold wallet for business. Premium leather with executive styling and superior craftsmanship.',
                 colors: ['Black Leather', 'Brown Leather', 'Cognac', 'Navy Leather'],
-                themes: ['Executive', 'Business', 'Professional', 'Luxury'],
                 features: ['Premium Leather', 'Bi-Fold Design', 'Multiple Card Slots', 'Professional Look'],
                 specifications: {
                     'Style': 'Bi-Fold',
@@ -363,7 +339,6 @@ class ProductManager {
                 description: 'Breathable straw material perfect for summer activities and beach outings.',
                 tag: 'Summer Special',
                 colors: ['Natural', 'Light Brown', 'Beige', 'Cream'],
-                themes: ['Beach', 'Vacation', 'Casual', 'Outdoor'],
                 features: ['Breathable Straw Material', 'UV Protection', 'Lightweight', 'Adjustable Size'],
                 specifications: {
                     'Material': 'Natural Straw',
@@ -537,7 +512,6 @@ class ProductManager {
                 description: 'Timeless baseball cap design. Perfect for casual everyday wear.',
                 tag: 'Classic',
                 colors: ['Black', 'Navy Blue', 'Forest Green', 'Burgundy', 'Gray'],
-                themes: ['Classic', 'Retro', 'Minimalist', 'Sporty'],
                 features: ['Cotton Twill', 'Curved Brim', 'Adjustable Strap', 'Embroidered Logo'],
                 specifications: {
                     'Style': 'Baseball',
@@ -713,7 +687,6 @@ class ProductManager {
                 description: 'Professional bi-fold wallet for business. Premium leather with executive styling.',
                 tag: 'Executive',
                 colors: ['Black', 'Brown', 'Cognac', 'Navy'],
-                themes: ['Executive', 'Business', 'Classic', 'Modern'],
                 features: ['Premium Leather', 'Bi-Fold Design', 'Multiple Card Slots', 'Professional Look'],
                 specifications: {
                     'Style': 'Bi-Fold',
