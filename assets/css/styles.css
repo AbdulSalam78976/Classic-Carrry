@@ -1458,4 +1458,58 @@ Hero Image Loading Animation */
   .remove-item:active {
     transform: scale(0.95);
   }
+}/* Mobi
+le Text Rendering Improvements */
+@media (max-width: 768px) {
+  /* Ensure consistent text rendering on mobile */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Force hardware acceleration for better text rendering */
+  .text-white,
+  .text-gray-200,
+  .text-gray-300,
+  .price-text {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  /* Ensure price text is always visible */
+  .price-text {
+    color: #D2C1B6 !important;
+    font-weight: bold !important;
+    text-shadow: none !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+  }
+  
+  /* Cart item text improvements */
+  .cart-item-price {
+    color: #D2C1B6 !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* Ensure all text is properly rendered */
+  .cart-item h3,
+  .cart-item p,
+  .cart-item span,
+  .cart-item div {
+    color: inherit !important;
+    text-shadow: none !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+  }
+}
+
+/* Global text rendering improvements */
+body, html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }

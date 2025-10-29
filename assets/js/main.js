@@ -1,3 +1,8 @@
+// Utility function for safe number formatting
+function formatPrice(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 // Main Application Controller
 class AppController {
     constructor() {
@@ -121,14 +126,14 @@ class AppController {
 
             // Get hot products and separate by type
             const allHotProducts = productManager.getHotProducts();
-            const hotCaps = allHotProducts.filter(product => 
-                ['male', 'female', 'summer', 'winter'].includes(product.category) && 
-                product.id.startsWith('hot-') && 
+            const hotCaps = allHotProducts.filter(product =>
+                ['male', 'female', 'summer', 'winter'].includes(product.category) &&
+                product.id.startsWith('hot-') &&
                 parseInt(product.id.split('-')[1]) <= 4
             );
-            const hotWallets = allHotProducts.filter(product => 
-                ['male', 'female', 'cardholder', 'long'].includes(product.category) && 
-                product.id.startsWith('hot-') && 
+            const hotWallets = allHotProducts.filter(product =>
+                ['male', 'female', 'cardholder', 'long'].includes(product.category) &&
+                product.id.startsWith('hot-') &&
                 parseInt(product.id.split('-')[1]) >= 5
             );
 
@@ -223,7 +228,7 @@ class AppController {
         // Price
         const price = document.createElement('div');
         price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
-        price.textContent = `Rs ${product.price.toLocaleString()}`;
+        price.textContent = `Rs ${formatPrice(product.price)}`;
 
         // Add to cart button
         const btn = document.createElement('button');
@@ -413,26 +418,26 @@ class AppController {
         img.src = product.getMainImage();
         img.alt = product.name;
         img.className = 'w-full h-[500px] object-cover cursor-zoom-in transition-all duration-500 hover:scale-110';
-        
+
         // Add click event for image zoom
         img.addEventListener('click', () => {
             this.showImageModal(product.getMainImage(), product.name);
         });
-        
+
         mainImgDiv.appendChild(img);
 
         // Enhanced thumbnail images
         const thumbnailsDiv = document.createElement('div');
         const allImages = product.getAllImages();
         const maxThumbnails = Math.min(allImages.length, 4);
-        
+
         if (maxThumbnails > 1) {
             thumbnailsDiv.className = `grid grid-cols-${maxThumbnails} gap-3`;
-            
+
             allImages.slice(0, maxThumbnails).forEach((imageUrl, index) => {
                 const thumbDiv = document.createElement('div');
                 thumbDiv.className = 'bg-gradient-to-br from-gray-700 to-gray-600 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 hover:ring-2 hover:ring-[#D2C1B6] hover:ring-opacity-50 hover:scale-105 border border-gray-600';
-                
+
                 // Change main image on click
                 thumbDiv.onclick = () => {
                     changeImage(imageUrl);
@@ -455,7 +460,7 @@ class AppController {
             thumbnailsDiv.className = 'grid grid-cols-1 gap-4';
             const thumbDiv = document.createElement('div');
             thumbDiv.className = 'bg-gray-700 rounded-lg shadow';
-            
+
             const thumbImg = document.createElement('img');
             thumbImg.src = product.getMainImage();
             thumbImg.alt = `${product.name} - Main View`;
@@ -501,7 +506,7 @@ class AppController {
         const rating = product.rating || 4.5;
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 !== 0;
-        
+
         for (let i = 0; i < 5; i++) {
             const star = document.createElement('i');
             if (i < fullStars) {
@@ -528,19 +533,19 @@ class AppController {
         // Enhanced price section
         const priceSection = document.createElement('div');
         priceSection.className = 'bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 border border-gray-600';
-        
+
         const priceLabel = document.createElement('div');
         priceLabel.className = 'text-sm text-gray-400 mb-2';
         priceLabel.textContent = 'Price';
-        
+
         const price = document.createElement('div');
-        price.className = 'text-4xl font-bold text-[#D2C1B6] mb-2';
-        price.textContent = `Rs ${product.price.toLocaleString()}`;
-        
+        price.className = 'text-4xl font-bold text-[#D2C1B6] mb-2 price-text';
+        price.textContent = `Rs ${formatPrice(product.price)}`;
+
         const priceNote = document.createElement('div');
         priceNote.className = 'text-sm text-gray-400';
         priceNote.innerHTML = '<i class="fas fa-truck mr-1"></i>Free shipping on orders over Rs 5,000';
-        
+
         priceSection.appendChild(priceLabel);
         priceSection.appendChild(price);
         priceSection.appendChild(priceNote);
@@ -548,24 +553,24 @@ class AppController {
         // Enhanced stock status
         const stockDiv = document.createElement('div');
         stockDiv.className = 'bg-gray-800 rounded-xl p-4 border border-gray-700';
-        
+
         const stockContainer = document.createElement('div');
         stockContainer.className = 'flex items-center justify-between';
-        
+
         const stockLeft = document.createElement('div');
         stockLeft.className = 'flex items-center';
-        
+
         const stockIcon = document.createElement('i');
         stockIcon.className = `fas ${product.isInStock && product.isInStock() ? 'fa-check-circle text-green-400' : 'fa-times-circle text-red-400'} mr-3 text-xl`;
-        
+
         const stockLabel = document.createElement('span');
         stockLabel.className = 'text-gray-300 font-medium';
         stockLabel.textContent = 'Availability:';
-        
+
         const stockStatus = document.createElement('span');
         stockStatus.className = `ml-2 font-bold text-lg ${product.getStockStatusClass ? product.getStockStatusClass() : 'text-green-400'}`;
         stockStatus.textContent = product.getStockStatus ? product.getStockStatus() : 'In Stock';
-        
+
         stockLeft.appendChild(stockIcon);
         stockLeft.appendChild(stockLabel);
         stockLeft.appendChild(stockStatus);
@@ -575,15 +580,15 @@ class AppController {
         // Enhanced description section
         const descriptionDiv = document.createElement('div');
         descriptionDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
-        
+
         const descriptionLabel = document.createElement('h3');
         descriptionLabel.className = 'text-xl font-semibold mb-3 text-white flex items-center';
         descriptionLabel.innerHTML = '<i class="fas fa-info-circle mr-2 text-[#D2C1B6]"></i>Description';
-        
+
         const description = document.createElement('p');
         description.className = 'text-gray-300 leading-relaxed text-lg';
         description.textContent = product.description || 'Premium quality product from classiccarrry.';
-        
+
         descriptionDiv.appendChild(descriptionLabel);
         descriptionDiv.appendChild(description);
 
@@ -639,12 +644,11 @@ class AppController {
         availableColors.forEach(color => {
             const colorButton = document.createElement('button');
             const isSelected = selectedColor === color;
-            
-            colorButton.className = `px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center ${
-                isSelected
-                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105' 
+
+            colorButton.className = `px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center ${isSelected
+                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105'
                     : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-[#D2C1B6] hover:shadow-md hover:scale-102'
-            }`;
+                }`;
             colorButton.textContent = color;
             colorButton.setAttribute('data-color', color);
 
@@ -653,12 +657,12 @@ class AppController {
                 if (product.setSelectedColor) {
                     product.setSelectedColor(color);
                 }
-                
+
                 // Update UI - remove selection from all buttons
                 document.querySelectorAll('[data-color]').forEach(btn => {
                     btn.className = 'px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-[#D2C1B6] hover:shadow-md hover:scale-102';
                 });
-                
+
                 // Add selection to clicked button
                 colorButton.className = 'px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105';
 
@@ -695,24 +699,24 @@ class AppController {
         addToCartBtn.className = 'bg-[#D2C1B6] text-gray-900 py-4 px-8 rounded-xl hover:bg-[#e2c9b8] transition-all duration-300 add-to-cart font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center';
         addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-3"></i>Add to Cart';
         addToCartBtn.setAttribute('data-product-id', product.id);
-        
+
         // Override the default add to cart behavior to include color
         addToCartBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
             const selectedColor = product.getSelectedColor ? product.getSelectedColor() : null;
-            
+
             const cartData = {
                 ...product.getCartData(),
                 selectedColor: selectedColor,
                 quantity: quantity
             };
-            
+
             // Add to cart with specified quantity and color
             for (let i = 0; i < quantity; i++) {
                 cartManager.addToCart(cartData);
             }
-            
+
             // Show success feedback
             this.showAddToCartSuccess(product.name, selectedColor);
         });
@@ -723,18 +727,18 @@ class AppController {
         buyNowBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
             const selectedColor = product.getSelectedColor ? product.getSelectedColor() : null;
-            
+
             const cartData = {
                 ...product.getCartData(),
                 selectedColor: selectedColor,
                 quantity: quantity
             };
-            
+
             // Add to cart with specified quantity and color
             for (let i = 0; i < quantity; i++) {
                 cartManager.addToCart(cartData);
             }
-            
+
             // Redirect to checkout
             window.location.href = 'checkout.html';
         };
@@ -827,7 +831,7 @@ class AppController {
         // Add to product wrapper
         productWrapper.appendChild(leftDiv);
         productWrapper.appendChild(rightDiv);
-        
+
         // Add wrapper to container
         container.appendChild(productWrapper);
 
@@ -953,11 +957,11 @@ class AppController {
             if (target.classList.contains('qty-plus') || target.closest('.qty-plus')) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const button = target.classList.contains('qty-plus') ? target : target.closest('.qty-plus');
                 const productId = button.getAttribute('data-id');
                 console.log('Plus button clicked for product:', productId);
-                
+
                 if (productId && !button.disabled) {
                     button.disabled = true;
                     const cart = cartManager.getCart();
@@ -966,7 +970,7 @@ class AppController {
                         cartManager.updateQuantity(productId, (item.qty || 1) + 1);
                         this.renderCart();
                     }
-                    
+
                     // Re-enable button after short delay
                     setTimeout(() => {
                         button.disabled = false;
@@ -978,11 +982,11 @@ class AppController {
             if (target.classList.contains('qty-minus') || target.closest('.qty-minus')) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const button = target.classList.contains('qty-minus') ? target : target.closest('.qty-minus');
                 const productId = button.getAttribute('data-id');
                 console.log('Minus button clicked for product:', productId);
-                
+
                 if (productId && !button.disabled) {
                     button.disabled = true;
                     const cart = cartManager.getCart();
@@ -991,7 +995,7 @@ class AppController {
                         cartManager.updateQuantity(productId, item.qty - 1);
                         this.renderCart();
                     }
-                    
+
                     // Re-enable button after short delay
                     setTimeout(() => {
                         button.disabled = false;
@@ -1003,11 +1007,11 @@ class AppController {
             if (target.classList.contains('remove-item') || target.closest('.remove-item')) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const button = target.classList.contains('remove-item') ? target : target.closest('.remove-item');
                 const productId = button.getAttribute('data-id');
                 console.log('Remove button clicked for product:', productId);
-                
+
                 if (productId) {
                     cartManager.removeFromCart(productId);
                     this.renderCart();
@@ -1029,7 +1033,7 @@ class AppController {
         // Form submission handling
         const placeOrderBtn = document.getElementById('place-order');
         const deliveryForm = document.getElementById('delivery-form');
-        
+
         if (placeOrderBtn && deliveryForm) {
             placeOrderBtn.addEventListener('click', (e) => {
                 this.handleOrderSubmission(e, deliveryForm);
@@ -1061,7 +1065,7 @@ class AppController {
         // Debug localStorage directly
         const rawCart = localStorage.getItem('cc_cart');
         console.log('Raw localStorage cart:', rawCart);
-        
+
         const cart = cartManager.getCart();
         console.log('Rendering cart with items:', cart);
         console.log('Cart length:', cart.length);
@@ -1079,7 +1083,7 @@ class AppController {
                 emptyCartMessage.classList.remove('hidden');
                 cartActions.classList.add('hidden');
                 console.log('Showing empty cart message');
-                
+
                 // Hide delivery charge section when cart is empty
                 const deliveryChargeRow = document.querySelector('#delivery-charge')?.closest('.flex');
                 const totalRow = document.querySelector('#total-amount')?.closest('.flex');
@@ -1089,7 +1093,7 @@ class AppController {
                 emptyCartMessage.classList.add('hidden');
                 cartActions.classList.remove('hidden');
                 console.log('Hiding empty cart message, rendering', cart.length, 'items');
-                
+
                 // Show delivery charge section when cart has items
                 const deliveryChargeRow = document.querySelector('#delivery-charge')?.closest('.flex');
                 const totalRow = document.querySelector('#total-amount')?.closest('.flex');
@@ -1132,8 +1136,8 @@ class AppController {
             name.textContent = item.name;
 
             const price = document.createElement('p');
-            price.className = 'text-gray-300 text-sm sm:text-base mb-2 sm:mb-3';
-            price.textContent = `Rs ${item.price.toLocaleString()} each`;
+            price.className = 'text-gray-300 text-sm sm:text-base mb-2 sm:mb-3 price-text';
+            price.textContent = `Rs ${formatPrice(item.price)} each`;
 
             // Show selected color if available
             if (item.selectedColor) {
@@ -1188,10 +1192,10 @@ class AppController {
             subtotal += lineTotal;
 
             const linePrice = document.createElement('div');
-            linePrice.className = 'text-center sm:text-right';
+            linePrice.className = 'text-center sm:text-right cart-item-price';
             linePrice.innerHTML = `
-                <div class="text-xl sm:text-2xl font-bold text-white">Rs ${lineTotal.toLocaleString()}</div>
-                <div class="text-xs sm:text-sm text-gray-400">${item.qty || 1} × Rs ${item.price.toLocaleString()}</div>
+                <div class="text-xl sm:text-2xl font-bold text-white">Rs ${formatPrice(lineTotal)}</div>
+                <div class="text-xs sm:text-sm text-gray-400">${item.qty || 1} × Rs ${formatPrice(item.price)}</div>
             `;
 
             const removeBtn = document.createElement('button');
@@ -1214,8 +1218,8 @@ class AppController {
         });
 
         // Update subtotal
-        subtotalElement.textContent = `Rs ${subtotal.toLocaleString()}`;
-        
+        subtotalElement.textContent = `Rs ${formatPrice(subtotal)}`;
+
         // Update delivery charge and total using CartManager methods
         const deliveryChargeElement = document.getElementById('delivery-charge');
         const totalAmountElement = document.getElementById('total-amount');
@@ -1223,17 +1227,17 @@ class AppController {
         const deliveryCharge = cartManager.getDeliveryCharge();
         const totalAmount = cartManager.getTotalWithDelivery();
         const qualifiesForFree = cartManager.qualifiesForFreeDelivery();
-        
+
         if (deliveryChargeElement) {
             if (qualifiesForFree) {
                 deliveryChargeElement.innerHTML = '<span class="line-through text-gray-500">Rs 300.00</span> <span class="text-green-400 font-bold">FREE</span>';
             } else {
-                deliveryChargeElement.textContent = `Rs ${deliveryCharge.toLocaleString()}`;
+                deliveryChargeElement.textContent = `Rs ${formatPrice(deliveryCharge)}`;
             }
         } else {
             console.log('Delivery charge element not found');
         }
-        
+
         // Show/hide free delivery notice
         if (freeDeliveryNotice) {
             if (qualifiesForFree) {
@@ -1242,13 +1246,13 @@ class AppController {
                 freeDeliveryNotice.classList.add('hidden');
             }
         }
-        
+
         if (totalAmountElement) {
-            totalAmountElement.textContent = `Rs ${totalAmount.toLocaleString()}`;
+            totalAmountElement.textContent = `Rs ${formatPrice(totalAmount)}`;
         } else {
             console.log('Total amount element not found');
         }
-        
+
         console.log('Cart rendered:', {
             items: cart.length,
             subtotal: subtotal,
@@ -1260,7 +1264,7 @@ class AppController {
     // Handle order submission
     handleOrderSubmission(e, form) {
         e.preventDefault();
-        
+
         const cart = cartManager.getCart();
         if (!cart.length) {
             this.showNotification('Your cart is empty. Please add items before placing an order.', 'error');
@@ -1269,7 +1273,7 @@ class AppController {
 
         // Validate required fields
         const formData = new FormData(form);
-        
+
         const email = formData.get('email');
         const firstName = formData.get('firstName');
         const lastName = formData.get('lastName');
@@ -1294,38 +1298,38 @@ class AppController {
         const subtotal = cartManager.getCartTotal();
         const deliveryCharge = cartManager.getDeliveryCharge();
         const total = cartManager.getTotalWithDelivery();
-        const orderDate = new Date().toLocaleString();
+        const orderDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
         // Format order items for submission
         const orderItems = cart.map((item, index) => {
-            return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${(item.price * (item.qty || 1)).toLocaleString()}`;
+            return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${formatPrice(item.price * (item.qty || 1))}`;
         }).join('\n');
 
         // Update hidden form fields
         document.getElementById('order-items').value = orderItems;
-        document.getElementById('order-subtotal').value = `Rs ${subtotal.toLocaleString()}`;
-        document.getElementById('order-delivery-charge').value = cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${deliveryCharge.toLocaleString()}`;
-        document.getElementById('order-total').value = `Rs ${total.toLocaleString()}`;
+        document.getElementById('order-subtotal').value = `Rs ${formatPrice(subtotal)}`;
+        document.getElementById('order-delivery-charge').value = cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${formatPrice(deliveryCharge)}`;
+        document.getElementById('order-total').value = `Rs ${formatPrice(total)}`;
         document.getElementById('order-date').value = orderDate;
 
         // Clear cart and submit form
         cartManager.clearCart();
-        
+
         // Submit form using fetch to Netlify
         fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(new FormData(form)).toString()
         })
-        .then(() => {
-            // Redirect to success page
-            window.location.href = '/order-success.html';
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            // Fallback: try regular form submission
-            form.submit();
-        });
+            .then(() => {
+                // Redirect to success page
+                window.location.href = '/order-success.html';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Fallback: try regular form submission
+                form.submit();
+            });
     }
 
     // Show order success message
@@ -1345,7 +1349,7 @@ class AppController {
                     <div class="bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg p-4 mb-6">
                         <p class="text-sm text-gray-300">
                             <i class="fas fa-info-circle text-[#D2C1B6] mr-2"></i>
-                            Order Total: <span class="font-bold text-[#D2C1B6]">Rs ${total.toLocaleString()}</span>
+                            Order Total: <span class="font-bold text-[#D2C1B6]">Rs ${formatPrice(total)}</span>
                         </p>
                     </div>
                     <div class="flex flex-col gap-3">
@@ -1433,7 +1437,7 @@ class AppController {
         // Close modal events
         const closeBtn = modal.querySelector('button');
         closeBtn.addEventListener('click', () => modal.remove());
-        
+
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.remove();
@@ -1502,7 +1506,7 @@ class AppController {
             message += ` (${selectedColor})`;
         }
         message += ' added to cart!';
-            
+
         // Create toast notification
         const toast = document.createElement('div');
         toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
@@ -1512,14 +1516,14 @@ class AppController {
                 <span>${message}</span>
             </div>
         `;
-        
+
         document.body.appendChild(toast);
-        
+
         // Animate in
         setTimeout(() => {
             toast.classList.remove('translate-x-full');
         }, 100);
-        
+
         // Animate out and remove
         setTimeout(() => {
             toast.classList.add('translate-x-full');
@@ -1572,11 +1576,11 @@ class AppController {
             // Remove any existing listeners to prevent duplicates
             decreaseBtn.replaceWith(decreaseBtn.cloneNode(true));
             increaseBtn.replaceWith(increaseBtn.cloneNode(true));
-            
+
             // Get fresh references after cloning
             const newDecreaseBtn = document.getElementById('decrease-quantity');
             const newIncreaseBtn = document.getElementById('increase-quantity');
-            
+
             newDecreaseBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();

@@ -123,8 +123,8 @@ class UIManager {
         
         // Price
         const price = document.createElement('div');
-        price.className = 'text-xl font-bold text-[#D2C1B6] mb-3';
-        price.textContent = `Rs ${product.price.toLocaleString()}`;
+        price.className = 'text-xl font-bold text-[#D2C1B6] mb-3 price-text';
+        price.textContent = `Rs ${product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
         
         // Available colors
         const colorsDiv = document.createElement('div');

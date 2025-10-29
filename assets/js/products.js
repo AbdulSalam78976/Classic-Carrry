@@ -62,7 +62,7 @@ class Product {
 
     // Get formatted price
     getFormattedPrice() {
-        return `Rs ${this.price.toLocaleString()}`;
+        return `Rs ${this.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
     }
 
     // Check if product has multiple images
