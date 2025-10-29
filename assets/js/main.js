@@ -519,7 +519,7 @@ class AppController {
 
         const description = document.createElement('p');
         description.className = 'text-gray-300 mb-6';
-        description.textContent = product.description || 'Premium quality product from Classic Carry.';
+        description.textContent = product.description || 'Premium quality product from classiccarrry.';
 
         // Quantity selector
         const quantityDiv = document.createElement('div');
@@ -556,6 +556,124 @@ class AppController {
         quantityDiv.appendChild(quantityLabel);
         quantityDiv.appendChild(quantityControls);
 
+        // Color selection
+        const colorDiv = document.createElement('div');
+        colorDiv.className = 'mb-6';
+
+        const colorLabel = document.createElement('h3');
+        colorLabel.className = 'text-lg font-semibold mb-3 text-gray-200';
+        colorLabel.textContent = 'Color';
+
+        const colorOptions = document.createElement('div');
+        colorOptions.className = 'flex flex-wrap gap-2';
+
+        const availableColors = product.getAvailableColors ? product.getAvailableColors() : product.colors || [];
+        const selectedColor = product.getSelectedColor ? product.getSelectedColor() : availableColors[0];
+
+        availableColors.forEach(color => {
+            const colorButton = document.createElement('button');
+            const isSelected = selectedColor === color;
+            
+            colorButton.className = `px-4 py-2 rounded-lg border transition-all duration-200 ${
+                isSelected
+                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium' 
+                    : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500'
+            }`;
+            colorButton.textContent = color;
+            colorButton.setAttribute('data-color', color);
+
+            colorButton.addEventListener('click', () => {
+                // Update selected color
+                if (product.setSelectedColor) {
+                    product.setSelectedColor(color);
+                }
+                
+                // Update UI - remove selection from all buttons
+                document.querySelectorAll('[data-color]').forEach(btn => {
+                    btn.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500';
+                });
+                
+                // Add selection to clicked button
+                colorButton.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium';
+
+                // Update selected color display
+                const selectedColorText = document.getElementById('selected-color-text');
+                if (selectedColorText) {
+                    selectedColorText.textContent = color;
+                }
+            });
+
+            colorOptions.appendChild(colorButton);
+        });
+
+        // Selected color display
+        const selectedColorDisplay = document.createElement('div');
+        selectedColorDisplay.className = 'mt-3 text-sm text-gray-300';
+        selectedColorDisplay.innerHTML = `Selected: <span id="selected-color-text" class="font-medium text-gray-200">${selectedColor || 'None'}</span>`;
+
+        colorDiv.appendChild(colorLabel);
+        colorDiv.appendChild(colorOptions);
+        colorDiv.appendChild(selectedColorDisplay);
+
+        // Theme selection
+        const themeDiv = document.createElement('div');
+        themeDiv.className = 'mb-6';
+
+        const themeLabel = document.createElement('h3');
+        themeLabel.className = 'text-lg font-semibold mb-3 text-gray-200';
+        themeLabel.textContent = 'Theme';
+
+        const themeOptions = document.createElement('div');
+        themeOptions.className = 'flex flex-wrap gap-2';
+
+        const availableThemes = product.getAvailableThemes ? product.getAvailableThemes() : product.themes || [];
+        const selectedTheme = product.getSelectedTheme ? product.getSelectedTheme() : availableThemes[0];
+
+        availableThemes.forEach(theme => {
+            const themeButton = document.createElement('button');
+            const isSelected = selectedTheme === theme;
+            
+            themeButton.className = `px-4 py-2 rounded-lg border transition-all duration-200 ${
+                isSelected
+                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium' 
+                    : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500'
+            }`;
+            themeButton.textContent = theme;
+            themeButton.setAttribute('data-theme', theme);
+
+            themeButton.addEventListener('click', () => {
+                // Update selected theme
+                if (product.setSelectedTheme) {
+                    product.setSelectedTheme(theme);
+                }
+                
+                // Update UI - remove selection from all buttons
+                document.querySelectorAll('[data-theme]').forEach(btn => {
+                    btn.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-gray-500';
+                });
+                
+                // Add selection to clicked button
+                themeButton.className = 'px-4 py-2 rounded-lg border transition-all duration-200 bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] font-medium';
+
+                // Update selected theme display
+                const selectedThemeText = document.getElementById('selected-theme-text');
+                if (selectedThemeText) {
+                    selectedThemeText.textContent = theme;
+                }
+            });
+
+            themeOptions.appendChild(themeButton);
+        });
+
+        // Selected theme display
+        const selectedThemeDisplay = document.createElement('div');
+        selectedThemeDisplay.className = 'mt-3 text-sm text-gray-300';
+        selectedThemeDisplay.innerHTML = `Selected: <span id="selected-theme-text" class="font-medium text-gray-200">${selectedTheme || 'None'}</span>`;
+
+        themeDiv.appendChild(themeLabel);
+        themeDiv.appendChild(themeOptions);
+        themeDiv.appendChild(selectedThemeDisplay);
+
         // Action buttons
         const actions = document.createElement('div');
         actions.className = 'flex space-x-4 mb-8';
@@ -565,16 +683,48 @@ class AppController {
         addToCartBtn.className = 'flex-1 bg-[#D2C1B6] text-gray-900 py-3 px-6 rounded-lg hover:bg-[#e2c9b8] transition duration-300 add-to-cart font-medium';
         addToCartBtn.textContent = 'Add to Cart';
         addToCartBtn.setAttribute('data-product-id', product.id);
+        
+        // Override the default add to cart behavior to include color and theme
+        addToCartBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const quantity = parseInt(document.getElementById('quantity')?.value || 1);
+            const selectedColor = product.getSelectedColor ? product.getSelectedColor() : null;
+            const selectedTheme = product.getSelectedTheme ? product.getSelectedTheme() : null;
+            
+            const cartData = {
+                ...product.getCartData(),
+                selectedColor: selectedColor,
+                selectedTheme: selectedTheme,
+                quantity: quantity
+            };
+            
+            // Add to cart with specified quantity, color and theme
+            for (let i = 0; i < quantity; i++) {
+                cartManager.addToCart(cartData);
+            }
+            
+            // Show success feedback
+            this.showAddToCartSuccess(product.name, selectedColor, selectedTheme);
+        });
 
         const buyNowBtn = document.createElement('button');
         buyNowBtn.className = 'bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 transition duration-300 font-medium';
         buyNowBtn.innerHTML = '<i class="fas fa-bolt mr-2"></i> Buy Now';
         buyNowBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
+            const selectedColor = product.getSelectedColor ? product.getSelectedColor() : null;
+            const selectedTheme = product.getSelectedTheme ? product.getSelectedTheme() : null;
             
-            // Add to cart with specified quantity
+            const cartData = {
+                ...product.getCartData(),
+                selectedColor: selectedColor,
+                selectedTheme: selectedTheme,
+                quantity: quantity
+            };
+            
+            // Add to cart with specified quantity, color and theme
             for (let i = 0; i < quantity; i++) {
-                cartManager.addToCart(product.getCartData());
+                cartManager.addToCart(cartData);
             }
             
             // Redirect to checkout
@@ -660,6 +810,8 @@ class AppController {
         rightDiv.appendChild(price);
         rightDiv.appendChild(stockDiv);
         rightDiv.appendChild(description);
+        rightDiv.appendChild(colorDiv);
+        rightDiv.appendChild(themeDiv);
         rightDiv.appendChild(quantityDiv);
         rightDiv.appendChild(actions);
         rightDiv.appendChild(featuresDiv);
@@ -1302,6 +1454,44 @@ class AppController {
                 modal.remove();
             }
         });
+    }
+
+    // Show add to cart success feedback
+    showAddToCartSuccess(productName, selectedColor, selectedTheme) {
+        let message = productName;
+        const options = [];
+        if (selectedColor) options.push(selectedColor);
+        if (selectedTheme) options.push(selectedTheme);
+        
+        if (options.length > 0) {
+            message += ` (${options.join(', ')})`;
+        }
+        message += ' added to cart!';
+            
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+        toast.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Animate out and remove
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
     }
 
     // Show product not found page

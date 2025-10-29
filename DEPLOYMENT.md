@@ -1,4 +1,4 @@
-# Classic Carry - Netlify Deployment Guide
+# classiccarrry - Netlify Deployment Guide
 
 ## Email Configuration Setup
 
@@ -7,7 +7,7 @@ Before deploying, update the email addresses in `netlify.toml`:
 
 ```toml
 # Company email for receiving orders
-to = ["your-company-email@domain.com"]
+to = ["classiccarrry@gmail.com"]
 
 # Auto-responder emails
 subject = "Order Confirmation - Your Company Name"
@@ -24,13 +24,13 @@ The website uses Netlify Forms for:
 Two types of email notifications are configured:
 
 #### For Company (Order Notifications):
-- **To**: `orders@classiccarry.com` (update this)
-- **Subject**: "New Order Received - Classic Carry"
+- **To**: `classiccarrry@gmail.com`
+- **Subject**: "New Order Received - classiccarrry"
 - **Content**: Full order details, customer info, delivery address
 
 #### For Customers (Order Confirmation):
 - **To**: Customer's email address
-- **Subject**: "Order Confirmation - Classic Carry"
+- **Subject**: "Order Confirmation - classiccarrry"
 - **Content**: Order summary, delivery info, next steps
 
 ### 4. Deployment Steps

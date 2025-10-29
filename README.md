@@ -1,4 +1,4 @@
-# Classic Carry - Premium Caps & Wallets
+# classiccarrry - Premium Caps & Wallets
 
 A modern e-commerce website for premium caps and wallets with a clean, responsive design.
 
@@ -26,7 +26,7 @@ A modern e-commerce website for premium caps and wallets with a clean, responsiv
 ## Project Structure
 
 ```
-Classic Carry/
+classiccarrry/
 ├── assets/
 │   ├── css/
 │   │   └── styles.css          # Shared CSS styles
