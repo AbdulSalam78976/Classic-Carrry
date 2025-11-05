@@ -678,7 +678,7 @@ class ProductManager {
                 name: 'Executive Bi-Fold',
                 price: 4999,
                 category: 'male',
-                mainImage: 'assets/images/wallets/1.png',
+                mainImage: 'assets/images/wallets/1/main.png',
                 images: [
                     'assets/images/wallets/1.png',
                     'assets/images/w-1.png',
@@ -700,7 +700,7 @@ class ProductManager {
                 name: 'Smart Money Clip',
                 price: 3999,
                 category: 'male',
-                mainImage: 'assets/images/w-2.png',
+                mainImage: 'assets/images/wallets/2/main.png',
                 images: [
                     'assets/images/w-2.png',
                     'assets/images/wallets/4.png',
@@ -721,7 +721,7 @@ class ProductManager {
                 name: 'Classic Leather Wallet',
                 price: 4299,
                 category: 'male',
-                mainImage: 'assets/images/w-1.png',
+                mainImage: 'assets/images/wallets/3/main.png',
                 images: [
                     'assets/images/w-1.png',
                     'assets/images/wallets/1.png',
@@ -742,7 +742,7 @@ class ProductManager {
                 name: 'RFID Blocking Wallet',
                 price: 3799,
                 category: 'male',
-                mainImage: 'assets/images/wallets/3.png',
+                mainImage: 'assets/images/wallets/4/main.png',
                 images: [
                     'assets/images/wallets/3.png',
                     'assets/images/w-2.png',
@@ -763,7 +763,7 @@ class ProductManager {
                 name: 'Vintage Brown Wallet',
                 price: 4599,
                 category: 'male',
-                mainImage: 'assets/images/wallets/1.png',
+                mainImage: 'assets/images/wallets/5/main.png',
                 images: [
                     'assets/images/wallets/1.png',
                     'assets/images/w-1.png',
