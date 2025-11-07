@@ -145,6 +145,7 @@
               method="POST"
               data-netlify="true"
               netlify-honeypot="bot-field"
+              data-netlify-recaptcha="true"
               class="space-y-6"
             >
               <!-- Honeypot field -->
@@ -214,6 +215,9 @@
                   class="form-input w-full px-4 py-3 rounded-lg text-gray-100 resize-none"
                 ></textarea>
               </div>
+
+              <!-- reCAPTCHA -->
+              <div data-netlify-recaptcha="true" class="flex justify-center"></div>
 
               <button
                 type="submit"

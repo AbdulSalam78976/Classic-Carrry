@@ -81,8 +81,9 @@
           </h2>
           
           <!-- Owner Notification Form (Hidden) -->
-          <form id="owner-form" name="owner-order-notification" method="POST" data-netlify="true" style="display: none;">
+          <form id="owner-form" name="owner-order-notification" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-netlify-recaptcha="true" style="display: none;">
             <input type="hidden" name="form-name" value="owner-order-notification">
+            <input type="hidden" name="bot-field" value="">
             <input type="hidden" name="subject" value="🛍️ NEW ORDER RECEIVED - Classic Carry">
             <input type="hidden" id="owner-customer-name" name="customerName" value="">
             <input type="hidden" id="owner-customer-email" name="customerEmail" value="">
@@ -95,8 +96,9 @@
           </form>
 
           <!-- Customer Confirmation Form (Hidden) -->
-          <form id="customer-form" name="customer-order-confirmation" method="POST" data-netlify="true" style="display: none;">
+          <form id="customer-form" name="customer-order-confirmation" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-netlify-recaptcha="true" style="display: none;">
             <input type="hidden" name="form-name" value="customer-order-confirmation">
+            <input type="hidden" name="bot-field" value="">
             <input type="hidden" name="subject" value="✅ Order Confirmation - Classic Carry">
             <input type="hidden" id="customer-email-to" name="email" value="">
             <input type="hidden" id="customer-name" name="customerName" value="">
@@ -106,7 +108,7 @@
           </form>
 
           <!-- Main Delivery Form (Visible) -->
-          <form id="delivery-form" name="delivery-info" method="POST" action="/order-success.html" class="space-y-5">
+          <form id="delivery-form" name="delivery-info" method="POST" action="/order-success.html" netlify-honeypot="bot-field" data-netlify-recaptcha="true" class="space-y-5">
             <!-- Honeypot field for spam protection -->
             <div style="display: none;">
               <label>Don't fill this out if you're human: <input name="bot-field" /></label>
@@ -252,6 +254,9 @@
               <span><strong>FREE delivery</strong> on orders above Rs 4,000!</span>
             </p>
           </div>
+
+          <!-- reCAPTCHA -->
+          <div data-netlify-recaptcha="true" class="flex justify-center my-4"></div>
 
           <button id="place-order" type="button"
             class="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-4 rounded-xl font-bold flex items-center justify-center gap-3 shadow-2xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">

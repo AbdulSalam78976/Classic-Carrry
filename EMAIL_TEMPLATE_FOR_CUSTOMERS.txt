@@ -1,0 +1,55 @@
+EMAIL TEMPLATE FOR CUSTOMER CONFIRMATION
+==========================================
+
+When you receive an order notification from Netlify:
+1. Copy the customer's email address
+2. Send them this email manually
+
+
+---COPY BELOW THIS LINE---
+
+Subject: ✅ Order Confirmation - Classic Carry
+
+Hi [Customer Name],
+
+Thank you for your order with Classic Carry!
+
+We have received your order and will process it shortly.
+
+ORDER DETAILS:
+--------------
+Order Date: [Date]
+Items: [List items from order]
+Total Amount: Rs [Total]
+
+DELIVERY ADDRESS:
+-----------------
+[Customer Address]
+
+CONTACT INFORMATION:
+--------------------
+Phone: [Customer Phone]
+Email: [Customer Email]
+
+We will contact you within 24 hours to confirm your delivery details.
+
+If you have any questions, feel free to reach out:
+📧 classiccarrry@gmail.com
+📱 +92 316 092 8206
+
+Thank you for shopping with us!
+
+Best regards,
+Classic Carry Team
+
+---END OF EMAIL---
+
+
+QUICK STEPS:
+1. Go to Netlify Dashboard → Forms
+2. Click on the new submission
+3. Copy customer email
+4. Send the above email with their details filled in
+5. Done!
+
+This takes about 2-3 minutes per order.
