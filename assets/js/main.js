@@ -3,6 +3,33 @@ function formatPrice(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+// Color mapping for visual swatches
+function getColorValue(colorName) {
+    const colorMap = {
+        'Black': '#000000',
+        'Brown': '#8B4513',
+        'Navy': '#000080',
+        'Navy Blue': '#1e3a8a',
+        'Forest Green': '#166534',
+        'Burgundy': '#7c2d12',
+        'Charcoal': '#374151',
+        'Gray': '#6b7280',
+        'White': '#ffffff',
+        'Blush Pink': '#f9a8d4',
+        'Lavender': '#a78bfa',
+        'Mint Green': '#6ee7b7',
+        'Cream': '#fef3c7',
+        'Natural': '#d4a574',
+        'Light Brown': '#cd853f',
+        'Beige': '#f5f5dc',
+        'Black Leather': '#1f2937',
+        'Brown Leather': '#92400e',
+        'Cognac': '#d97706',
+        'Navy Leather': '#1e40af'
+    };
+    return colorMap[colorName] || '#6b7280';
+}
+
 // Main Application Controller
 class AppController {
     constructor() {
@@ -352,11 +379,16 @@ class AppController {
     // Setup page-specific features
     setupPageSpecificFeatures() {
         const currentPage = window.location.pathname;
+        console.log('Setting up page-specific features for:', currentPage);
 
         if (currentPage.endsWith('product.html')) {
+            console.log('Detected product page, setting up...');
             this.setupProductPage();
         } else if (currentPage.endsWith('checkout.html')) {
+            console.log('Detected checkout page, setting up...');
             this.setupCheckoutPage();
+        } else {
+            console.log('No specific page setup needed for:', currentPage);
         }
 
         // Setup mobile menu functionality (runs after header is loaded)
@@ -366,6 +398,8 @@ class AppController {
     // Setup product page
     setupProductPage() {
         console.log('Setting up product page...');
+        console.log('Current URL:', window.location.href);
+        console.log('ProductManager available:', !!window.productManager);
 
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
@@ -379,7 +413,18 @@ class AppController {
         }
 
         if (!window.productManager) {
-            console.error('ProductManager not available');
+            console.error('ProductManager not available, retrying in 100ms...');
+            setTimeout(() => this.setupProductPage(), 100);
+            return;
+        }
+
+        // Check if ProductManager has products loaded
+        const allProducts = productManager.getAllProducts();
+        console.log('Total products available:', allProducts.length);
+
+        if (allProducts.length === 0) {
+            console.error('No products loaded in ProductManager, retrying...');
+            setTimeout(() => this.setupProductPage(), 100);
             return;
         }
 
@@ -390,34 +435,48 @@ class AppController {
 
         if (!product) {
             console.error('Product not found:', productId);
+            console.log('Available product IDs:', allProducts.map(p => p.id));
             this.showProductNotFound();
             return;
         }
 
         if (!container) {
             console.error('Product container not found');
+            console.log('Available elements:', {
+                'product-container': !!document.getElementById('product-container'),
+                'body': !!document.body,
+                'main': !!document.querySelector('main')
+            });
             return;
+        }
+
+        console.log('Product container found, rendering product...');
+
+        // Remove loading message
+        const loadingMessage = document.getElementById('loading-message');
+        if (loadingMessage) {
+            loadingMessage.remove();
         }
 
         container.innerHTML = '';
         container.className = 'max-w-7xl mx-auto px-4 py-8';
 
-        // Main product container with improved layout
+        // Modern product container layout
         const productWrapper = document.createElement('div');
         productWrapper.className = 'grid grid-cols-1 lg:grid-cols-2 gap-12 items-start';
 
-        // Product image section with enhanced styling
+        // Modern image gallery
         const leftDiv = document.createElement('div');
         leftDiv.className = 'space-y-6';
 
         const mainImgDiv = document.createElement('div');
-        mainImgDiv.className = 'bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl shadow-2xl overflow-hidden border border-gray-600';
+        mainImgDiv.className = 'bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl shadow-2xl overflow-hidden';
 
         const img = document.createElement('img');
         img.id = 'main-product-image';
         img.src = product.getMainImage();
         img.alt = product.name;
-        img.className = 'w-full h-[500px] object-cover cursor-zoom-in transition-all duration-500 hover:scale-110';
+        img.className = 'w-full h-96 sm:h-[500px] object-cover cursor-zoom-in transition-all duration-500 hover:scale-110';
 
         // Add click event for image zoom
         img.addEventListener('click', () => {
@@ -432,11 +491,11 @@ class AppController {
         const maxThumbnails = Math.min(allImages.length, 4);
 
         if (maxThumbnails > 1) {
-            thumbnailsDiv.className = `grid grid-cols-${maxThumbnails} gap-3`;
+            thumbnailsDiv.className = `grid grid-cols-${maxThumbnails} gap-4`;
 
             allImages.slice(0, maxThumbnails).forEach((imageUrl, index) => {
                 const thumbDiv = document.createElement('div');
-                thumbDiv.className = 'bg-gradient-to-br from-gray-700 to-gray-600 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 hover:ring-2 hover:ring-[#D2C1B6] hover:ring-opacity-50 hover:scale-105 border border-gray-600';
+                thumbDiv.className = 'bg-gradient-to-br from-gray-700 to-gray-600 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 hover:ring-2 hover:ring-[#D2C1B6] hover:scale-105';
 
                 // Change main image on click
                 thumbDiv.onclick = () => {
@@ -451,7 +510,7 @@ class AppController {
                 const thumbImg = document.createElement('img');
                 thumbImg.src = imageUrl;
                 thumbImg.alt = `${product.name} - View ${index + 1}`;
-                thumbImg.className = 'w-full h-28 object-cover rounded-xl transition-transform duration-300';
+                thumbImg.className = 'w-full h-24 object-cover rounded-xl';
                 thumbDiv.appendChild(thumbImg);
                 thumbnailsDiv.appendChild(thumbDiv);
             });
@@ -472,79 +531,39 @@ class AppController {
         leftDiv.appendChild(mainImgDiv);
         leftDiv.appendChild(thumbnailsDiv);
 
-        // Enhanced product details section
+        // Clean product details section
         const rightDiv = document.createElement('div');
         rightDiv.className = 'space-y-6';
 
-        // Product header with improved styling
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'border-b border-gray-700 pb-6';
+        // Product title and tag
+        const titleSection = document.createElement('div');
+        titleSection.className = 'space-y-3';
 
         const title = document.createElement('h1');
-        title.className = 'font-display text-4xl font-bold mb-3 text-white leading-tight';
+        title.className = 'font-display text-3xl font-bold text-white leading-tight';
         title.textContent = product.name;
 
-        // Product tag with enhanced styling
+        // Product tag
         if (product.tag) {
             const tagElement = document.createElement('div');
-            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#D2C1B6] text-gray-900 mb-4 shadow-lg';
+            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#D2C1B6] text-gray-900 shadow-sm';
             tagElement.innerHTML = `<i class="fas fa-star mr-2"></i>${product.tag}`;
-            headerDiv.appendChild(tagElement);
+            titleSection.appendChild(tagElement);
         }
 
-        headerDiv.appendChild(title);
+        titleSection.appendChild(title);
 
-        // Enhanced star rating section
-        const ratingDiv = document.createElement('div');
-        ratingDiv.className = 'flex items-center justify-between bg-gray-800 rounded-xl p-4 border border-gray-700';
-
-        const ratingLeft = document.createElement('div');
-        ratingLeft.className = 'flex items-center space-x-3';
-
-        const starsDiv = document.createElement('div');
-        starsDiv.className = 'flex text-yellow-400 text-lg';
-        const rating = product.rating || 4.5;
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
-
-        for (let i = 0; i < 5; i++) {
-            const star = document.createElement('i');
-            if (i < fullStars) {
-                star.className = 'fas fa-star';
-            } else if (i === fullStars && hasHalfStar) {
-                star.className = 'fas fa-star-half-alt';
-            } else {
-                star.className = 'far fa-star';
-            }
-            starsDiv.appendChild(star);
-        }
-
-        const ratingText = document.createElement('div');
-        ratingText.className = 'text-gray-300';
-        ratingText.innerHTML = `
-            <div class="font-semibold text-white">${rating}/5</div>
-            <div class="text-sm text-gray-400">${product.reviewCount || 128} reviews</div>
-        `;
-
-        ratingLeft.appendChild(starsDiv);
-        ratingLeft.appendChild(ratingText);
-        ratingDiv.appendChild(ratingLeft);
-
-        // Enhanced price section
+        // Simple price section
         const priceSection = document.createElement('div');
-        priceSection.className = 'bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 border border-gray-600';
-
-        const priceLabel = document.createElement('div');
-        priceLabel.className = 'text-sm text-gray-400 mb-2';
-        priceLabel.textContent = 'Price';
+        priceSection.className = 'space-y-2';
 
         const price = document.createElement('div');
-        price.className = 'text-4xl font-bold text-[#D2C1B6] mb-2 price-text';
+        price.className = 'text-4xl font-bold text-[#D2C1B6] price-text';
         price.textContent = `Rs ${formatPrice(product.price)}`;
 
         const priceNote = document.createElement('div');
         priceNote.className = 'text-sm text-gray-400';
-        priceNote.innerHTML = '<i class="fas fa-truck mr-1"></i>Free shipping on orders over Rs 5,000';
+        priceNote.innerHTML = '<i class="fas fa-truck mr-2"></i>Free shipping on orders over Rs 4,000';
 
         priceSection.appendChild(priceLabel);
         priceSection.appendChild(price);
@@ -552,7 +571,7 @@ class AppController {
 
         // Enhanced stock status
         const stockDiv = document.createElement('div');
-        stockDiv.className = 'bg-gray-800 rounded-xl p-4 border border-gray-700';
+        stockDiv.className = 'bg-gray-800 rounded-lg p-3 border border-gray-700';
 
         const stockContainer = document.createElement('div');
         stockContainer.className = 'flex items-center justify-between';
@@ -579,14 +598,14 @@ class AppController {
 
         // Enhanced description section
         const descriptionDiv = document.createElement('div');
-        descriptionDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
+        descriptionDiv.className = 'bg-gray-800 rounded-lg p-4 border border-gray-700';
 
         const descriptionLabel = document.createElement('h3');
-        descriptionLabel.className = 'text-xl font-semibold mb-3 text-white flex items-center';
-        descriptionLabel.innerHTML = '<i class="fas fa-info-circle mr-2 text-[#D2C1B6]"></i>Description';
+        descriptionLabel.className = 'text-lg font-semibold mb-2 text-white flex items-center';
+        descriptionLabel.innerHTML = '<i class="fas fa-info-circle mr-2 text-[#D2C1B6] text-sm"></i>Description';
 
         const description = document.createElement('p');
-        description.className = 'text-gray-300 leading-relaxed text-lg';
+        description.className = 'text-gray-300 leading-relaxed';
         description.textContent = product.description || 'Premium quality product from classiccarrry.';
 
         descriptionDiv.appendChild(descriptionLabel);
@@ -594,31 +613,31 @@ class AppController {
 
         // Enhanced quantity selector
         const quantityDiv = document.createElement('div');
-        quantityDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
+        quantityDiv.className = 'bg-gray-800 rounded-lg p-4 border border-gray-700';
 
         const quantityLabel = document.createElement('h3');
-        quantityLabel.className = 'text-xl font-semibold mb-4 text-white flex items-center';
-        quantityLabel.innerHTML = '<i class="fas fa-sort-numeric-up mr-2 text-[#D2C1B6]"></i>Quantity';
+        quantityLabel.className = 'text-lg font-semibold mb-3 text-white flex items-center';
+        quantityLabel.innerHTML = '<i class="fas fa-sort-numeric-up mr-2 text-[#D2C1B6] text-sm"></i>Quantity';
 
         const quantityControls = document.createElement('div');
-        quantityControls.className = 'flex items-center justify-center bg-gray-700 rounded-xl p-2 border border-gray-600';
+        quantityControls.className = 'flex items-center justify-center bg-gray-700 rounded-lg p-2 border border-gray-600';
 
         const decreaseBtn = document.createElement('button');
         decreaseBtn.id = 'decrease-quantity';
-        decreaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-300 font-bold text-lg';
-        decreaseBtn.innerHTML = '<i class="fas fa-minus"></i>';
+        decreaseBtn.className = 'w-10 h-10 flex items-center justify-center rounded-lg bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold';
+        decreaseBtn.innerHTML = '<i class="fas fa-minus text-sm"></i>';
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.id = 'quantity';
         quantityInput.value = '1';
         quantityInput.min = '1';
-        quantityInput.className = 'w-20 h-12 mx-4 text-center text-xl font-bold bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] rounded-lg';
+        quantityInput.className = 'w-16 h-10 mx-3 text-center text-lg font-bold bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] rounded-lg';
 
         const increaseBtn = document.createElement('button');
         increaseBtn.id = 'increase-quantity';
-        increaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-300 font-bold text-lg';
-        increaseBtn.innerHTML = '<i class="fas fa-plus"></i>';
+        increaseBtn.className = 'w-10 h-10 flex items-center justify-center rounded-lg bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold';
+        increaseBtn.innerHTML = '<i class="fas fa-plus text-sm"></i>';
 
         quantityControls.appendChild(decreaseBtn);
         quantityControls.appendChild(quantityInput);
@@ -627,32 +646,51 @@ class AppController {
         quantityDiv.appendChild(quantityLabel);
         quantityDiv.appendChild(quantityControls);
 
-        // Enhanced color selection
+        // Visual color selection
         const colorDiv = document.createElement('div');
-        colorDiv.className = 'bg-gray-800 rounded-xl p-6 border border-gray-700';
+        colorDiv.className = 'space-y-4';
 
         const colorLabel = document.createElement('h3');
-        colorLabel.className = 'text-xl font-semibold mb-4 text-white flex items-center';
-        colorLabel.innerHTML = '<i class="fas fa-palette mr-2 text-[#D2C1B6]"></i>Choose Color';
+        colorLabel.className = 'text-lg font-semibold text-white';
+        colorLabel.textContent = 'Color';
 
         const colorOptions = document.createElement('div');
-        colorOptions.className = 'grid grid-cols-2 sm:grid-cols-3 gap-3';
+        colorOptions.className = 'flex flex-wrap gap-3';
 
         const availableColors = product.getAvailableColors ? product.getAvailableColors() : product.colors || [];
         const selectedColor = product.getSelectedColor ? product.getSelectedColor() : availableColors[0];
 
         availableColors.forEach(color => {
-            const colorButton = document.createElement('button');
+            const colorContainer = document.createElement('div');
+            colorContainer.className = 'relative group';
+
+            const colorSwatch = document.createElement('button');
             const isSelected = selectedColor === color;
+            const colorValue = getColorValue(color);
 
-            colorButton.className = `px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center ${isSelected
-                    ? 'bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105'
-                    : 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-[#D2C1B6] hover:shadow-md hover:scale-102'
-                }`;
-            colorButton.textContent = color;
-            colorButton.setAttribute('data-color', color);
+            colorSwatch.className = `w-12 h-12 rounded-full border-3 transition-all duration-200 ${
+                isSelected 
+                    ? 'border-[#D2C1B6] ring-2 ring-[#D2C1B6] ring-opacity-50 scale-110' 
+                    : 'border-gray-600 hover:border-[#D2C1B6] hover:scale-105'
+            }`;
+            colorSwatch.style.backgroundColor = colorValue;
+            colorSwatch.setAttribute('data-color', color);
+            colorSwatch.title = color;
 
-            colorButton.addEventListener('click', () => {
+            // Add white border for light colors
+            if (colorValue === '#ffffff' || colorValue === '#fef3c7' || colorValue === '#f5f5dc') {
+                colorSwatch.style.border = '3px solid #374151';
+            }
+
+            // Add checkmark for selected color
+            if (isSelected) {
+                const checkmark = document.createElement('i');
+                checkmark.className = 'fas fa-check absolute inset-0 flex items-center justify-center text-white text-sm pointer-events-none';
+                checkmark.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+                colorSwatch.appendChild(checkmark);
+            }
+
+            colorSwatch.addEventListener('click', () => {
                 // Update selected color
                 if (product.setSelectedColor) {
                     product.setSelectedColor(color);
@@ -660,11 +698,22 @@ class AppController {
 
                 // Update UI - remove selection from all buttons
                 document.querySelectorAll('[data-color]').forEach(btn => {
-                    btn.className = 'px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 hover:border-[#D2C1B6] hover:shadow-md hover:scale-102';
+                    btn.className = 'w-12 h-12 rounded-full border-3 transition-all duration-200 border-gray-600 hover:border-[#D2C1B6] hover:scale-105';
+                    // Remove existing checkmarks
+                    const existingCheck = btn.querySelector('.fa-check');
+                    if (existingCheck) {
+                        existingCheck.remove();
+                    }
                 });
 
                 // Add selection to clicked button
-                colorButton.className = 'px-4 py-3 rounded-xl border-2 transition-all duration-300 font-medium text-center bg-[#D2C1B6] text-gray-900 border-[#D2C1B6] shadow-lg transform scale-105';
+                colorSwatch.className = 'w-12 h-12 rounded-full border-3 transition-all duration-200 border-[#D2C1B6] ring-2 ring-[#D2C1B6] ring-opacity-50 scale-110';
+
+                // Add checkmark to selected color
+                const checkmark = document.createElement('i');
+                checkmark.className = 'fas fa-check absolute inset-0 flex items-center justify-center text-white text-sm pointer-events-none';
+                checkmark.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+                colorSwatch.appendChild(checkmark);
 
                 // Update selected color display
                 const selectedColorText = document.getElementById('selected-color-text');
@@ -673,30 +722,32 @@ class AppController {
                 }
             });
 
-            colorOptions.appendChild(colorButton);
+            colorContainer.appendChild(colorSwatch);
+            colorOptions.appendChild(colorContainer);
         });
 
-        // Enhanced selected color display
+        // Selected color display
         const selectedColorDisplay = document.createElement('div');
-        selectedColorDisplay.className = 'mt-4 p-3 bg-gray-700 rounded-lg border border-gray-600';
+        selectedColorDisplay.className = 'flex items-center gap-3';
         selectedColorDisplay.innerHTML = `
-            <div class="flex items-center justify-between">
-                <span class="text-gray-300">Selected Color:</span>
-                <span id="selected-color-text" class="font-semibold text-[#D2C1B6]">${selectedColor || 'None'}</span>
-            </div>
+            <span class="text-gray-300">Selected:</span>
+            <span id="selected-color-text" class="font-medium text-white">${selectedColor || 'None'}</span>
         `;
 
         colorDiv.appendChild(colorLabel);
         colorDiv.appendChild(colorOptions);
         colorDiv.appendChild(selectedColorDisplay);
 
-        // Enhanced action buttons
+
+
+
+        // Clean action buttons
         const actions = document.createElement('div');
-        actions.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+        actions.className = 'space-y-3';
 
         const addToCartBtn = document.createElement('button');
         addToCartBtn.id = 'add-to-cart-btn';
-        addToCartBtn.className = 'bg-[#D2C1B6] text-gray-900 py-4 px-8 rounded-xl hover:bg-[#e2c9b8] transition-all duration-300 add-to-cart font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center';
+        addToCartBtn.className = 'w-full bg-[#D2C1B6] text-gray-900 py-4 px-6 rounded-xl hover:bg-[#e2c9b8] transition-all duration-200 add-to-cart font-bold text-lg shadow-lg hover:shadow-xl flex items-center justify-center';
         addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-3"></i>Add to Cart';
         addToCartBtn.setAttribute('data-product-id', product.id);
 
@@ -722,7 +773,7 @@ class AppController {
         });
 
         const buyNowBtn = document.createElement('button');
-        buyNowBtn.className = 'bg-green-600 text-white py-4 px-8 rounded-xl hover:bg-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center';
+        buyNowBtn.className = 'w-full bg-green-600 text-white py-4 px-6 rounded-xl hover:bg-green-700 transition-all duration-200 font-bold text-lg shadow-lg hover:shadow-xl flex items-center justify-center';
         buyNowBtn.innerHTML = '<i class="fas fa-bolt mr-3"></i>Buy Now';
         buyNowBtn.onclick = () => {
             const quantity = parseInt(document.getElementById('quantity')?.value || 1);
@@ -746,87 +797,14 @@ class AppController {
         actions.appendChild(addToCartBtn);
         actions.appendChild(buyNowBtn);
 
-        // Features section
-        const featuresDiv = document.createElement('div');
-        featuresDiv.className = 'mt-8';
-
-        const featuresTitle = document.createElement('h3');
-        featuresTitle.className = 'text-lg font-semibold mb-3 text-gray-200';
-        featuresTitle.textContent = 'Features';
-
-        const featuresList = document.createElement('ul');
-        featuresList.className = 'space-y-2';
-
-        const features = product.features && product.features.length > 0 ? product.features : [
-            'Premium Quality Materials',
-            'Durable Construction',
-            'Modern Design',
-            'Comfortable Fit'
-        ];
-
-        features.forEach(feature => {
-            const li = document.createElement('li');
-            li.className = 'flex items-center';
-
-            const icon = document.createElement('i');
-            icon.className = 'fas fa-check text-green-400 mr-2';
-
-            const text = document.createElement('span');
-            text.className = 'text-gray-300';
-            text.textContent = feature;
-
-            li.appendChild(icon);
-            li.appendChild(text);
-            featuresList.appendChild(li);
-        });
-
-        featuresDiv.appendChild(featuresTitle);
-        featuresDiv.appendChild(featuresList);
-
-        // Specifications section (if available)
-        if (product.specifications && Object.keys(product.specifications).length > 0) {
-            const specsDiv = document.createElement('div');
-            specsDiv.className = 'mt-6';
-
-            const specsTitle = document.createElement('h3');
-            specsTitle.className = 'text-lg font-semibold mb-3 text-gray-200';
-            specsTitle.textContent = 'Specifications';
-
-            const specsTable = document.createElement('div');
-            specsTable.className = 'bg-gray-700 rounded-lg p-4 space-y-2';
-
-            Object.entries(product.specifications).forEach(([key, value]) => {
-                const specRow = document.createElement('div');
-                specRow.className = 'flex justify-between items-center py-1 border-b border-gray-600 last:border-b-0';
-
-                const specKey = document.createElement('span');
-                specKey.className = 'text-gray-300 font-medium';
-                specKey.textContent = key;
-
-                const specValue = document.createElement('span');
-                specValue.className = 'text-gray-400';
-                specValue.textContent = value;
-
-                specRow.appendChild(specKey);
-                specRow.appendChild(specValue);
-                specsTable.appendChild(specRow);
-            });
-
-            specsDiv.appendChild(specsTitle);
-            specsDiv.appendChild(specsTable);
-            featuresDiv.appendChild(specsDiv);
-        }
-
         // Organize sections in the right div
-        rightDiv.appendChild(headerDiv);
-        rightDiv.appendChild(ratingDiv);
+        rightDiv.appendChild(titleSection);
         rightDiv.appendChild(priceSection);
         rightDiv.appendChild(stockDiv);
         rightDiv.appendChild(descriptionDiv);
         rightDiv.appendChild(colorDiv);
         rightDiv.appendChild(quantityDiv);
         rightDiv.appendChild(actions);
-        rightDiv.appendChild(featuresDiv);
 
         // Add to product wrapper
         productWrapper.appendChild(leftDiv);
@@ -1230,7 +1208,7 @@ class AppController {
 
         if (deliveryChargeElement) {
             if (qualifiesForFree) {
-                deliveryChargeElement.innerHTML = '<span class="line-through text-gray-500">Rs 300.00</span> <span class="text-green-400 font-bold">FREE</span>';
+                deliveryChargeElement.innerHTML = '<span class="line-through text-gray-500">Rs 200.00</span> <span class="text-green-400 font-bold">FREE</span>';
             } else {
                 deliveryChargeElement.textContent = `Rs ${formatPrice(deliveryCharge)}`;
             }
@@ -1271,19 +1249,41 @@ class AppController {
             return;
         }
 
-        // Validate required fields
+        // Enhanced form validation
         const formData = new FormData(form);
+        const validationErrors = [];
 
-        const email = formData.get('email');
-        const firstName = formData.get('firstName');
-        const lastName = formData.get('lastName');
-        const phone = formData.get('phone');
-        const address = formData.get('address');
-        const city = formData.get('city');
-        const province = formData.get('province');
+        // Get form values
+        const email = formData.get('email')?.trim();
+        const firstName = formData.get('firstName')?.trim();
+        const lastName = formData.get('lastName')?.trim();
+        const phone = formData.get('phone')?.trim();
+        const address = formData.get('address')?.trim();
+        const city = formData.get('city')?.trim();
+        const province = formData.get('province')?.trim();
 
-        if (!email || !firstName || !lastName || !phone || !address || !city || !province) {
-            this.showNotification('Please fill in all required fields.', 'error');
+        // Validate required fields
+        if (!email) validationErrors.push('Email address is required');
+        if (!firstName) validationErrors.push('First name is required');
+        if (!lastName) validationErrors.push('Last name is required');
+        if (!phone) validationErrors.push('Phone number is required');
+        if (!address) validationErrors.push('Full address is required');
+        if (!city) validationErrors.push('City is required');
+        if (!province) validationErrors.push('Province is required');
+
+        // Validate email format
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            validationErrors.push('Please enter a valid email address');
+        }
+
+        // Validate phone number (basic Pakistani format)
+        if (phone && !/^(\+92|0)?[0-9]{10,11}$/.test(phone.replace(/[\s-]/g, ''))) {
+            validationErrors.push('Please enter a valid Pakistani phone number');
+        }
+
+        // Show validation errors
+        if (validationErrors.length > 0) {
+            this.showValidationErrors(validationErrors);
             return;
         }
 
@@ -1305,31 +1305,178 @@ class AppController {
             return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${formatPrice(item.price * (item.qty || 1))}`;
         }).join('\n');
 
-        // Update hidden form fields
-        document.getElementById('order-items').value = orderItems;
-        document.getElementById('order-subtotal').value = `Rs ${formatPrice(subtotal)}`;
-        document.getElementById('order-delivery-charge').value = cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${formatPrice(deliveryCharge)}`;
-        document.getElementById('order-total').value = `Rs ${formatPrice(total)}`;
-        document.getElementById('order-date').value = orderDate;
+        // Prepare data for both forms
+        const deliveryAddress = `${address}, ${city}, ${province}`;
 
-        // Clear cart and submit form
+        // 1. Fill Owner Notification Form
+        document.getElementById('owner-customer-name').value = `${firstName} ${lastName}`;
+        document.getElementById('owner-customer-email').value = email;
+        document.getElementById('owner-customer-phone').value = phone;
+        document.getElementById('owner-delivery-address').value = deliveryAddress;
+        document.getElementById('owner-order-items').value = orderItems;
+        document.getElementById('owner-order-total').value = `Rs ${formatPrice(total)}`;
+        document.getElementById('owner-order-date').value = orderDate;
+
+        // 2. Fill Customer Confirmation Form
+        document.getElementById('customer-email-to').value = email;
+        document.getElementById('customer-name').value = `${firstName} ${lastName}`;
+
+        const customerOrderDetails = `
+Order Date: ${orderDate}
+Customer: ${firstName} ${lastName}
+Phone: ${phone}
+Delivery Address: ${deliveryAddress}
+
+Items Ordered:
+${orderItems}
+
+Payment Summary:
+Subtotal: Rs ${formatPrice(subtotal)}
+Delivery: ${cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${formatPrice(deliveryCharge)}`}
+Total: Rs ${formatPrice(total)}
+        `.trim();
+
+        document.getElementById('customer-order-details').value = customerOrderDetails;
+
+        const customerMessage = `
+Dear ${firstName},
+
+Thank you for your order with Classic Carry! 🛍️
+
+Your order has been received and we're preparing it for delivery. Here are your order details:
+
+${customerOrderDetails}
+
+📞 What's Next?
+• We'll contact you within 24 hours to confirm your order
+• Our team will arrange delivery to your address
+• You can pay cash on delivery
+
+📱 Need Help?
+If you have any questions, feel free to contact us:
+• WhatsApp: +92 316 0928206
+• Email: info@classiccarry.com
+
+Thank you for choosing Classic Carry! ✨
+
+Best regards,
+The Classic Carry Team
+        `.trim();
+
+        document.getElementById('customer-message').value = customerMessage;
+
+        // Clear cart
         cartManager.clearCart();
 
-        // Submit form using fetch to Netlify
-        fetch('/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(new FormData(form)).toString()
-        })
+        // Submit both forms to Netlify
+        this.submitDualForms()
             .then(() => {
                 // Redirect to success page
                 window.location.href = '/order-success.html';
             })
             .catch((error) => {
-                console.error('Error:', error);
-                // Fallback: try regular form submission
-                form.submit();
+                console.error('Error submitting forms:', error);
+                this.showNotification('Order submitted, but there was an issue with email notifications.', 'warning');
+                // Still redirect to success page
+                setTimeout(() => {
+                    window.location.href = '/order-success.html';
+                }, 2000);
             });
+    }
+
+    // Show validation errors with better UX
+    showValidationErrors(errors) {
+        // Create error modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+
+        modal.innerHTML = `
+            <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full border border-red-500 shadow-2xl">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Please Complete Required Fields</h3>
+                </div>
+                <div class="mb-6">
+                    <ul class="space-y-2">
+                        ${errors.map(error => `
+                            <li class="flex items-center text-red-300">
+                                <i class="fas fa-times-circle mr-2 text-red-400"></i>
+                                ${error}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <button class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-200">
+                    <i class="fas fa-check mr-2"></i>Got it, I'll fix these
+                </button>
+            </div>
+        `;
+
+        // Add click handler to close modal
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target.closest('button')) {
+                document.body.removeChild(modal);
+                this.highlightEmptyFields();
+            }
+        });
+
+        document.body.appendChild(modal);
+    }
+
+    // Highlight empty required fields
+    highlightEmptyFields() {
+        const requiredFields = ['email', 'first-name', 'last-name', 'phone', 'address', 'city', 'province'];
+
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field && (!field.value || field.value.trim() === '')) {
+                // Add error styling
+                field.classList.add('border-red-500', 'bg-red-900/20');
+                field.classList.remove('border-gray-600');
+
+                // Remove error styling when user starts typing
+                field.addEventListener('input', function () {
+                    this.classList.remove('border-red-500', 'bg-red-900/20');
+                    this.classList.add('border-gray-600');
+                }, { once: true });
+            }
+        });
+    }
+
+    // Submit both owner and customer forms
+    async submitDualForms() {
+        const ownerForm = document.getElementById('owner-form');
+        const customerForm = document.getElementById('customer-form');
+
+        try {
+            // Submit owner notification form
+            const ownerFormData = new FormData(ownerForm);
+            const ownerSubmission = fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(ownerFormData).toString()
+            });
+
+            // Submit customer confirmation form
+            const customerFormData = new FormData(customerForm);
+            const customerSubmission = fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(customerFormData).toString()
+            });
+
+            // Wait for both submissions to complete
+            await Promise.all([ownerSubmission, customerSubmission]);
+
+            console.log('Both forms submitted successfully');
+            return true;
+
+        } catch (error) {
+            console.error('Error submitting forms:', error);
+            throw error;
+        }
     }
 
     // Show order success message

@@ -2,7 +2,7 @@
 class CartManager {
     constructor() {
         this.cartKey = 'cc_cart';
-        this.deliveryCharge = 300; // Fixed delivery charge in Rs
+        this.deliveryCharge = 200; // Fixed delivery charge in Rs
         this.init();
     }
     

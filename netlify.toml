@@ -6,7 +6,10 @@
 
 # Form settings
 [[forms]]
-  name = "order-form"
+  name = "owner-order-notification"
+
+[[forms]]
+  name = "customer-order-confirmation"
 
 [[forms]]
   name = "contact-form"
