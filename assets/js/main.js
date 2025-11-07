@@ -1307,83 +1307,14 @@ class AppController {
             return `${index + 1}. ${item.name} x${item.qty || 1} - Rs ${formatPrice(item.price * (item.qty || 1))}`;
         }).join('\n');
 
-        // Prepare data for both forms
-        const deliveryAddress = `${address}, ${city}, ${province}`;
-
-        // 1. Fill Owner Notification Form
-        document.getElementById('owner-customer-name').value = `${firstName} ${lastName}`;
-        document.getElementById('owner-customer-email').value = email;
-        document.getElementById('owner-customer-phone').value = phone;
-        document.getElementById('owner-delivery-address').value = deliveryAddress;
-        document.getElementById('owner-order-items').value = orderItems;
-        document.getElementById('owner-order-total').value = `Rs ${formatPrice(total)}`;
-        document.getElementById('owner-order-date').value = orderDate;
-
-        // 2. Fill Customer Confirmation Form
-        document.getElementById('customer-email-to').value = email;
-        document.getElementById('customer-name').value = `${firstName} ${lastName}`;
-
-        const customerOrderDetails = `
-Order Date: ${orderDate}
-Customer: ${firstName} ${lastName}
-Phone: ${phone}
-Delivery Address: ${deliveryAddress}
-
-Items Ordered:
-${orderItems}
-
-Payment Summary:
-Subtotal: Rs ${formatPrice(subtotal)}
-Delivery: ${cartManager.qualifiesForFreeDelivery() ? 'FREE (Order above Rs 4,000)' : `Rs ${formatPrice(deliveryCharge)}`}
-Total: Rs ${formatPrice(total)}
-        `.trim();
-
-        document.getElementById('customer-order-details').value = customerOrderDetails;
-
-        const customerMessage = `
-Dear ${firstName},
-
-Thank you for your order with Classic Carry! 🛍️
-
-Your order has been received and we're preparing it for delivery. Here are your order details:
-
-${customerOrderDetails}
-
-📞 What's Next?
-• We'll contact you within 24 hours to confirm your order
-• Our team will arrange delivery to your address
-• You can pay cash on delivery
-
-📱 Need Help?
-If you have any questions, feel free to contact us:
-• WhatsApp: +92 316 0928206
-• Email: info@classiccarry.com
-
-Thank you for choosing Classic Carry! ✨
-
-Best regards,
-The Classic Carry Team
-        `.trim();
-
-        document.getElementById('customer-message').value = customerMessage;
+        // Populate hidden order fields
+        this.populateOrderFields();
 
         // Clear cart
         cartManager.clearCart();
 
-        // Submit both forms to Netlify
-        this.submitDualForms()
-            .then(() => {
-                // Redirect to success page
-                window.location.href = '/order-success.html';
-            })
-            .catch((error) => {
-                console.error('Error submitting forms:', error);
-                this.showNotification('Order submitted, but there was an issue with email notifications.', 'warning');
-                // Still redirect to success page
-                setTimeout(() => {
-                    window.location.href = '/order-success.html';
-                }, 2000);
-            });
+        // Submit the form (Netlify will handle it)
+        form.submit();
     }
 
     // Show validation errors with better UX
@@ -1447,38 +1378,31 @@ The Classic Carry Team
         });
     }
 
-    // Submit both owner and customer forms
-    async submitDualForms() {
-        const ownerForm = document.getElementById('owner-form');
-        const customerForm = document.getElementById('customer-form');
-
-        try {
-            // Submit owner notification form
-            const ownerFormData = new FormData(ownerForm);
-            const ownerSubmission = fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(ownerFormData).toString()
-            });
-
-            // Submit customer confirmation form
-            const customerFormData = new FormData(customerForm);
-            const customerSubmission = fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(customerFormData).toString()
-            });
-
-            // Wait for both submissions to complete
-            await Promise.all([ownerSubmission, customerSubmission]);
-
-            console.log('Both forms submitted successfully');
-            return true;
-
-        } catch (error) {
-            console.error('Error submitting forms:', error);
-            throw error;
-        }
+    // Populate hidden order fields before submission
+    populateOrderFields() {
+        const cart = cartManager.getCart();
+        const subtotal = cartManager.getCartTotal();
+        const deliveryCharge = cartManager.getDeliveryCharge();
+        const total = cartManager.getTotalWithDelivery();
+        
+        // Format order items
+        const orderItems = cart.map(item => 
+            `${item.name} x${item.qty} - Rs ${formatPrice(item.price * item.qty)}`
+        ).join('\n');
+        
+        // Populate hidden fields
+        document.getElementById('order-items-field').value = orderItems;
+        document.getElementById('order-subtotal-field').value = `Rs ${formatPrice(subtotal)}`;
+        document.getElementById('order-delivery-field').value = `Rs ${formatPrice(deliveryCharge)}`;
+        document.getElementById('order-total-field').value = `Rs ${formatPrice(total)}`;
+        document.getElementById('order-date-field').value = new Date().toLocaleString();
+        
+        console.log('Order fields populated:', {
+            items: orderItems,
+            subtotal,
+            deliveryCharge,
+            total
+        });
     }
 
     // Show order success message

@@ -5,15 +5,18 @@
 Your forms now have **3 layers of spam protection**:
 
 ### 1. **Honeypot Fields** 🍯
+
 - Hidden fields that bots fill out but humans don't see
 - Automatically rejects submissions with honeypot filled
 
 ### 2. **Netlify reCAPTCHA** 🤖
+
 - Google reCAPTCHA v2 (checkbox verification)
 - Prevents automated bot submissions
 - Free and built into Netlify
 
 ### 3. **Form Validation** ✅
+
 - Required fields
 - Email format validation
 - Input sanitization
@@ -40,21 +43,25 @@ To activate reCAPTCHA, you need to enable it in Netlify:
 ## 📋 Forms Protected
 
 ✅ **Checkout Form** (delivery-info)
+
 - Honeypot: ✅
 - reCAPTCHA: ✅
 - Validation: ✅
 
 ✅ **Owner Notification Form** (owner-order-notification)
+
 - Honeypot: ✅
 - reCAPTCHA: ✅
 - Hidden form: ✅
 
 ✅ **Customer Confirmation Form** (customer-order-confirmation)
+
 - Honeypot: ✅
 - reCAPTCHA: ✅
 - Hidden form: ✅
 
 ✅ **Contact Form** (contact-form)
+
 - Honeypot: ✅
 - reCAPTCHA: ✅
 - Validation: ✅
@@ -82,9 +89,11 @@ Submit to Netlify ✅
 ## 🔍 What Users Will See
 
 ### **Before:**
+
 - Just a submit button
 
 ### **After:**
+
 - reCAPTCHA checkbox: "I'm not a robot"
 - Users click checkbox
 - Sometimes solve a challenge (select images)
@@ -120,6 +129,7 @@ Submit to Netlify ✅
 ### **Verify Submissions:**
 
 If a legitimate submission is marked as spam:
+
 1. Click on it
 2. Click **"Approve"**
 3. It will be moved to verified submissions
@@ -162,6 +172,7 @@ If a legitimate submission is marked as spam:
 ## 📞 Need Help?
 
 If you encounter issues:
+
 1. Check Netlify deploy logs
 2. Verify reCAPTCHA is enabled in settings
 3. Test form submission

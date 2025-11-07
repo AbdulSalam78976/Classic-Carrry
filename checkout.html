@@ -80,39 +80,16 @@
             Delivery Information
           </h2>
           
-          <!-- Owner Notification Form (Hidden) -->
-          <form id="owner-form" name="owner-order-notification" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-netlify-recaptcha="true" style="display: none;">
-            <input type="hidden" name="form-name" value="owner-order-notification">
-            <input type="hidden" name="bot-field" value="">
-            <input type="hidden" name="subject" value="🛍️ NEW ORDER RECEIVED - Classic Carry">
-            <input type="hidden" id="owner-customer-name" name="customerName" value="">
-            <input type="hidden" id="owner-customer-email" name="customerEmail" value="">
-            <input type="hidden" id="owner-customer-phone" name="customerPhone" value="">
-            <input type="hidden" id="owner-delivery-address" name="deliveryAddress" value="">
-            <input type="hidden" id="owner-order-items" name="orderItems" value="">
-            <input type="hidden" id="owner-order-total" name="orderTotal" value="">
-            <input type="hidden" id="owner-order-date" name="orderDate" value="">
-            <input type="hidden" name="priority" value="high">
-          </form>
+          <!-- Hidden forms removed - using single form below -->
 
-          <!-- Customer Confirmation Form (Hidden) -->
-          <form id="customer-form" name="customer-order-confirmation" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-netlify-recaptcha="true" style="display: none;">
-            <input type="hidden" name="form-name" value="customer-order-confirmation">
-            <input type="hidden" name="bot-field" value="">
-            <input type="hidden" name="subject" value="✅ Order Confirmation - Classic Carry">
-            <input type="hidden" id="customer-email-to" name="email" value="">
-            <input type="hidden" id="customer-name" name="customerName" value="">
-            <input type="hidden" id="customer-order-details" name="orderDetails" value="">
-            <input type="hidden" id="customer-message" name="message" value="">
-            <input type="hidden" name="auto-reply" value="false">
-          </form>
-
-          <!-- Main Delivery Form (Visible) -->
-          <form id="delivery-form" name="delivery-info" method="POST" action="/order-success.html" netlify-honeypot="bot-field" data-netlify-recaptcha="true" class="space-y-5">
+          <!-- Main Order Form -->
+          <form id="delivery-form" name="order-form" method="POST" action="/order-success.html" data-netlify="true" netlify-honeypot="bot-field" data-netlify-recaptcha="true" class="space-y-5">
             <!-- Honeypot field for spam protection -->
             <div style="display: none;">
               <label>Don't fill this out if you're human: <input name="bot-field" /></label>
             </div>
+            
+            <input type="hidden" name="form-name" value="order-form">
             
             <!-- Customer Email Field -->
             <div>
@@ -205,6 +182,13 @@
               <textarea id="delivery-notes" name="deliveryNotes" rows="2" placeholder="Any special instructions for delivery..."
                 class="form-input w-full px-4 py-3 rounded-lg text-gray-100 resize-none"></textarea>
             </div>
+            
+            <!-- Hidden fields for order summary (populated by JavaScript) -->
+            <input type="hidden" id="order-items-field" name="orderItems" value="">
+            <input type="hidden" id="order-subtotal-field" name="orderSubtotal" value="">
+            <input type="hidden" id="order-delivery-field" name="orderDeliveryCharge" value="">
+            <input type="hidden" id="order-total-field" name="orderTotal" value="">
+            <input type="hidden" id="order-date-field" name="orderDate" value="">
           </form>
         </section>
       </div>
@@ -279,25 +263,7 @@
     </div>
   </main>
 
-  <!-- Hidden form for Netlify form detection -->
-  <form name="order-form" netlify netlify-honeypot="bot-field" hidden>
-    <input type="text" name="bot-field" />
-    <input type="text" name="form-name" />
-    <input type="email" name="email" />
-    <input type="text" name="firstName" />
-    <input type="text" name="lastName" />
-    <input type="tel" name="phone" />
-    <input type="text" name="address" />
-    <input type="text" name="city" />
-    <input type="text" name="province" />
-    <input type="text" name="postalCode" />
-    <textarea name="deliveryNotes"></textarea>
-    <textarea name="orderItems"></textarea>
-    <input type="text" name="orderSubtotal" />
-    <input type="text" name="orderDeliveryCharge" />
-    <input type="text" name="orderTotal" />
-    <input type="text" name="orderDate" />
-  </form>
+  <!-- Form fields are now in the main form above -->
 
   <!-- Footer Component -->
   <div id="footer-component"></div>
