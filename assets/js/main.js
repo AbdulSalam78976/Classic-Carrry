@@ -581,79 +581,65 @@ class AppController {
         priceNote.className = 'text-sm text-gray-400';
         priceNote.innerHTML = '<i class="fas fa-truck mr-2"></i>Free shipping on orders over Rs 4,000';
 
-        priceSection.appendChild(priceLabel);
         priceSection.appendChild(price);
         priceSection.appendChild(priceNote);
 
-        // Enhanced stock status
+        // Stock status
         const stockDiv = document.createElement('div');
-        stockDiv.className = 'bg-gray-800 rounded-lg p-3 border border-gray-700';
-
-        const stockContainer = document.createElement('div');
-        stockContainer.className = 'flex items-center justify-between';
-
-        const stockLeft = document.createElement('div');
-        stockLeft.className = 'flex items-center';
+        stockDiv.className = 'flex items-center gap-3';
 
         const stockIcon = document.createElement('i');
-        stockIcon.className = `fas ${product.isInStock && product.isInStock() ? 'fa-check-circle text-green-400' : 'fa-times-circle text-red-400'} mr-3 text-xl`;
-
-        const stockLabel = document.createElement('span');
-        stockLabel.className = 'text-gray-300 font-medium';
-        stockLabel.textContent = 'Availability:';
+        stockIcon.className = `fas ${product.isInStock && product.isInStock() ? 'fa-check-circle text-green-400' : 'fa-times-circle text-red-400'} text-lg`;
 
         const stockStatus = document.createElement('span');
-        stockStatus.className = `ml-2 font-bold text-lg ${product.getStockStatusClass ? product.getStockStatusClass() : 'text-green-400'}`;
+        stockStatus.className = `font-semibold ${product.getStockStatusClass ? product.getStockStatusClass() : 'text-green-400'}`;
         stockStatus.textContent = product.getStockStatus ? product.getStockStatus() : 'In Stock';
 
-        stockLeft.appendChild(stockIcon);
-        stockLeft.appendChild(stockLabel);
-        stockLeft.appendChild(stockStatus);
-        stockContainer.appendChild(stockLeft);
-        stockDiv.appendChild(stockContainer);
+        stockDiv.appendChild(stockIcon);
+        stockDiv.appendChild(stockStatus);
 
-        // Enhanced description section
+        // Simple description
         const descriptionDiv = document.createElement('div');
-        descriptionDiv.className = 'bg-gray-800 rounded-lg p-4 border border-gray-700';
+        descriptionDiv.className = 'space-y-2';
 
         const descriptionLabel = document.createElement('h3');
-        descriptionLabel.className = 'text-lg font-semibold mb-2 text-white flex items-center';
-        descriptionLabel.innerHTML = '<i class="fas fa-info-circle mr-2 text-[#D2C1B6] text-sm"></i>Description';
+        descriptionLabel.className = 'text-lg font-semibold text-white';
+        descriptionLabel.textContent = 'Description';
 
         const description = document.createElement('p');
-        description.className = 'text-gray-300 leading-relaxed';
-        description.textContent = product.description || 'Premium quality product from classiccarrry.';
+        description.className = 'text-gray-300 leading-relaxed text-base';
+        description.textContent = product.description || 'Premium quality product from Classic Carry.';
 
         descriptionDiv.appendChild(descriptionLabel);
         descriptionDiv.appendChild(description);
 
-        // Enhanced quantity selector
+        // Quantity selector
         const quantityDiv = document.createElement('div');
-        quantityDiv.className = 'bg-gray-800 rounded-lg p-4 border border-gray-700';
+        quantityDiv.className = 'space-y-3';
 
         const quantityLabel = document.createElement('h3');
-        quantityLabel.className = 'text-lg font-semibold mb-3 text-white flex items-center';
-        quantityLabel.innerHTML = '<i class="fas fa-sort-numeric-up mr-2 text-[#D2C1B6] text-sm"></i>Quantity';
+        quantityLabel.className = 'text-lg font-semibold text-white';
+        quantityLabel.textContent = 'Quantity';
 
         const quantityControls = document.createElement('div');
-        quantityControls.className = 'flex items-center justify-center bg-gray-700 rounded-lg p-2 border border-gray-600';
+        quantityControls.className = 'flex items-center gap-4';
 
         const decreaseBtn = document.createElement('button');
         decreaseBtn.id = 'decrease-quantity';
-        decreaseBtn.className = 'w-10 h-10 flex items-center justify-center rounded-lg bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold';
-        decreaseBtn.innerHTML = '<i class="fas fa-minus text-sm"></i>';
+        decreaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-700 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold shadow-lg';
+        decreaseBtn.innerHTML = '<i class="fas fa-minus"></i>';
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.id = 'quantity';
         quantityInput.value = '1';
         quantityInput.min = '1';
-        quantityInput.className = 'w-16 h-10 mx-3 text-center text-lg font-bold bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] rounded-lg';
+        quantityInput.className = 'w-20 h-12 text-center text-xl font-bold bg-gray-700 text-white border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] focus:border-[#D2C1B6]';
 
         const increaseBtn = document.createElement('button');
         increaseBtn.id = 'increase-quantity';
-        increaseBtn.className = 'w-10 h-10 flex items-center justify-center rounded-lg bg-gray-600 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold';
-        increaseBtn.innerHTML = '<i class="fas fa-plus text-sm"></i>';
+        increaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-700 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold shadow-lg';
+        increaseBtn.innerHTML = '<i class="fas fa-plus"></i>';
 
         quantityControls.appendChild(decreaseBtn);
         quantityControls.appendChild(quantityInput);
@@ -1899,12 +1885,24 @@ window.testProductPage = function() {
     if (productId && window.productManager) {
         const product = productManager.findProductById(productId);
         console.log('Found product:', !!product, product?.name);
+        
+        // Try to manually setup the product page
+        if (product && window.appController) {
+            console.log('Manually triggering setupProductPage...');
+            appController.setupProductPage();
+        }
     }
     
     const container = document.getElementById('product-container');
     const loading = document.getElementById('loading-message');
     console.log('Container exists:', !!container);
     console.log('Loading message exists:', !!loading);
+    
+    // Force setup if everything is available
+    if (window.appController && productId && !loading) {
+        console.log('Force triggering product setup...');
+        appController.setupProductPage();
+    }
 };
 
 // Test after a delay

@@ -117,6 +117,16 @@
             testProductPage();
           }
         };
+
+        // Manual trigger for testing
+        window.forceProductSetup = () => {
+          if (window.appController) {
+            console.log("Manually forcing product setup...");
+            appController.setupProductPage();
+          } else {
+            console.log("AppController not available");
+          }
+        };
       });
     </script>
   </body>
