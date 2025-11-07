@@ -75,6 +75,17 @@ class AppController {
             cartManager.updateCartBadge();
         }
 
+        // Additional fallback for product page
+        if (window.location.pathname.endsWith('product.html')) {
+            setTimeout(() => {
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) {
+                    console.log('Product page still loading, attempting setup again...');
+                    this.setupProductPage();
+                }
+            }, 500);
+        }
+
         console.log('App initialized successfully');
     }
 
@@ -383,7 +394,10 @@ class AppController {
 
         if (currentPage.endsWith('product.html')) {
             console.log('Detected product page, setting up...');
-            this.setupProductPage();
+            // Add a small delay to ensure all managers are ready
+            setTimeout(() => {
+                this.setupProductPage();
+            }, 100);
         } else if (currentPage.endsWith('checkout.html')) {
             console.log('Detected checkout page, setting up...');
             this.setupCheckoutPage();
@@ -397,14 +411,16 @@ class AppController {
 
     // Setup product page
     setupProductPage() {
-        console.log('Setting up product page...');
+        console.log('=== SETTING UP PRODUCT PAGE ===');
         console.log('Current URL:', window.location.href);
+        console.log('Search params:', window.location.search);
         console.log('ProductManager available:', !!window.productManager);
 
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
 
         console.log('Product ID from URL:', productId);
+        console.log('All URL params:', Object.fromEntries(params));
 
         if (!productId) {
             console.error('No product ID in URL');
@@ -1859,6 +1875,37 @@ window.testApp = testApp;
 
 // Initialize the application
 const app = new AppController();
+
+// Make app controller globally available
+window.appController = app;
+
+// Test function for product page debugging
+window.testProductPage = function() {
+    console.log('=== PRODUCT PAGE DEBUG ===');
+    console.log('Current URL:', window.location.href);
+    console.log('ProductManager:', !!window.productManager);
+    console.log('AppController:', !!window.appController);
+    
+    if (window.productManager) {
+        const products = productManager.getAllProducts();
+        console.log('Total products:', products.length);
+        console.log('First few products:', products.slice(0, 3).map(p => ({id: p.id, name: p.name})));
+    }
+    
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    console.log('Product ID from URL:', productId);
+    
+    if (productId && window.productManager) {
+        const product = productManager.findProductById(productId);
+        console.log('Found product:', !!product, product?.name);
+    }
+    
+    const container = document.getElementById('product-container');
+    const loading = document.getElementById('loading-message');
+    console.log('Container exists:', !!container);
+    console.log('Loading message exists:', !!loading);
+};
 
 // Test after a delay
 setTimeout(testApp, 2000);

@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Classic Carrry - Product Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body class="bg-gray-900 text-gray-200">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body class="bg-gray-900 text-gray-200">
     <!-- Header Component -->
     <div id="header-component"></div>
 
     <main class="container mx-auto px-4 py-10">
-        <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Product details will be loaded dynamically by JavaScript -->
-            <div id="loading-message" class="col-span-2 text-center py-16">
-                <div class="text-gray-400 mb-4">
-                    <i class="fas fa-spinner fa-spin text-4xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-white mb-2">Loading Product...</h2>
-                <p class="text-gray-300">Please wait while we load the product details.</p>
-            </div>
+      <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Product details will be loaded dynamically by JavaScript -->
+        <div id="loading-message" class="col-span-2 text-center py-16">
+          <div class="text-gray-400 mb-4">
+            <i class="fas fa-spinner fa-spin text-4xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Loading Product...</h2>
+          <p class="text-gray-300">
+            Please wait while we load the product details.
+          </p>
         </div>
+      </div>
     </main>
 
     <!-- Footer Component -->
@@ -30,16 +35,20 @@
 
     <!-- Scripts -->
     <script>
-        // Debug logging for product page
-        console.log('Product page loading...');
-        console.log('Current URL:', window.location.href);
-        console.log('URL params:', window.location.search);
-        
-        // Check if we're running locally
-        if (window.location.protocol === 'file:') {
-            console.warn('Running from file:// protocol. This may cause issues with fetch requests.');
-            console.log('Consider using a local server like Live Server, Python http.server, or Node.js serve.');
-        }
+      // Debug logging for product page
+      console.log("Product page loading...");
+      console.log("Current URL:", window.location.href);
+      console.log("URL params:", window.location.search);
+
+      // Check if we're running locally
+      if (window.location.protocol === "file:") {
+        console.warn(
+          "Running from file:// protocol. This may cause issues with fetch requests."
+        );
+        console.log(
+          "Consider using a local server like Live Server, Python http.server, or Node.js serve."
+        );
+      }
     </script>
     <script src="assets/js/components.js"></script>
     <script src="assets/js/cart.js"></script>
@@ -47,34 +56,68 @@
     <script src="assets/js/ui.js"></script>
     <script src="assets/js/main.js"></script>
     <script>
-        // Additional debugging after all scripts load
-        window.addEventListener('load', () => {
-            console.log('Page fully loaded');
-            console.log('ProductManager available:', !!window.productManager);
-            console.log('CartManager available:', !!window.cartManager);
-            console.log('UIManager available:', !!window.uiManager);
-            
-            // Check URL parameters
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get('id');
-            console.log('Product ID from URL:', productId);
-            
-            if (productId && window.productManager) {
-                const product = productManager.findProductById(productId);
-                console.log('Product found:', !!product, product);
-                
-                // Fallback: if product container is still showing loading, try to setup again
-                setTimeout(() => {
-                    const loadingMessage = document.getElementById('loading-message');
-                    const container = document.getElementById('product-container');
-                    
-                    if (loadingMessage && container && window.appController) {
-                        console.log('Fallback: Attempting to setup product page again...');
-                        appController.setupProductPage();
-                    }
-                }, 1000);
+      // Additional debugging after all scripts load
+      window.addEventListener("load", () => {
+        console.log("=== PRODUCT PAGE LOADED ===");
+        console.log("ProductManager available:", !!window.productManager);
+        console.log("CartManager available:", !!window.cartManager);
+        console.log("UIManager available:", !!window.uiManager);
+        console.log("AppController available:", !!window.appController);
+
+        // Check URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get("id");
+        console.log("Product ID from URL:", productId);
+
+        // Test product manager
+        if (window.productManager) {
+          const allProducts = productManager.getAllProducts();
+          console.log("Total products loaded:", allProducts.length);
+
+          if (productId) {
+            const product = productManager.findProductById(productId);
+            console.log("Product found:", !!product);
+            if (product) {
+              console.log("Product details:", {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+              });
             }
-        });
+          }
+        }
+
+        // Check DOM elements
+        const container = document.getElementById("product-container");
+        const loadingMessage = document.getElementById("loading-message");
+        console.log("Container exists:", !!container);
+        console.log("Loading message exists:", !!loadingMessage);
+
+        // Multiple fallback attempts
+        setTimeout(() => {
+          if (loadingMessage && window.appController) {
+            console.log("Fallback 1: Attempting to setup product page...");
+            appController.setupProductPage();
+          }
+        }, 500);
+
+        setTimeout(() => {
+          if (
+            document.getElementById("loading-message") &&
+            window.appController
+          ) {
+            console.log("Fallback 2: Attempting to setup product page...");
+            appController.setupProductPage();
+          }
+        }, 1500);
+
+        // Make test function available
+        window.debugProduct = () => {
+          if (window.testProductPage) {
+            testProductPage();
+          }
+        };
+      });
     </script>
-</body>
+  </body>
 </html>
