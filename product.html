@@ -10,6 +10,33 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <style>
+      /* Force remove number input spinners */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        margin: 0 !important;
+        display: none !important;
+      }
+      
+      input[type="number"] {
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+      }
+      
+      #quantity::-webkit-outer-spin-button,
+      #quantity::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+        display: none !important;
+      }
+      
+      #quantity {
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+      }
+    </style>
   </head>
   <body class="bg-gray-900 text-gray-200">
     <!-- Header Component -->

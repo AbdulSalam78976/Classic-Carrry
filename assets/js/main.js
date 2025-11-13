@@ -636,6 +636,11 @@ class AppController {
         quantityInput.min = '1';
         quantityInput.className = 'w-20 h-12 text-center text-xl font-bold bg-gray-700 text-white border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D2C1B6] focus:border-[#D2C1B6]';
 
+        // Force remove spinners via JavaScript
+        quantityInput.style.webkitAppearance = 'none';
+        quantityInput.style.mozAppearance = 'textfield';
+        quantityInput.style.appearance = 'none';
+
         const increaseBtn = document.createElement('button');
         increaseBtn.id = 'increase-quantity';
         increaseBtn.className = 'w-12 h-12 flex items-center justify-center rounded-xl bg-gray-700 hover:bg-[#D2C1B6] hover:text-gray-900 text-gray-200 transition-all duration-200 font-bold shadow-lg';
@@ -670,11 +675,10 @@ class AppController {
             const isSelected = selectedColor === color;
             const colorValue = getColorValue(color);
 
-            colorSwatch.className = `w-12 h-12 rounded-full border-3 transition-all duration-200 ${
-                isSelected 
-                    ? 'border-[#D2C1B6] ring-2 ring-[#D2C1B6] ring-opacity-50 scale-110' 
-                    : 'border-gray-600 hover:border-[#D2C1B6] hover:scale-105'
-            }`;
+            colorSwatch.className = `w-12 h-12 rounded-full border-3 transition-all duration-200 ${isSelected
+                ? 'border-[#D2C1B6] ring-2 ring-[#D2C1B6] ring-opacity-50 scale-110'
+                : 'border-gray-600 hover:border-[#D2C1B6] hover:scale-105'
+                }`;
             colorSwatch.style.backgroundColor = colorValue;
             colorSwatch.setAttribute('data-color', color);
             colorSwatch.title = color;
@@ -1384,19 +1388,19 @@ class AppController {
         const subtotal = cartManager.getCartTotal();
         const deliveryCharge = cartManager.getDeliveryCharge();
         const total = cartManager.getTotalWithDelivery();
-        
+
         // Format order items
-        const orderItems = cart.map(item => 
+        const orderItems = cart.map(item =>
             `${item.name} x${item.qty} - Rs ${formatPrice(item.price * item.qty)}`
         ).join('\n');
-        
+
         // Populate hidden fields
         document.getElementById('order-items-field').value = orderItems;
         document.getElementById('order-subtotal-field').value = `Rs ${formatPrice(subtotal)}`;
         document.getElementById('order-delivery-field').value = `Rs ${formatPrice(deliveryCharge)}`;
         document.getElementById('order-total-field').value = `Rs ${formatPrice(total)}`;
         document.getElementById('order-date-field').value = new Date().toLocaleString();
-        
+
         console.log('Order fields populated:', {
             items: orderItems,
             subtotal,
@@ -1790,38 +1794,38 @@ const app = new AppController();
 window.appController = app;
 
 // Test function for product page debugging
-window.testProductPage = function() {
+window.testProductPage = function () {
     console.log('=== PRODUCT PAGE DEBUG ===');
     console.log('Current URL:', window.location.href);
     console.log('ProductManager:', !!window.productManager);
     console.log('AppController:', !!window.appController);
-    
+
     if (window.productManager) {
         const products = productManager.getAllProducts();
         console.log('Total products:', products.length);
-        console.log('First few products:', products.slice(0, 3).map(p => ({id: p.id, name: p.name})));
+        console.log('First few products:', products.slice(0, 3).map(p => ({ id: p.id, name: p.name })));
     }
-    
+
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('id');
     console.log('Product ID from URL:', productId);
-    
+
     if (productId && window.productManager) {
         const product = productManager.findProductById(productId);
         console.log('Found product:', !!product, product?.name);
-        
+
         // Try to manually setup the product page
         if (product && window.appController) {
             console.log('Manually triggering setupProductPage...');
             appController.setupProductPage();
         }
     }
-    
+
     const container = document.getElementById('product-container');
     const loading = document.getElementById('loading-message');
     console.log('Container exists:', !!container);
     console.log('Loading message exists:', !!loading);
-    
+
     // Force setup if everything is available
     if (window.appController && productId && !loading) {
         console.log('Force triggering product setup...');
